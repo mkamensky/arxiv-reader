@@ -29,6 +29,14 @@ ActiveStorage.start()
 
 import { createApp, h } from 'vue'
 import { createInertiaApp } from '@inertiajs/vue3'
+import { Quasar, Notify } from 'quasar'
+import quasarIconSet from 'quasar/icon-set/mdi-v7'
+
+// Import icon libraries
+import '@quasar/extras/mdi-v7/mdi-v7.css'
+
+// Import Quasar css
+import 'quasar/src/css/index.css'
 
 createInertiaApp({
   resolve: name => {
@@ -38,6 +46,25 @@ createInertiaApp({
   setup({ el, App, props, plugin }) {
     createApp({ render: () => h(App, props) })
       .use(plugin)
+      .use(Quasar, {
+        config: {
+        notify: {},
+        brand: {
+          primary: '#027be3',
+          secondary: '#26a69a',
+          accent: '#9c27b0',
+          dark: '#1d1d1d',
+          positive: '#21ba45',
+          negative: '#c10015',
+          info: '#31ccec',
+          warning: '#f2c037',
+        },
+      },
+      plugins: {
+        Notify,
+      },
+      iconSet: quasarIconSet,
+      })
       .mount(el)
   },
 })
