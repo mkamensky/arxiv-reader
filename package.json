@@ -1,6 +1,42 @@
 {
+  "name": "arxiv-reader",
+  "version": "0.0.1",
+  "description": "Reader for ArXiv",
+  "productName": "Arxiv Reader",
+  "author": "Moshe Kamensky <moshe.kamensky@gmail.com>",
+  "private": true,
+  "scripts": {
+    "lint": "eslint --ext .js,.vue ./",
+    "format": "prettier --write \"**/*.{js,vue,css,html,md,json}\" --ignore-path .gitignore",
+    "test": "echo \"No test specified\" && exit 0",
+    "dev": "quasar dev",
+    "build": "quasar build"
+  },
   "devDependencies": {
-    "vite": "^4.4.4",
-    "vite-plugin-ruby": "^3.2.2"
-  }
+    "@quasar/app-vite": "^1.4.3",
+    "autoprefixer": "^10.4.14",
+    "eslint": "^8.45.0",
+    "eslint-config-prettier": "^8.8.0",
+    "eslint-plugin-prettier": "^5.0.0",
+    "eslint-plugin-vue": "^9.15.1",
+    "postcss": "^8.4.26",
+    "postcss-flexbugs-fixes": "^5.0.2",
+    "postcss-import": "^15.1.0",
+    "postcss-mixins": "^9.0.4",
+    "postcss-preset-env": "^9.0.0",
+    "prettier": "^3.0.0"
+  },
+  "dependencies": {
+    "@inertiajs/vue3": "^1.0.9",
+    "@quasar/extras": "^1.16.5",
+    "@rails/activestorage": "^7.0.6",
+    "pinia": "^2.1.4",
+    "quasar": "^2.12.2",
+    "vue": "^3.3.4",
+    "vue-router": "^4.2.4"
+  },
+  "browserslist": [
+    "defaults",
+    "not IE 11"
+  ]
 }
