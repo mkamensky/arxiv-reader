@@ -66,6 +66,9 @@ Style/Documentation:
 Style/ClassAndModuleChildren:
   Enabled: false
 
+Style/ClassMethodsDefinitions:
+  Enabled: false
+
 Style/Lambda:
   EnforcedStyle: literal
 
@@ -150,3 +153,13 @@ Performance/OpenStruct:
 
 Bundler/GemComment:
   Enabled: false
+
+Style/TrailingCommaInArguments:
+  EnforcedStyleForMultiline: comma
+
+Style/TrailingCommaInHashLiteral:
+  EnforcedStyleForMultiline: consistent_comma
+
+Style::SingleLineBlockParams:
+  Enabled: false
+
