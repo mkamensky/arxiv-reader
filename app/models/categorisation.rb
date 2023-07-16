@@ -4,4 +4,3 @@ class Categorisation < ApplicationRecord
   belongs_to :paper
   belongs_to :category
 end
-

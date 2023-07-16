@@ -245,6 +245,7 @@ GEM
       rubyzip (>= 1.2.2, < 3.0)
       websocket (~> 1.0)
     spring (4.1.1)
+    sqlite3 (1.6.3-x86_64-linux)
     thor (1.2.2)
     timeout (0.4.0)
     tzinfo (2.0.6)
@@ -300,6 +301,7 @@ DEPENDENCIES
   rubocop-rails
   selenium-webdriver
   spring
+  sqlite3
   vite_rails (>= 3.0)
   web-console
   webdrivers

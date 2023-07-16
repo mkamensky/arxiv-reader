@@ -3,7 +3,7 @@
 class Paper < ApplicationRecord
   belongs_to :category
 
-  has_many_through :secondaries, :categorisations, source: :category
+  has_many_through :categories, :categorisations
   has_many_through :authors, :authorships
   has_many_through :users, :bookmarks
 
@@ -24,7 +24,7 @@ class Paper < ApplicationRecord
       auth_find = opts[:auth_find] || :find_or_initialize_by
       {
         category: Category.arxiv(apaper.category),
-        secondaries: apaper.secondaries.map { |x| Category.arxiv(x) },
+        categories: apaper.secondaries.map { |x| Category.arxiv(x) },
         authors: apaper.author_names.map do |x|
           Author.public_send(auth_find, name: x)
         end,
@@ -47,16 +47,21 @@ class Paper < ApplicationRecord
     end
 
     def create_from_arxiv(apaper, **opts)
-      find_or_create_by(
+      create!(
         attrs_from_arxiv(
           apaper, auth_find: :find_or_create_by, **opts
         ),
       )
+    rescue ActiveRecord::RecordInvalid => e
+      debugger unless [
+        'Validation failed: Version has already been taken',
+        'Validation failed: Category must exist',
+      ].include?(e.message)
     end
 
-    def create_from_file(file = Rails.root.join('data', 'db.json'))
+    def create_from_db(file = Rails.root.join('data', 'papers.db'))
       require 'arxiv/api'
-      papers = Arxiv::Api::Paper.from_file(file)
+      papers = Arxiv::Api::Paper.from_db(file)
       papers.each { |_k, v| create_from_arxiv(v) }
     end
   end
