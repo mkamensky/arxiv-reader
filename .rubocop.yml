@@ -160,6 +160,6 @@ Style/TrailingCommaInArguments:
 Style/TrailingCommaInHashLiteral:
   EnforcedStyleForMultiline: consistent_comma
 
-Style::SingleLineBlockParams:
+Style/SingleLineBlockParams:
   Enabled: false
 
