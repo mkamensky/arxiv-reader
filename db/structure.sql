@@ -194,6 +194,38 @@ ALTER SEQUENCE public.categorisations_id_seq OWNED BY public.categorisations.id;
 
 
 --
+-- Name: followships; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.followships (
+    id bigint NOT NULL,
+    author_id bigint NOT NULL,
+    user_id bigint NOT NULL,
+    created_at timestamp(6) without time zone NOT NULL,
+    updated_at timestamp(6) without time zone NOT NULL
+);
+
+
+--
+-- Name: followships_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE public.followships_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: followships_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE public.followships_id_seq OWNED BY public.followships.id;
+
+
+--
 -- Name: papers; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -233,6 +265,39 @@ CREATE SEQUENCE public.papers_id_seq
 --
 
 ALTER SEQUENCE public.papers_id_seq OWNED BY public.papers.id;
+
+
+--
+-- Name: recommendations; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.recommendations (
+    id bigint NOT NULL,
+    paper_id bigint NOT NULL,
+    user_id bigint NOT NULL,
+    score double precision DEFAULT 1.0 NOT NULL,
+    created_at timestamp(6) without time zone NOT NULL,
+    updated_at timestamp(6) without time zone NOT NULL
+);
+
+
+--
+-- Name: recommendations_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE public.recommendations_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: recommendations_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE public.recommendations_id_seq OWNED BY public.recommendations.id;
 
 
 --
@@ -288,7 +353,8 @@ CREATE TABLE public.users (
     author_id bigint NOT NULL,
     email_verified_at timestamp(6) without time zone,
     created_at timestamp(6) without time zone NOT NULL,
-    updated_at timestamp(6) without time zone NOT NULL
+    updated_at timestamp(6) without time zone NOT NULL,
+    prefs jsonb DEFAULT '{}'::jsonb NOT NULL
 );
 
 
@@ -347,10 +413,24 @@ ALTER TABLE ONLY public.categorisations ALTER COLUMN id SET DEFAULT nextval('pub
 
 
 --
+-- Name: followships id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.followships ALTER COLUMN id SET DEFAULT nextval('public.followships_id_seq'::regclass);
+
+
+--
 -- Name: papers id; Type: DEFAULT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.papers ALTER COLUMN id SET DEFAULT nextval('public.papers_id_seq'::regclass);
+
+
+--
+-- Name: recommendations id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.recommendations ALTER COLUMN id SET DEFAULT nextval('public.recommendations_id_seq'::regclass);
 
 
 --
@@ -416,11 +496,27 @@ ALTER TABLE ONLY public.categorisations
 
 
 --
+-- Name: followships followships_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.followships
+    ADD CONSTRAINT followships_pkey PRIMARY KEY (id);
+
+
+--
 -- Name: papers papers_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.papers
     ADD CONSTRAINT papers_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: recommendations recommendations_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.recommendations
+    ADD CONSTRAINT recommendations_pkey PRIMARY KEY (id);
 
 
 --
@@ -525,6 +621,27 @@ CREATE UNIQUE INDEX index_categorisations_on_paper_id_and_category_id ON public.
 
 
 --
+-- Name: index_followships_on_author_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_followships_on_author_id ON public.followships USING btree (author_id);
+
+
+--
+-- Name: index_followships_on_author_id_and_user_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE UNIQUE INDEX index_followships_on_author_id_and_user_id ON public.followships USING btree (author_id, user_id);
+
+
+--
+-- Name: index_followships_on_user_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_followships_on_user_id ON public.followships USING btree (user_id);
+
+
+--
 -- Name: index_papers_on_arxiv; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -557,6 +674,27 @@ CREATE INDEX index_papers_on_submitted ON public.papers USING btree (submitted);
 --
 
 CREATE INDEX index_papers_on_tags ON public.papers USING btree (tags);
+
+
+--
+-- Name: index_recommendations_on_paper_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_recommendations_on_paper_id ON public.recommendations USING btree (paper_id);
+
+
+--
+-- Name: index_recommendations_on_paper_id_and_user_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE UNIQUE INDEX index_recommendations_on_paper_id_and_user_id ON public.recommendations USING btree (paper_id, user_id);
+
+
+--
+-- Name: index_recommendations_on_user_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_recommendations_on_user_id ON public.recommendations USING btree (user_id);
 
 
 --
@@ -605,11 +743,27 @@ ALTER TABLE ONLY public.categorisations
 
 
 --
+-- Name: followships fk_rails_458330adae; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.followships
+    ADD CONSTRAINT fk_rails_458330adae FOREIGN KEY (user_id) REFERENCES public.users(id);
+
+
+--
 -- Name: authorships fk_rails_925f77f584; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.authorships
     ADD CONSTRAINT fk_rails_925f77f584 FOREIGN KEY (author_id) REFERENCES public.authors(id);
+
+
+--
+-- Name: followships fk_rails_964f63b944; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.followships
+    ADD CONSTRAINT fk_rails_964f63b944 FOREIGN KEY (author_id) REFERENCES public.authors(id);
 
 
 --
@@ -645,11 +799,27 @@ ALTER TABLE ONLY public.categories
 
 
 --
+-- Name: recommendations fk_rails_e696723f80; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.recommendations
+    ADD CONSTRAINT fk_rails_e696723f80 FOREIGN KEY (user_id) REFERENCES public.users(id);
+
+
+--
 -- Name: categorisations fk_rails_eff4575d0d; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.categorisations
     ADD CONSTRAINT fk_rails_eff4575d0d FOREIGN KEY (category_id) REFERENCES public.categories(id);
+
+
+--
+-- Name: recommendations fk_rails_f8c0fe4aee; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.recommendations
+    ADD CONSTRAINT fk_rails_f8c0fe4aee FOREIGN KEY (paper_id) REFERENCES public.papers(id);
 
 
 --
@@ -667,6 +837,9 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20230716050204'),
 ('20230716050339'),
 ('20230716051011'),
-('20230716052228');
+('20230716052228'),
+('20230716053617'),
+('20230716053905'),
+('20230716055143');
 
 
