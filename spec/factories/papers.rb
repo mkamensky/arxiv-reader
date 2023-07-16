@@ -10,15 +10,15 @@ FactoryBot.define do
     comment { Faker::Movie.quote }
     version { %w[v1 v2 v3].sample }
     submitted { Faker::Date.between(from: 3.years.ago, to: 1.day.ago) }
-    revised {
-      (version == 'v1' || submitted.blank?) ? nil : Faker::Date.between(
-        from: submitted + 1.day, to: Date.today
+    revised do
+      version == 'v1' || submitted.blank? ? nil : Faker::Date.between(
+        from: submitted + 1.day, to: Time.zone.today,
       )
-    }
+    end
     category
 
     trait :current do
-      submitted { Date.today }
+      submitted { Time.zone.today }
     end
 
     transient do
