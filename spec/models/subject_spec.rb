@@ -1,5 +1,5 @@
-require 'rails_helper'
+require 'models/shared_examples'
 
 RSpec.describe Subject, type: :model do
-  pending "add some examples to (or delete) #{__FILE__}"
+  include_standard_examples
 end
