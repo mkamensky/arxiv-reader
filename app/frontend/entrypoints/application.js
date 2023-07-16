@@ -18,8 +18,8 @@ console.log('Visit the guide for more information: ', 'https://vite-ruby.netlify
 // import * as Turbo from '@hotwired/turbo'
 // Turbo.start()
 //
-import ActiveStorage from '@rails/activestorage'
-ActiveStorage.start()
+//import ActiveStorage from '@rails/activestorage'
+////ActiveStorage.start()
 //
 // // Import all channels.
 // const channels = import.meta.globEager('./**/*_channel.js')
@@ -36,12 +36,17 @@ import quasarIconSet from 'quasar/icon-set/mdi-v7'
 import '@quasar/extras/mdi-v7/mdi-v7.css'
 
 // Import Quasar css
-import 'quasar/src/css/index.css'
+import 'quasar/src/css/index.sass'
+
+import ApplicationLayout from '@/Layouts/ApplicationLayout.vue'
+
+const pages = import.meta.glob('../Pages/**/*.vue', { eager: true })
 
 createInertiaApp({
   resolve: name => {
-    const pages = import.meta.glob('./Pages/**/*.vue', { eager: true })
-    return pages[`./Pages/${name}.vue`]
+    let page = pages[`../Pages/${name}.vue`]
+    page.default.layout = page.default.layout || ApplicationLayout
+    return page
   },
   setup({ el, App, props, plugin }) {
     createApp({ render: () => h(App, props) })

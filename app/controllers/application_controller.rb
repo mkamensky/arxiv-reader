@@ -1,5 +1,6 @@
 class ApplicationController < ActionController::Base
   include InertiaCsrf
+  use_inertia_instance_props
 
   inertia_share auth: -> {
     if user_signed_in?
@@ -8,4 +9,14 @@ class ApplicationController < ActionController::Base
       }
     end
   }
+
+  inertia_share head: -> {
+    page_head
+  }
+
+  protected
+
+  def page_head
+    {}
+  end
 end

@@ -1,14 +1,52 @@
 import { defineConfig } from 'vite'
+import RubyPlugin from 'vite-plugin-ruby'
+import FullReload from 'vite-plugin-full-reload'
 import vue from '@vitejs/plugin-vue'
 import { quasar, transformAssetUrls } from '@quasar/vite-plugin'
 
 // https://vitejs.dev/config/
 export default defineConfig({
+  build: {
+    minify: true,
+    sourcemap: true,
+    rollupOptions: {
+      maxParallelFileOps: 1,
+      output: {
+        manualChunks: (id) => {
+          if (id.includes("node_modules")) {
+            return "vendor";
+          }
+        },
+        sourcemapIgnoreList: (relativeSourcePath) => {
+          return relativeSourcePath.includes("node_modules");
+        },
+      },
+      input: {
+        application: 'app/frontend/entrypoints/application.js',
+      },
+    },
+  },
+  server: {
+    fs: {
+      strict: false,
+    },
+  },
+  optimizeDeps: {
+    include: ['@inertiajs/vue3'],
+  },
   plugins: [
+    RubyPlugin(),
     vue({
-      template: { transformAssetUrls }
+      template: {
+        transformAssetUrls,
+        compilerOptions: {
+          isCustomElement: (tag) => false,
+        },
+      }
     }),
-
-    quasar()
-  ]
+    quasar({
+      autoImportComponentCase: 'combined',
+    }),
+    FullReload(['config/routes.rb', 'app/views/**/*']),
+  ],
 })
