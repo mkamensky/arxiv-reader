@@ -20,7 +20,7 @@ require 'rspec/rails'
 # directory. Alternatively, in the individual `*_spec.rb` files, manually
 # require only the support files necessary.
 #
- Dir[Rails.root.join('spec', 'support', '**', '*.rb')].sort.each { |f| require f }
+#Dir[Rails.root.join('spec', 'support', '**', '*.rb')].each { |f| require f }
 
 # Checks for pending migrations and applies them before tests are run.
 # If you are not using ActiveRecord, you can remove these lines.
@@ -29,6 +29,7 @@ begin
 rescue ActiveRecord::PendingMigrationError => e
   abort e.to_s.strip
 end
+
 RSpec.configure do |config|
   config.include FactoryBot::Syntax::Methods
 
@@ -59,8 +60,16 @@ RSpec.configure do |config|
   config.filter_rails_from_backtrace!
   # arbitrary gems may also be filtered via:
   # config.filter_gems_from_backtrace("gem name")
+
+  config.expect_with :rspec do |c|
+    c.syntax = :expect
+  end
+
+  config.include Devise::Test::ControllerHelpers, type: :controller
+  config.include Warden::Test::Helpers
 end
 
+# rubocop:disable Style/TopLevelMethodDefinition
 def include_standard_examples(type = metadata[:type])
   include_examples "#{type} examples"
 end
@@ -72,17 +81,17 @@ end
 
 def model_names
   %w[
-  followship
-  recommendation
-  bookmark
-  user
-  subject
-  authorship
-  author
-  category
-  categorisation
-  paper
+    followship
+    recommendation
+    bookmark
+    user
+    subject
+    authorship
+    author
+    category
+    categorisation
+    paper
   ].freeze
 end
 
-
+# rubocop:enable Style/TopLevelMethodDefinition

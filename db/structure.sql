@@ -347,14 +347,16 @@ ALTER SEQUENCE public.subjects_id_seq OWNED BY public.subjects.id;
 
 CREATE TABLE public.users (
     id bigint NOT NULL,
-    password_digest character varying,
     email character varying NOT NULL,
     name character varying DEFAULT ''::character varying,
-    author_id bigint NOT NULL,
-    email_verified_at timestamp(6) without time zone,
+    author_id bigint,
     created_at timestamp(6) without time zone NOT NULL,
     updated_at timestamp(6) without time zone NOT NULL,
-    prefs jsonb DEFAULT '{}'::jsonb NOT NULL
+    prefs jsonb DEFAULT '{}'::jsonb NOT NULL,
+    encrypted_password character varying DEFAULT ''::character varying NOT NULL,
+    reset_password_token character varying,
+    reset_password_sent_at timestamp(6) without time zone,
+    remember_created_at timestamp(6) without time zone
 );
 
 
@@ -719,6 +721,13 @@ CREATE UNIQUE INDEX index_users_on_email ON public.users USING btree (email);
 
 
 --
+-- Name: index_users_on_reset_password_token; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE UNIQUE INDEX index_users_on_reset_password_token ON public.users USING btree (reset_password_token);
+
+
+--
 -- Name: bookmarks fk_rails_0560fccafc; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -840,6 +849,10 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20230716052228'),
 ('20230716053617'),
 ('20230716053905'),
-('20230716055143');
+('20230716055143'),
+('20230716063858'),
+('20230716064651'),
+('20230716070432'),
+('20230716073038');
 
 
