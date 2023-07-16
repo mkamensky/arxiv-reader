@@ -1,6 +1,18 @@
 FactoryBot.define do
   factory :author do
-    name { "MyString" }
-    arxiv { "MyString" }
+    name { Faker::Movies::Lebowski.character }
+    sequence(:arxiv) { |cc| "#{(name || '').parameterize}_#{cc}" }
+
+    transient do
+      paper_count { 0 }
+    end
+
+    after(:create) do |author, ev|
+      author.papers = create_list(:paper, ev.paper_count)
+    end
+
+    trait :with_papers do
+      paper_count { [1, 2, 3].sample }
+    end
   end
 end

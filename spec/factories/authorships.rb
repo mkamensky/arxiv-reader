@@ -1,6 +1,6 @@
 FactoryBot.define do
   factory :authorship do
-    author { nil }
-    paper { nil }
+    author
+    paper
   end
 end

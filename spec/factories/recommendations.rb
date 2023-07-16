@@ -1,7 +1,7 @@
 FactoryBot.define do
   factory :recommendation do
-    paper { nil }
-    user { nil }
-    score { 1.5 }
+    paper
+    user
+    score { rand * 2 - 1 }
   end
 end

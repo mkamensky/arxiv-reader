@@ -1,6 +1,6 @@
 FactoryBot.define do
   factory :subject do
-    title { "MyString" }
-    arxiv { "MyString" }
+    sequence(:arxiv, 'AB') { |cc| "#{%w[math physics stat bio].sample}-#{cc}" }
+    title { Faker::Dessert.flavor }
   end
 end
