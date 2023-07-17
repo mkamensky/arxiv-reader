@@ -1,6 +1,9 @@
 # frozen_string_literal: true
 
 class Subject < ApplicationRecord
+  include FriendlyId
+  friendly_id :arxiv, use: %i[finders]
+
   has_many :categories, dependent: :destroy
 
   class << self

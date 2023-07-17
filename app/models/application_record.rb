@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 class ApplicationRecord < ActiveRecord::Base
+  require 'auto/core_ext/hash'
   primary_abstract_class
   self.abstract_class = true
 
@@ -16,5 +17,13 @@ class ApplicationRecord < ActiveRecord::Base
       @arxiv ||= {}
       @arxiv[id.to_s] ||= find_by(arxiv: id)
     end
+
+    def inertia_params
+      {}
+    end
+  end
+
+  def inertia_json
+    as_json(self.class.inertia_params)
   end
 end

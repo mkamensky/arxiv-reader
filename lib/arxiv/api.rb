@@ -5,7 +5,7 @@ module Arxiv
     class Paper
       attr_accessor :id, :version, :comment, :authors, :abs, :pdf,
                     :published, :summary, :tags, :title, :updated, :journal_ref,
-                    :arxiv_primary_category
+                    :arxiv_primary_category, :_debug
 
       ATTR_TRANS = {
         _id: :id,
@@ -49,7 +49,7 @@ module Arxiv
           #puts "#{setter}#{v.inspect}"
           try(setter, v)
         end
-        #self._debug = attrs
+        self._debug = attrs
       end
 
       def links=(vals)

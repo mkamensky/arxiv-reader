@@ -68,6 +68,7 @@ GEM
       tzinfo (~> 2.0)
     addressable (2.8.4)
       public_suffix (>= 2.0.2, < 6.0)
+    amazing_print (1.5.0)
     ast (2.4.2)
     bcrypt (3.1.19)
     bindex (0.8.1)
@@ -105,6 +106,8 @@ GEM
       railties (>= 5.0.0)
     faker (3.2.0)
       i18n (>= 1.8.11, < 2)
+    friendly_id (5.5.0)
+      activerecord (>= 4.0.0)
     globalid (1.1.0)
       activesupport (>= 5.0)
     i18n (1.14.1)
@@ -183,6 +186,10 @@ GEM
     rails-html-sanitizer (1.6.0)
       loofah (~> 2.21)
       nokogiri (~> 1.14)
+    rails_semantic_logger (4.12.0)
+      rack
+      railties (>= 5.1)
+      semantic_logger (~> 4.13)
     railties (7.0.6)
       actionpack (= 7.0.6)
       activesupport (= 7.0.6)
@@ -245,6 +252,8 @@ GEM
       rexml (~> 3.2, >= 3.2.5)
       rubyzip (>= 1.2.2, < 3.0)
       websocket (~> 1.0)
+    semantic_logger (4.13.0)
+      concurrent-ruby (~> 1.0)
     spring (4.1.1)
     sqlite3 (1.6.3-x86_64-linux)
     thor (1.2.2)
@@ -282,6 +291,7 @@ PLATFORMS
   x86_64-linux
 
 DEPENDENCIES
+  amazing_print
   bcrypt (>= 3.1.7)
   bootsnap
   capybara
@@ -289,6 +299,7 @@ DEPENDENCIES
   devise
   factory_bot_rails
   faker
+  friendly_id
   inertia_rails (>= 3.0)
   js_from_routes
   oj
@@ -296,6 +307,7 @@ DEPENDENCIES
   puma (>= 5.0)
   rack-mini-profiler
   rails (>= 7)
+  rails_semantic_logger
   rspec-rails
   rubocop
   rubocop-faker

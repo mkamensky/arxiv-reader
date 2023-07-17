@@ -1,6 +1,9 @@
 # frozen_string_literal: true
 
 class Author < ApplicationRecord
+  include FriendlyId
+  friendly_id :arxiv, use: %i[finders]
+
   has_many_through :papers, :authorships
   has_many :categories, through: :papers
   has_many :subjects, through: :categories

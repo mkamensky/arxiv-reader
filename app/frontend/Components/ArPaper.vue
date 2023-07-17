@@ -5,11 +5,12 @@
         <q-btn-group push class="q-mb-sm">
           <q-btn
             :href="$show_path('papers', object.arxiv)"
-            :label="object.title"
             color="amber"
             text-color="black"
             no-caps
-          />
+          >
+            <span v-html="$mdi(object.title)" />
+          </q-btn>
           <q-btn
             icon="$pdf"
             :href="object.pdf"
@@ -26,7 +27,7 @@
             :download="`${object.arxiv}.pdf`"
           />
           <q-btn
-            icon="svguse:icons.svg#arxiv"
+            icon="svguse:/icons.svg#arxiv"
             :href="object.abs"
             color="orange-8"
             text-color="black"
@@ -89,6 +90,12 @@
               <q-item-section>
                 <q-item-label overline>Journal Ref</q-item-label>
                 <q-item-label>{{ object.journal_ref }}</q-item-label>
+              </q-item-section>
+            </q-item>
+            <q-item v-for="tag in object.tags" :key="tag">
+              <q-item-section>
+                <q-item-label overline>MSC classes</q-item-label>
+                <q-item-label>{{ tag }}</q-item-label>
               </q-item-section>
             </q-item>
           </q-list>

@@ -1,6 +1,9 @@
 # frozen_string_literal: true
 
 class Category < ApplicationRecord
+  include FriendlyId
+  friendly_id :arxiv
+
   has_many :papers, dependent: :destroy
   belongs_to :subject
   has_many_through :secondaries, :categorisations, source: :paper
@@ -12,5 +15,13 @@ class Category < ApplicationRecord
   def initialize(*args)
     super
     self.subject ||= Subject.from_category(arxiv)
+  end
+
+  class << self
+    def inertia_params
+      super.vdeep_merge(
+        only: %i[arxiv title],
+      )
+    end
   end
 end

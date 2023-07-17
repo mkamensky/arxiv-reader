@@ -76,3 +76,8 @@ gem 'sqlite3', require: false # to interface with asl
 
 # fast json
 gem 'oj'
+
+gem 'amazing_print'
+gem 'rails_semantic_logger'
+gem 'friendly_id'
+

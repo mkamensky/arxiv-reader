@@ -1,6 +1,9 @@
 # frozen_string_literal: true
 
 class Paper < ApplicationRecord
+  include FriendlyId
+  friendly_id :arxiv
+
   belongs_to :category
 
   has_many_through :categories, :categorisations
@@ -63,6 +66,18 @@ class Paper < ApplicationRecord
       require 'arxiv/api'
       papers = Arxiv::Api::Paper.from_db(file)
       papers.each { |_k, v| create_from_arxiv(v) }
+    end
+
+    def inertia_params
+      super.vdeep_merge(
+        only: %i[
+          abs arxiv abstract comment category_id id journal_ref pdf
+          submitted revised tags title version
+        ],
+        include: {
+          authors: { only: %i[name arxiv] },
+        },
+      )
     end
   end
 end
