@@ -1,28 +1,15 @@
 class CategoriesController < ApplicationController
+  include Pagy::Backend
+
   def index
-    render inertia: 'categories/index', props: {
-      categories:,
-      category: category&.inertia_json,
-      papers:,
-    }
+    render_page
   end
 
   def show
-    render inertia: 'categories/index', props: {
-      categories:,
-      category: category&.inertia_json,
-      papers:,
-    }
+    render_page('show')
   end
 
   protected
-
-  SUBJECT = Subject.find('math')
-  private_constant :SUBJECT
-
-  def categories
-    @categories ||= SUBJECT.categories.as_json(Category.inertia_params)
-  end
 
   def category
     return unless params[:id]
@@ -33,6 +20,25 @@ class CategoriesController < ApplicationController
   def papers
     return unless category
 
-    @papers ||= category.papers.limit(60).as_json(Paper.inertia_params)
+    @pagy, @records = pagy(category.papers)
+    @records.as_json(Paper.inertia_params)
+  end
+
+  def meta
+    @pagy.present? ? pagy_metadata(@pagy) : {}
+  end
+
+  def next_page
+    meta[:next]
+  end
+
+  def render_page(page = 'index')
+    render inertia: "categories/#{page}", props: {
+      categories: -> { categories },
+      category: -> { category&.inertia_json },
+      papers: -> { papers },
+      nextPage: -> { next_page },
+      #meta: -> { meta },
+    }
   end
 end

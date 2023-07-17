@@ -8,30 +8,51 @@
       href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons/css/academicons.min.css"
     />
   </Head>
-  <q-layout view="hHh LpR lFr">
 
+  <q-layout view="hHh LpR lFr">
     <q-header elevated class="bg-primary text-white" height-hint="98">
       <q-toolbar>
-        <q-btn dense flat round icon="menu" @click="leftDrawerOpen=!leftDrawerOpen" />
+        <q-btn
+          dense
+          flat
+          round
+          icon="$menu"
+          @click="leftDrawerOpen = !leftDrawerOpen"
+        />
 
-        <q-toolbar-title>
-          <q-avatar>
-            <img src="https://cdn.quasar.dev/logo-v2/svg/logo-mono-white.svg">
-          </q-avatar>
-          Title
-        </q-toolbar-title>
+        <q-toolbar-title>Recent ArXiv submissions</q-toolbar-title>
 
-        <q-btn dense flat round icon="menu" @click="rightDrawerOpen=!rightDrawerOpen" />
+        <q-btn
+          dense
+          flat
+          round
+          icon="$menu"
+          @click="rightDrawerOpen = !rightDrawerOpen"
+        />
       </q-toolbar>
-
-      <q-tabs align="left">
-        <q-route-tab to="/page1" label="Page One" />
-        <q-route-tab to="/page2" label="Page Two" />
-        <q-route-tab to="/page3" label="Page Three" />
+      <q-tabs
+        align="justify"
+        outside-arrows
+        indicator-color="red"
+        color="yellow"
+        active-color="red"
+        active-class="active"
+        no-caps
+      >
+        <q-route-tab
+          v-for="item in categories"
+          :key="item.arxiv"
+          :name="item.arxiv"
+          :label="item.arxiv"
+          :href="`/categories/${item.arxiv}`"
+          :class="{
+            'q-tab--active': $page.url === `/categories/${item.arxiv}`,
+          }"
+        />
       </q-tabs>
     </q-header>
 
-    <q-drawer show-if-above v-model="leftDrawerOpen" side="left" bordered>
+    <q-drawer v-model="leftDrawerOpen" show-if-above side="left" bordered>
       <!-- drawer content -->
     </q-drawer>
 
@@ -46,14 +67,10 @@
     <q-footer reveal elevated class="bg-grey-8 text-white">
       <q-toolbar>
         <q-toolbar-title>
-          <q-avatar>
-            <img src="https://cdn.quasar.dev/logo-v2/svg/logo-mono-white.svg">
-          </q-avatar>
           <div>Title</div>
         </q-toolbar-title>
       </q-toolbar>
     </q-footer>
-
   </q-layout>
 </template>
 
@@ -63,6 +80,12 @@ import { Head } from '@inertiajs/vue3'
 export default {
   components: {
     Head,
+  },
+  props: {
+    categories: {
+      type: Array,
+      required: true,
+    },
   },
   data() {
     return {

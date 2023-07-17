@@ -13,10 +13,18 @@ class ApplicationController < ActionController::Base
   inertia_share head: -> {
     page_head
   }
+  inertia_share categories: -> { categories }
 
   protected
 
   def page_head
     {}
+  end
+
+  SUBJECT = Subject.find('math')
+  private_constant :SUBJECT
+
+  def categories
+    @categories ||= SUBJECT.categories.as_json(Category.inertia_params)
   end
 end

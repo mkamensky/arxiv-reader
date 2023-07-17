@@ -80,4 +80,4 @@ gem 'oj'
 gem 'amazing_print'
 gem 'rails_semantic_logger'
 gem 'friendly_id'
-
+gem 'pagy'
