@@ -16,12 +16,40 @@ module Arxiv
       }.freeze
       private_constant :ATTR_TRANS
 
+      # TODO
+      def self.arxiv?(tag)
+        tag =~ /^math\.[A-Z][A-Z]$/
+      end
+
+      def self.from_hash(jsn)
+        res = {}
+        jsn.each do |k, v|
+          res[k] = new(**v)
+        end
+        res
+      end
+
+      def self.from_file(file)
+        from_hash(File.open(file) { |fh| JSON.load(fh) })
+      end
+
+      def self.from_db(file)
+        res = {}
+        require 'sqlite3'
+        db = SQLite3::Database.new file
+        db.execute('select * from papers') do |row|
+          res[row[0]] = new(**JSON.parse(row[1]))
+        end
+        res
+      end
+
       def initialize(**attrs)
         attrs.each do |k, v|
           setter = "#{ATTR_TRANS[k.to_sym] || k}="
           #puts "#{setter}#{v.inspect}"
           try(setter, v)
         end
+        #self._debug = attrs
       end
 
       def links=(vals)
@@ -48,11 +76,6 @@ module Arxiv
         @tag_values ||= tags.pluck('term')
       end
 
-      # TODO
-      def self.is_arxiv?(tag)
-        tag =~ /^math\.[A-Z][A-Z]$/
-      end
-
       def secondaries
         @secondaries ||= tag_values - aux_tags - [category]
       end
@@ -62,29 +85,7 @@ module Arxiv
       end
 
       def aux_tags
-        @aux_tags ||= tag_values.reject { |x| self.class.is_arxiv?(x) }
-      end
-
-      def self.from_hash(jsn)
-        res = {}
-        jsn.each do |k, v|
-          res[k] = new(**v)
-        end
-        res
-      end
-
-      def self.from_file(file)
-        from_hash(File.open(file) { |fh| JSON.load(fh) })
-      end
-
-      def self.from_db(file)
-        res = {}
-        require 'sqlite3'
-        db = SQLite3::Database.new file
-        db.execute('select * from papers') do |row|
-          res[row[0]] = new(**JSON.parse(row[1]))
-        end
-        res
+        @aux_tags ||= tag_values.reject { |x| self.class.arxiv?(x) }
       end
     end
   end

@@ -63,6 +63,39 @@
         <div v-html="$md(object.abstract)" />
       </q-card-section>
     </q-slide-transition>
+    <q-slide-transition>
+      <q-card-section v-show="show" class="text-white bg-grey-9">
+        <div class="row">
+          <q-list dense dark class="row col">
+            <q-item>
+              <q-item-section>
+                <q-item-label overline>Version</q-item-label>
+                <q-item-label>{{ object.version }}</q-item-label>
+              </q-item-section>
+            </q-item>
+            <q-item>
+              <q-item-section>
+                <q-item-label overline>Submitted</q-item-label>
+                <q-item-label>{{ submitted }}</q-item-label>
+              </q-item-section>
+            </q-item>
+            <q-item>
+              <q-item-section v-if="revised">
+                <q-item-label overline>Revised</q-item-label>
+                <q-item-label>{{ revised }}</q-item-label>
+              </q-item-section>
+            </q-item>
+            <q-item v-if="object.journal_ref">
+              <q-item-section>
+                <q-item-label overline>Journal Ref</q-item-label>
+                <q-item-label>{{ object.journal_ref }}</q-item-label>
+              </q-item-section>
+            </q-item>
+          </q-list>
+          <div v-if="object.comment" class="col" v-html="$md(object.comment)" />
+        </div>
+      </q-card-section>
+    </q-slide-transition>
   </q-card>
 </template>
 
@@ -77,6 +110,22 @@ export default {
     return {
       show: false,
     }
+  },
+  computed: {
+    submitted() {
+      return this.dateStr(this.object.submitted)
+    },
+    revised() {
+      return (
+        this.object.revised != this.object.submitted &&
+        this.dateStr(this.object.revised)
+      )
+    },
+  },
+  methods: {
+    dateStr(date) {
+      return new Date(date)?.toDateString() || date
+    },
   },
 }
 </script>
