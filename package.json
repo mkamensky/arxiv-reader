@@ -7,11 +7,11 @@
   "author": "Moshe Kamensky <moshe.kamensky@gmail.com>",
   "private": true,
   "scripts": {
-    "lint": "eslint --ext .js,.vue ./",
+    "lint": "npx eslint --ext .js,.vue ./app/frontend",
     "format": "prettier --write \"**/*.{js,vue,css,html,md,json}\" --ignore-path .gitignore",
     "test": "echo \"No test specified\" && exit 0",
-    "dev": "quasar dev",
-    "build": "quasar build"
+    "dev": "vite dev",
+    "build": "vite build"
   },
   "devDependencies": {
     "@quasar/app-vite": ">=1.4.3",
@@ -35,8 +35,13 @@
   },
   "dependencies": {
     "@inertiajs/vue3": ">=1.0.9",
+    "@js-from-routes/client": "^1.0.4",
+    "@js-from-routes/inertia": ">=1.10.2",
     "@quasar/extras": ">=1.16.5",
     "@rails/activestorage": ">=7.0.6",
+    "@traptitech/markdown-it-katex": "^3.6.0",
+    "katex": ">=0.16.8",
+    "markdown-it": "^13.0.1",
     "pinia": ">=2.1.4",
     "quasar": ">=2.12.2",
     "vue": ">=3.3.4",

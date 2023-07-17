@@ -53,7 +53,7 @@ class Paper < ApplicationRecord
         ),
       )
     rescue ActiveRecord::RecordInvalid => e
-      debugger unless [
+      raise e unless [
         'Validation failed: Version has already been taken',
         'Validation failed: Category must exist',
       ].include?(e.message)

@@ -8,7 +8,6 @@ module.exports = {
   },
   plugins: [
     'vue',
-    'vue-i18n',
   ],
   extends: [
     'eslint:recommended',

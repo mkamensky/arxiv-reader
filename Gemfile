@@ -73,3 +73,6 @@ gem 'vite_rails', '>=3.0'
 gem 'js_from_routes'
 
 gem 'sqlite3', require: false # to interface with asl
+
+# fast json
+gem 'oj'
