@@ -32,7 +32,7 @@ console.log(
 
 import { createApp, h } from 'vue'
 import { createInertiaApp, Link } from '@inertiajs/vue3'
-import { Quasar, Notify } from 'quasar'
+import { Quasar, Notify, LocalStorage } from 'quasar'
 
 import MarkdownIt from 'markdown-it'
 import mk from '@traptitech/markdown-it-katex'
@@ -138,6 +138,7 @@ createInertiaApp({
         },
         plugins: {
           Notify,
+          LocalStorage,
         },
         iconSet: quasarIconSet,
       })

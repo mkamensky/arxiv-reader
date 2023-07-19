@@ -2,7 +2,7 @@
 
 class Subject < ApplicationRecord
   include FriendlyId
-  friendly_id :arxiv, use: %i[finders]
+  friendly_id :arxiv
 
   has_many :categories, dependent: :destroy
 
@@ -16,9 +16,8 @@ class Subject < ApplicationRecord
              $1
            else
              'physics'
-           end
+      end
       arxiv(ar)
     end
   end
 end
-

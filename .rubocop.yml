@@ -157,6 +157,12 @@ Performance/OpenStruct:
 Bundler/GemComment:
   Enabled: false
 
+Style/Alias:
+  EnforcedStyle: prefer_alias_method
+
+Style/PerlBackrefs:
+  Enabled: false
+
 Style/TrailingCommaInArguments:
   EnforcedStyleForMultiline: comma
 

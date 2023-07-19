@@ -37,23 +37,41 @@
         color="yellow"
         active-color="red"
         active-class="active"
+        shrink
+        stretch
+        inline-label
         no-caps
       >
         <q-route-tab
-          v-for="item in categories"
-          :key="item.arxiv"
-          :name="item.arxiv"
-          :label="item.arxiv"
-          :href="`/categories/${item.arxiv}`"
+          v-for="item in cats"
+          :key="item"
+          :name="item"
+          :label="item"
+          :href="`/categories/${item}`"
           :class="{
-            'q-tab--active': $page.url === `/categories/${item.arxiv}`,
+            'q-tab--active': $page.url === `/categories/${item}`,
           }"
         />
       </q-tabs>
     </q-header>
 
-    <q-drawer v-model="leftDrawerOpen" show-if-above side="left" bordered>
-      <!-- drawer content -->
+    <q-drawer
+      v-model="leftDrawerOpen"
+      show-if-above
+      side="left"
+      bordered
+      column
+    >
+      <div class="q-pa-md relative-position">
+        <h6 class="q-ma-sm">Categories</h6>
+        <q-option-group
+          v-model="cats"
+          :options="categories"
+          type="toggle"
+          class="scroll overflow-auto"
+          style="max-height: 500px"
+        />
+      </div>
     </q-drawer>
 
     <q-drawer v-model="rightDrawerOpen" side="right" overlay elevated>
@@ -91,7 +109,18 @@ export default {
     return {
       leftDrawerOpen: false,
       rightDrawerOpen: false,
+      cats:
+        this.$q.localStorage.getItem('cats') ||
+        this.categories.map((cat) => cat.value),
     }
+  },
+  watch: {
+    cats: {
+      handler(val) {
+        this.$q.localStorage.set('cats', val)
+      },
+      immediate: true,
+    },
   },
 }
 </script>

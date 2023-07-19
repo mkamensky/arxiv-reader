@@ -17,10 +17,20 @@ class Category < ApplicationRecord
     self.subject ||= Subject.from_category(arxiv)
   end
 
+  # for quasar components
+  def label
+    title
+  end
+
+  def value
+    arxiv
+  end
+
   class << self
     def inertia_params
       super.vdeep_merge(
-        only: %i[arxiv title],
+        only: %i[],
+        methods: %i[label value],
       )
     end
   end
