@@ -15,7 +15,7 @@
     </q-infinite-scroll>
     <q-page-sticky expand position="top">
       <q-toolbar class="bg-accent text-white">
-        <q-toolbar-title>{{ category.title }}</q-toolbar-title>
+        <q-toolbar-title>{{ category.label }}</q-toolbar-title>
         <q-btn outline :label="curDate" />
       </q-toolbar>
     </q-page-sticky>

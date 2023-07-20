@@ -106,6 +106,13 @@ GEM
       railties (>= 5.0.0)
     faker (3.2.0)
       i18n (>= 1.8.11, < 2)
+    faraday (2.7.10)
+      faraday-net_http (>= 2.0, < 3.1)
+      ruby2_keywords (>= 0.0.4)
+    faraday-net_http (3.0.2)
+    feedjira (3.2.2)
+      loofah (>= 2.3.1)
+      sax-machine (>= 1.0)
     friendly_id (5.5.0)
       activerecord (>= 4.0.0)
     globalid (1.1.0)
@@ -134,7 +141,7 @@ GEM
     method_source (1.0.0)
     mini_mime (1.1.2)
     minitest (5.18.1)
-    msgpack (1.7.1)
+    msgpack (1.7.2)
     net-imap (0.3.6)
       date
       net-protocol
@@ -248,7 +255,9 @@ GEM
       rack (>= 1.1)
       rubocop (>= 1.33.0, < 2.0)
     ruby-progressbar (1.13.0)
+    ruby2_keywords (0.0.5)
     rubyzip (2.3.2)
+    sax-machine (1.3.2)
     selenium-webdriver (4.10.0)
       rexml (~> 3.2, >= 3.2.5)
       rubyzip (>= 1.2.2, < 3.0)
@@ -300,6 +309,8 @@ DEPENDENCIES
   devise
   factory_bot_rails
   faker
+  faraday
+  feedjira
   friendly_id
   inertia_rails (>= 3.0)
   js_from_routes
