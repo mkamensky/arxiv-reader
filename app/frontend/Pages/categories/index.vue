@@ -23,20 +23,20 @@
         <h3 class="text-h5">{{ curDate }}</h3>
       </div>
       <q-scroll-area style="height: 100%">
-      <q-infinite-scroll @load="loadMore">
-        <ar-paper
-          v-for="paper in allPapers"
-          :key="paper.id"
-          v-scroll-fire="() => updateDate(paper)"
-          :object="paper"
-          class="q-ma-md"
-        />
-        <template #loading>
-          <div class="row justify-center q-my-md">
-            <q-spinner-dots color="primary" size="40px" />
-          </div>
-        </template>
-      </q-infinite-scroll>
+        <q-infinite-scroll @load="loadMore">
+          <ar-paper
+            v-for="paper in allPapers"
+            :key="paper.id"
+            v-scroll-fire="() => updateDate(paper)"
+            :object="paper"
+            class="q-ma-md"
+          />
+          <template #loading>
+            <div class="row justify-center q-my-md">
+              <q-spinner-dots color="primary" size="40px" />
+            </div>
+          </template>
+        </q-infinite-scroll>
       </q-scroll-area>
       <q-inner-loading :showing="loading">
         <q-spinner-hourglass size="50px" />

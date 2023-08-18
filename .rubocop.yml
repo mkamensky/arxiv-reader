@@ -81,6 +81,9 @@ Style/MethodCallWithArgsParentheses:
 Style/MissingElse:
   Enabled: false
 
+Style/ModuleFunction:
+  Enabled: false
+
 Style/Copyright:
   Enabled: false
 

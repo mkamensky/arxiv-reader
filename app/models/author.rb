@@ -2,7 +2,7 @@
 
 class Author < ApplicationRecord
   include FriendlyId
-  friendly_id :arxiv, use: %i[finders]
+  friendly_id :arxiv
 
   has_many_through :papers, :authorships
   has_many :categories, through: :papers

@@ -26,9 +26,10 @@ class Paper < ApplicationRecord
     def attrs_from_arxiv(apaper, **opts)
       auth_find = opts[:auth_find] || :find_or_initialize_by
       {
-        category: Category.arxiv(apaper.category),
-        categories: apaper.secondaries.map { |x| Category.arxiv(x) },
-        authors: apaper.author_names.map do |x|
+        category: Category.arxiv(apaper.primary),
+        categories:
+          apaper.secondaries.filter_map { |x| Category.arxiv(x) }.uniq,
+        authors: apaper.author_names.filter_map do |x|
           Author.public_send(auth_find, name: x)
         end,
         submitted: apaper.submitted,
@@ -36,27 +37,27 @@ class Paper < ApplicationRecord
         title: apaper.title,
         arxiv: apaper.id,
         abstract: apaper.summary,
-        version: "v#{apaper.version}",
+        version: apaper.version_id,
         comment: apaper.comment,
         abs: apaper.abs,
         pdf: apaper.pdf,
-        tags: apaper.aux_tags,
+        #tags: apaper.aux_tags,
         journal_ref: apaper.journal_ref,
       }
     end
 
-    def init_from_arxiv(apaper, **opts)
-      new(attrs_from_arxiv(apaper, **opts))
+    def init_from_arxiv(apaper, **)
+      new(attrs_from_arxiv(apaper, **))
     end
 
-    def create_from_arxiv(apaper, **opts)
+    def create_from_arxiv(apaper, **)
       create!(
         attrs_from_arxiv(
-          apaper, auth_find: :find_or_create_by, **opts
+          apaper, auth_find: :find_or_create_by, **
         ),
       )
     rescue ActiveRecord::RecordInvalid => e
-      raise e unless [
+      debugger unless [
         'Validation failed: Version has already been taken',
         'Validation failed: Category must exist',
       ].include?(e.message)

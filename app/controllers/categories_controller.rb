@@ -38,7 +38,7 @@ class CategoriesController < ApplicationController
       category: -> { category&.inertia_json },
       papers: -> { papers },
       nextPage: -> { next_page },
-      #meta: -> { meta },
+      meta: -> { meta },
     }
   end
 end

@@ -16,7 +16,7 @@
     <q-page-sticky expand position="top">
       <q-toolbar class="bg-accent text-white">
         <q-toolbar-title>{{ category.label }}</q-toolbar-title>
-        <q-btn outline :label="curDate" />
+        <q-btn v-if="curDate" outline :label="curDate" />
       </q-toolbar>
     </q-page-sticky>
   </q-page>
@@ -52,6 +52,8 @@ export default {
   },
   methods: {
     paperDate(paper) {
+      if (!paper) return null
+
       return new Date(paper.revised)?.toDateString() ?? paper.revised
     },
     loadMore(index, done) {
@@ -63,7 +65,7 @@ export default {
       this.$inertia.reload({
         preserveState: true,
         preserveScroll: true,
-        only: ['papers', 'nextPage'],
+        only: ['papers', 'nextPage', 'meta'],
         data: { page: this.nextPage },
         onSuccess: () => {
           this.allPapers = [...this.allPapers, ...this.papers]

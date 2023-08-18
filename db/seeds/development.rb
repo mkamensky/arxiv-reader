@@ -15,4 +15,3 @@ Created paper '#{paper.title}':
   Authors: #{paper.authors.map(&:name).join(', ')}
 EOF
 end
-

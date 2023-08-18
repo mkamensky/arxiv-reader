@@ -2,20 +2,138 @@
 
 module Arxiv
   module Api
+    extend self
+
+    ARXIV_BASE = 'https://arxiv.org'
+    public_constant :ARXIV_BASE
+    def client(**)
+      require 'faraday'
+      require 'faraday/retry'
+      require 'faraday/follow_redirects'
+      @client ||= Faraday.new(url: 'http://export.arxiv.org/api/', **) do |f|
+        f.request(:retry, max: 5, retry_statuses: [429])
+        f.response(:follow_redirects, limit: 5)
+        ##f.response :raise_error
+      end
+    end
+
+    def get(*)
+      # obey time limit
+      # rubocop:disable Rails/TimeZone
+      delay = @lastget.present? ? @lastget + 3.seconds - Time.now : 0
+      sleep(delay) if delay.positive?
+      @lastget = Time.now
+      # rubocop:enable Rails/TimeZone
+      client.get(*)
+    end
+
+    def qget(**)
+      resp = get('query', **)
+
+      require 'feedjira'
+      require 'feedjira/parser/atom_arxiv'
+
+      Feedjira.parse(resp.body)
+    end
+
+    def as_val(val)
+      val.respond_to?(:join) ? val.join('+OR+') : val
+    end
+
+    def get_by_id(id, **)
+      qget(id_list: id).entries.first
+    end
+
+    def search(search, **)
+      search = if search.is_a?(Hash)
+        search.map { |k, v| "#{k}:#{as_val(v)}" }.join('+AND+')
+      else
+        "all:#{search}"
+      end
+      qget(
+        search_query: search,
+        max_results: 100,
+        sortBy: :lastUpdatedDate,
+        sortOrder: :descending,
+        **,
+      ).entries
+    end
+
+    def parse_authors(value)
+      if value.is_a?(String)
+        # from oai arxivRaw, TODO
+        /[()]/.match?(value) ? nil : value.split(/, | and /)
+      elsif value.is_a?(Hash)
+        value['author']
+      else
+        # from atom
+        JSON.parse(value.to_json)
+      end
+    end
+
+    # rubocop:disable Rails/TimeZone, Metrics/PerceivedComplexity,     Metrics/CyclomaticComplexity
+    def merge(hash, key, value)
+      if key == 'authors'
+        hash[key] = parse_authors(value)
+      elsif key == 'creator'
+        hash['authors'] ||= parse_authors(value)
+      elsif key == 'date'
+        hash[key] = Time.parse(value)
+      elsif key == 'version'
+        el = value.delete('version')
+        hash[key] ||= {}
+        hash[key][el] = value
+      elsif key == 'categories'
+        hash[key] = value.split
+      elsif key == 'msc-class'
+        hash['msc_class'] = value.split('; ')
+      elsif hash.key?(key)
+        if hash[key].is_a?(Array)
+          hash[key] << value
+        else
+          hash[key] = [hash[key], value]
+        end
+      else
+        hash[key] = value
+      end
+      hash
+    end
+    # rubocop:enable Rails/TimeZone, Metrics/PerceivedComplexity,     Metrics/CyclomaticComplexity
+
+    def xml2hash(element)
+      return element.texts.map(&:value).join unless element.has_elements?
+
+      result = element.attributes.to_h.transform_values(&:value)
+      element.each_element do |child|
+        value = xml2hash(child)
+        result = merge(result, child.name, value)
+      end
+
+      result
+    end
+
+    def oai(**)
+      require 'oai'
+      @oai ||= OAI::Client.new 'http://export.arxiv.org/oai2', http: client
+      @oai.list_records(metadata_prefix: 'arXivRaw', set: 'math', **)
+    end
+
     class Paper
       attr_accessor :id, :version, :comment, :authors, :url, :pdf_url,
-                    :doi, :doi_url, :category, :categories,
+                    :doi, :doi_url, :category, :categories, :datestamp,
                     :published, :summary, :tags, :title, :updated,
-                    :journal_ref, :_debug
+                    :journal_ref, :_debug, :license, :msc_class, :submitter
 
       ATTR_TRANS = {
         _id: :id,
         entry_id: :id,
         title_type: :_,
-        id: :url,
+        #id: :url,
         _version: :version,
         arxiv_comment: :comment,
         arxiv_journal_ref: :journal_ref,
+        comments: :comment,
+        abstract: :summary,
       }.freeze
       private_constant :ATTR_TRANS
 
@@ -49,41 +167,21 @@ module Arxiv
           res
         end
 
-        def client(**opts)
-          require 'faraday'
-          @client ||= Faraday.new(
-            url: 'http://export.arxiv.org/api/',
-            **opts,
-          ) do |f|
-            ##f.response :raise_error
+        def from_oai(**)
+          Arxiv::Api.oai(**).full.each do |item|
+            yield from_oai_item(item)
           end
         end
 
-        def get(*args)
-          # obey time limit
-          # rubocop:disable Rails/TimeZone
-          delay = @lastget.present? ? @lastget + 3.seconds - Time.now : 0
-          sleep(delay) if delay.positive?
-          @lastget = Time.now
-          # rubocop:enable Rails/TimeZone
-          client.get(*args)
-        end
-
-        def from_arxiv(search, **opts)
-          search = search.respond_to?(:map) ? search.map { |k, v| "#{k}:#{v}" }.join('+AND+') : "all:#{search}"
-          resp = get(
-            'query',
-            search_query: search,
-            max_results: 100,
-            sortBy: :lastUpdatedDate,
-            sortOrder: :descending,
-            **opts,
-          )
-          require 'feedjira'
-          require 'feedjira/parser/atom_arxiv'
-
-          feed = Feedjira.parse(resp.body)
-
+        def from_oai_item(item)
+          debugger unless item.metadata
+          pp = new(**Arxiv::Api.xml2hash(item.metadata).values[0])
+          pp.datestamp = Date.parse(item.header.datestamp)
+          unless pp.authors
+            ee = Arxiv::Api.get_by_id(pp.id)
+            pp.authors = Arxiv::Api.parse_authors(ee.authors)
+          end
+          pp
         end
       end
 
@@ -93,7 +191,15 @@ module Arxiv
           #puts "#{setter}#{v.inspect}"
           try(setter, v)
         end
+        unless authors
+          ee = info_from_arxiv
+          self.authors = Arxiv::Api.parse_authors(ee.authors)
+        end
         self._debug = attrs
+      end
+
+      def info_from_arxiv
+        Arxiv::Api.get_by_id(id)
       end
 
       def links=(vals)
@@ -104,24 +210,56 @@ module Arxiv
         end
       end
 
+      def abs
+        URI("#{Arxiv::Api::ARXIV_BASE}/abs/#{id}")
+      end
+
+      def pdf
+        URI("#{Arxiv::Api::ARXIV_BASE}/pdf/#{id}.pdf")
+      end
+
+      def versions
+        @versions ||=
+          version.respond_to?(:sort) ? version.sort.to_h.values : []
+      end
+
       def submitted
-        @submitted ||= Date.parse(published)
+        @submitted ||= if published
+          published.is_a?(String) ? Date.parse(published) : published
+        else
+          versions.first['date']
+        end
       end
 
       def revised
-        @revised ||= Date.parse(updated)
+        @revised ||= if updated
+          updated.is_a?(String) ? Date.parse(updated) : updated
+        else
+          versions.last['date']
+        end
       end
 
       def author_names
-        @author_names ||= authors.pluck('name')
+        return unless authors.respond_to?(:map)
+
+        @author_names ||= authors.map { |a| a.is_a?(Hash) ? a['name'] : a }
       end
 
       def tag_values
-        @tag_values ||= tags.pluck('term')
+        @tag_values ||= tags&.pluck('term')
+      end
+
+      def version_id
+        version.respond_to?(:sort) ? version.max.first : "v#{version}"
+      end
+
+      def primary
+        @primary ||= category || categories.first
       end
 
       def secondaries
-        @secondaries ||= tag_values - aux_tags - [category]
+        @secondaries ||=
+          (tag_values ? tag_values - aux_tags : categories) - [primary]
       end
 
       def aux_tags

@@ -81,5 +81,9 @@ gem 'amazing_print'
 gem 'rails_semantic_logger'
 gem 'friendly_id'
 gem 'pagy'
-gem 'faraday'
-gem 'feedjira'
+gem 'faraday', require: false
+gem 'faraday-retry', require: false
+gem 'faraday-follow_redirects', require: false
+gem 'feedjira', require: false
+gem 'oai', require: false
+gem 'libxml-ruby', require: false

@@ -7,15 +7,19 @@ class ApplicationRecord < ActiveRecord::Base
 
   class << self
     # rubocop:disable Naming/PredicateName
-    def has_many_through(assoc, vias, **opts)
+    def has_many_through(assoc, vias, **)
       has_many vias, dependent: :destroy
-      has_many assoc, through: vias, **opts
+      has_many assoc, through: vias, **
     end
     # rubocop:enable Naming/PredicateName
 
     def arxiv(id)
       @arxiv ||= {}
       @arxiv[id.to_s] ||= find_by(arxiv: id)
+    end
+
+    def [](id)
+      arxiv(id)
     end
 
     def inertia_params

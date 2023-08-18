@@ -33,5 +33,12 @@ class Category < ApplicationRecord
         methods: %i[label value],
       )
     end
+
+    def arxiv(id)
+      # https://arxiv.org/category_taxonomy
+      id = 'eess.SY' if id == 'cs.SY'
+      id = 'math.NA' if id == 'cs.NA'
+      super
+    end
   end
 end
