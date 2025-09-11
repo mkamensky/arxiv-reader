@@ -10,4 +10,5 @@ InertiaRails.configure do |config|
   # ssr specific options
   config.ssr_enabled = false
   config.ssr_url = 'http://localhost:13714'
+  config.always_include_errors_hash = true
 end

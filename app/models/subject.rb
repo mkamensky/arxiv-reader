@@ -22,6 +22,8 @@ class Subject < ApplicationRecord
     Arxiv::Api::Paper.from_oai(
       set: arxiv, from: last_update.to_date, **opts,
     ) do |pp|
+      next unless pp
+
       # rubocop: disable Rails/Output
       puts("Creating '#{pp.title}' (#{pp.id}) from the arxiv") if verbose
       # rubocop: enable Rails/Output

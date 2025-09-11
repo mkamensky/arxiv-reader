@@ -174,7 +174,8 @@ module Arxiv
         end
 
         def from_oai_item(item)
-          debugger unless item.metadata
+          return unless item.metadata
+
           pp = new(**Arxiv::Api.xml2hash(item.metadata).values[0])
           pp.datestamp = Date.parse(item.header.datestamp)
           unless pp.authors
