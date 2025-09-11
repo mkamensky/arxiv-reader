@@ -154,7 +154,7 @@ createInertiaApp({
         },
       })
     app.config.globalProperties.$show_path = function (what, id) {
-      return routes[what].get.path({ id: id })
+      return routes[what].show.path({ id: id })
     }
     const premkdn = (it) => (it || '').toString().replace(/--/g, '\u2013')
     app.config.globalProperties.$md = (mkdn) => markdown.render(premkdn(mkdn))

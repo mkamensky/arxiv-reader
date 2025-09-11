@@ -28,7 +28,7 @@
     "postcss-mixins": "^12.1.2",
     "postcss-preset-env": "^10.3.1",
     "prettier": "^3.6.2",
-    "vite": "^5.4.20",
+    "vite": "^7.0.0",
     "vite-plugin-full-reload": "^1.2.0",
     "vite-plugin-ruby": "^5.1.1",
     "vue-cli-plugin-quasar": "^5.1.2"

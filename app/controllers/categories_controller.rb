@@ -20,7 +20,7 @@ class CategoriesController < ApplicationController
   def papers
     return unless category
 
-    @pagy, @records = pagy(category.papers)
+    @pagy, @records = pagy(category.papers.order(submitted: :desc))
     @records.as_json(Paper.inertia_params)
   end
 
