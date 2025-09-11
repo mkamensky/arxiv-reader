@@ -114,10 +114,11 @@ module Arxiv
 
     def oai(**)
       require 'oai'
-      @oai ||= OAI::Client.new 'http://export.arxiv.org/oai2', http: client
+      @oai ||= OAI::Client.new 'https://oaipmh.arxiv.org/oai', http: client
       @oai.list_records(metadata_prefix: 'arXivRaw', set: 'math', **)
     end
 
+    # rubocop: disable Metrics/ClassLength
     class Paper
       attr_accessor :id, :version, :comment, :authors, :url, :pdf_url,
                     :doi, :doi_url, :category, :categories, :datestamp,
@@ -176,7 +177,7 @@ module Arxiv
         def from_oai_item(item)
           return unless item.metadata
 
-          pp = new(**Arxiv::Api.xml2hash(item.metadata).values[0])
+          pp = new(**Arxiv::Api.xml2hash(item.metadata).values.first)
           pp.datestamp = Date.parse(item.header.datestamp)
           unless pp.authors
             ee = Arxiv::Api.get_by_id(pp.id)
@@ -206,7 +207,6 @@ module Arxiv
       def links=(vals)
         vals.each do |lnk|
           setter = "#{lnk['title'] || 'abs'}="
-          #puts "#{setter}#{lnk['href']}"
           try(setter, lnk['href'])
         end
       end
@@ -267,5 +267,6 @@ module Arxiv
         @aux_tags ||= tag_values.reject { |x| self.class.arxiv?(x) }
       end
     end
+    # rubocop: enable Metrics/ClassLength
   end
 end

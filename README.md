@@ -1,3 +1,16 @@
+# UPDATE
+
+    bundle update
+    npm update
+
+# RUN
+
+    overmind s
+
+# UPDATE PAPERS FROM ARXIV
+
+    rake db:seed:from_arxiv
+
 # README
 
 This README would normally document whatever steps are necessary to get the
