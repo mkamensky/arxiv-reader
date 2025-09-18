@@ -109,6 +109,7 @@ const myIcons = {
   send: 'mdi-send',
   pdf: 'mdi-file-pdf-box',
   download: 'mdi-download-box',
+  event: 'mdi-calendar-today',
 }
 
 const pages = import.meta.glob('../Pages/**/*.vue', { eager: true })

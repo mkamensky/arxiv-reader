@@ -2,11 +2,14 @@
 
 class Category < ApplicationRecord
   include FriendlyId
+
   friendly_id :arxiv
 
   has_many :papers, dependent: :destroy
   belongs_to :subject
   has_many_through :secondaries, :categorisations, source: :paper
+
+  delegate :refresh_from_arxiv, to: :subject
 
   validates :arxiv, uniqueness: true
 

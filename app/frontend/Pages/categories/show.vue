@@ -1,22 +1,31 @@
 <template>
   <q-page padding class="q-pt-xl">
-    <q-infinite-scroll @load="loadMore">
+    <div>
       <ar-paper
         v-for="paper in allPapers"
         :key="paper.id"
-        v-intersection="
-          (entry) => {
-            if (entry.isIntersecting) curDate = paperDate(paper)
-          }
-        "
         :object="paper"
         class="q-ma-md"
       />
-    </q-infinite-scroll>
+    </div>
+
     <q-page-sticky expand position="top">
       <q-toolbar class="bg-accent text-white">
         <q-toolbar-title>{{ category.label }}</q-toolbar-title>
-        <q-btn v-if="curDate" outline :label="curDate" />
+        <q-btn icon="$event" color="primary" :label="date?.toDateString()">
+          <q-popup-proxy
+            cover
+            @before-show="updateProxy"
+            transition-show="scale"
+            transition-hide="scale">
+            <q-date v-model="proxyDate" today-btn mask="ddd MMM DD YYYY">
+              <div class="row items-center justify-end q-gutter-sm">
+                <q-btn label="Cancel" color="primary" flat v-close-popup />
+                <q-btn label="OK" color="primary" flat @click="saveDate" v-close-popup />
+              </div>
+            </q-date>
+          </q-popup-proxy>
+        </q-btn>
       </q-toolbar>
     </q-page-sticky>
   </q-page>
@@ -24,6 +33,7 @@
 
 <script>
 import ArPaper from '@/Components/ArPaper.vue'
+import { date } from 'quasar'
 
 export default {
   components: {
@@ -37,40 +47,31 @@ export default {
     papers: {
       type: Array,
     },
-    nextPage: {
-      type: Number,
-    },
   },
   data() {
     return {
-      curDate: this.paperDate(this.papers[0]),
       allPapers: this.papers,
+      proxyDate: new Date(),
+      date: new Date(),
     }
   },
   created() {
     this.initialUrl = this.$page.url
   },
   methods: {
-    paperDate(paper) {
-      if (!paper) return null
-
-      return new Date(paper.revised)?.toDateString() ?? paper.revised
+    updateProxy () {
+      this.proxyDate = this.date
     },
-    loadMore(index, done) {
-      if (this.nextPage === null) {
-        done()
-        return
-      }
-
+    saveDate () {
+      this.date = new Date(this.proxyDate)
       this.$inertia.reload({
-        preserveState: true,
-        preserveScroll: true,
-        only: ['papers', 'nextPage', 'meta'],
-        data: { page: this.nextPage },
+        preserveScroll: false,
+        data: {
+          date: date.formatDate(this.date, 'YYYY-MM-DD'),
+        },
+        only: ['papers'],
         onSuccess: () => {
-          this.allPapers = [...this.allPapers, ...this.papers]
-          window.history.replaceState({}, this.$page.title, this.initialUrl)
-          done()
+          this.allPapers = this.papers
         },
       })
     },

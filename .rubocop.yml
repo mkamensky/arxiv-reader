@@ -3,7 +3,7 @@ require:
   - rubocop-rails
 
 AllCops:
-  TargetRubyVersion: 3.2
+  TargetRubyVersion: 3.4
   Exclude:
     - bin/**/*
     - coverage/**/*
@@ -68,6 +68,9 @@ Style/ClassAndModuleChildren:
 
 Style/ClassMethodsDefinitions:
   Enabled: false
+
+Style/ItBlockParameter:
+  EnforcedStyle: always
 
 Style/Lambda:
   EnforcedStyle: literal

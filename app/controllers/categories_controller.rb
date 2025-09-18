@@ -1,6 +1,4 @@
 class CategoriesController < ApplicationController
-  include Pagy::Backend
-
   def index
     render_page
   end
@@ -17,19 +15,21 @@ class CategoriesController < ApplicationController
     @category ||= Category.find(params[:id])
   end
 
+  def date
+    Date.parse(params[:date])
+  rescue TypeError
+    Time.zone.today
+  end
+
   def papers
     return unless category
 
-    @pagy, @records = pagy(category.papers.order(submitted: :desc))
+    @records = category.papers.where(submitted: date)
+    #if @records.blank?
+    #  category.refresh_from_arxiv(from: date, until: date, verbose: true)
+    #  @records = category.papers.where(submitted: date)
+    #end
     @records.as_json(Paper.inertia_params)
-  end
-
-  def meta
-    @pagy.present? ? pagy_metadata(@pagy) : {}
-  end
-
-  def next_page
-    meta[:next]
   end
 
   def render_page(page = 'index')
@@ -37,8 +37,7 @@ class CategoriesController < ApplicationController
       categories: -> { categories },
       category: -> { category&.inertia_json },
       papers: -> { papers },
-      nextPage: -> { next_page },
-      meta: -> { meta },
+      date: -> { date },
     }
   end
 end

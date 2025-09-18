@@ -2,6 +2,7 @@
 
 class Subject < ApplicationRecord
   include FriendlyId
+
   friendly_id :arxiv
 
   ARXIV_EPOCH = Date.parse('1991-08-14').freeze
@@ -21,13 +22,13 @@ class Subject < ApplicationRecord
     require 'arxiv/api'
     Arxiv::Api::Paper.from_oai(
       set: arxiv, from: last_update.to_date, **opts,
-    ) do |pp|
-      next unless pp
+    ) do
+      next unless it
 
       # rubocop: disable Rails/Output
-      puts("Creating '#{pp.title}' (#{pp.id}) from the arxiv") if verbose
+      puts("Creating '#{it.title}' (#{it.id}) from the arxiv") if verbose
       # rubocop: enable Rails/Output
-      Paper.create_from_arxiv(pp)
+      Paper.create_from_arxiv(it)
     end
   end
 

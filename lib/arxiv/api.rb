@@ -10,9 +10,9 @@ module Arxiv
       require 'faraday'
       require 'faraday/retry'
       require 'faraday/follow_redirects'
-      @client ||= Faraday.new(url: 'http://export.arxiv.org/api/', **) do |f|
-        f.request(:retry, max: 5, retry_statuses: [429])
-        f.response(:follow_redirects, limit: 5)
+      @client ||= Faraday.new(url: 'http://export.arxiv.org/api/', **) do
+        it.request(:retry, max: 5, retry_statuses: [429])
+        it.response(:follow_redirects, limit: 5)
         ##f.response :raise_error
       end
     end
@@ -60,15 +60,16 @@ module Arxiv
     end
 
     def parse_authors(value)
-      if value.is_a?(String)
+      res = if value.is_a?(String)
         # from oai arxivRaw, TODO
-        /[()]/.match?(value) ? nil : value.split(/, | and /)
+        /[()]/.match?(value) ? nil : value.split(/, (?!Jr[.]?)| and /)
       elsif value.is_a?(Hash)
         value['author']
       else
         # from atom
         JSON.parse(value.to_json)
       end
+      res&.uniq { it.is_a?(Hash) ? it['name'] : it }
     end
 
     # rubocop:disable Rails/TimeZone, Metrics/PerceivedComplexity,     Metrics/CyclomaticComplexity
@@ -104,9 +105,9 @@ module Arxiv
       return element.texts.map(&:value).join unless element.has_elements?
 
       result = element.attributes.to_h.transform_values(&:value)
-      element.each_element do |child|
-        value = xml2hash(child)
-        result = merge(result, child.name, value)
+      element.each_element do
+        value = xml2hash(it)
+        result = merge(result, it.name, value)
       end
 
       result
@@ -116,6 +117,8 @@ module Arxiv
       require 'oai'
       @oai ||= OAI::Client.new 'https://oaipmh.arxiv.org/oai', http: client
       @oai.list_records(metadata_prefix: 'arXivRaw', set: 'math', **)
+    rescue OAI::NoMatchException
+      nil
     end
 
     # rubocop: disable Metrics/ClassLength
@@ -154,7 +157,7 @@ module Arxiv
 
         def from_file(file)
           # rubocop: disable Security/JSONLoad
-          from_hash(File.open(file) { |fh| JSON.load(fh) })
+          from_hash(File.open(file) { JSON.load(it) })
           # rubocop: enable Security/JSONLoad
         end
 
@@ -162,16 +165,17 @@ module Arxiv
           res = {}
           require 'sqlite3'
           db = SQLite3::Database.new file
-          db.execute('select * from papers') do |row|
-            res[row[0]] = new(**JSON.parse(row[1]))
+          db.execute('select * from papers') do
+            res[row[0]] = new(**JSON.parse(it[1]))
           end
           res
         end
 
         def from_oai(**)
-          Arxiv::Api.oai(**).full.each do |item|
-            yield from_oai_item(item)
-          end
+          oa = Arxiv::Api.oai(**)
+          return [] if oa.blank?
+
+          oa.full.each { yield from_oai_item(it) }
         end
 
         def from_oai_item(item)
@@ -181,7 +185,12 @@ module Arxiv
           pp.datestamp = Date.parse(item.header.datestamp)
           unless pp.authors
             ee = Arxiv::Api.get_by_id(pp.id)
-            pp.authors = Arxiv::Api.parse_authors(ee.authors)
+            if ee
+              pp.authors = Arxiv::Api.parse_authors(ee.authors)
+            else
+              warn "Unable to find authors for paper #{pp.id}"
+              pp.authors = []
+            end
           end
           pp
         end
@@ -195,7 +204,12 @@ module Arxiv
         end
         unless authors
           ee = info_from_arxiv
-          self.authors = Arxiv::Api.parse_authors(ee.authors)
+          if ee
+            self.authors = Arxiv::Api.parse_authors(ee.authors)
+          else
+            warn "Unable to parse authors for paper #{id}"
+            self.authors = []
+          end
         end
         self._debug = attrs
       end
@@ -205,9 +219,9 @@ module Arxiv
       end
 
       def links=(vals)
-        vals.each do |lnk|
-          setter = "#{lnk['title'] || 'abs'}="
-          try(setter, lnk['href'])
+        vals.each do
+          setter = "#{it['title'] || 'abs'}="
+          try(setter, it['href'])
         end
       end
 
@@ -243,7 +257,7 @@ module Arxiv
       def author_names
         return unless authors.respond_to?(:map)
 
-        @author_names ||= authors.map { |a| a.is_a?(Hash) ? a['name'] : a }
+        @author_names ||= authors.map { it.is_a?(Hash) ? it['name'] : it }
       end
 
       def tag_values
@@ -264,7 +278,7 @@ module Arxiv
       end
 
       def aux_tags
-        @aux_tags ||= tag_values.reject { |x| self.class.arxiv?(x) }
+        @aux_tags ||= tag_values.reject { self.class.arxiv?(it) }
       end
     end
     # rubocop: enable Metrics/ClassLength

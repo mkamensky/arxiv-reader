@@ -36,7 +36,8 @@ module Feedjira
       elements :entry, as: :entries, class: AtomArxivEntry
 
       def self.able_to_parse?(xml)
-        %r{<feed[^>]+xmlns\s?=\s?["'](http://www\.w3\.org/2005/Atom|http://purl\.org/atom/ns\#)["'][^>]*>} =~ xml
+        #%r{<feed[^>]+xmlns\s?=\s?["'](https?://www\.w3\.org/2005/Atom|http://purl\.org/atom/ns\#)["'][^>]*>} =~ xml.encode('UTF-8', invalid: :replace)
+        xml.encode('UTF-8', invalid: :replace)&.include?('xmlns:arxiv')
       end
 
       def self.preprocess(xml)
@@ -50,6 +51,6 @@ module Feedjira
   end
 end
 
-Feedjira.configure do |config|
-  config.parsers = [ Feedjira::Parser::AtomArxiv ]
+Feedjira.configure do
+  it.parsers.unshift Feedjira::Parser::AtomArxiv
 end

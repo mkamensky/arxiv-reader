@@ -2,6 +2,7 @@
 
 class Paper < ApplicationRecord
   include FriendlyId
+
   friendly_id :arxiv
 
   belongs_to :category
@@ -28,9 +29,9 @@ class Paper < ApplicationRecord
       {
         category: Category.arxiv(apaper.primary),
         categories:
-          apaper.secondaries.filter_map { |x| Category.arxiv(x) }.uniq,
-        authors: apaper.author_names.filter_map do |x|
-          Author.public_send(auth_find, name: x)
+          apaper.secondaries.filter_map { Category.arxiv(it) }.uniq,
+        authors: apaper.author_names.filter_map do
+          Author.public_send(auth_find, name: it)
         end,
         submitted: apaper.submitted,
         revised: apaper.revised,
@@ -61,12 +62,14 @@ class Paper < ApplicationRecord
         'Validation failed: Version has already been taken',
         'Validation failed: Category must exist',
       ].include?(e.message)
+    rescue StandardError => e
+      debugger
     end
 
     def create_from_db(file = Rails.root.join('data', 'papers.db'))
       require 'arxiv/api'
       papers = Arxiv::Api::Paper.from_db(file)
-      papers.each { |_k, v| create_from_arxiv(v) }
+      papers.each_value { create_from_arxiv(it) }
     end
 
     def inertia_params
