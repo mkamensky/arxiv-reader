@@ -40,9 +40,7 @@
           :name="item"
           :label="item"
           :href="`#${item}`"
-          :class="{
-            'q-tab--active': $page.url === `/categories/${item}`,
-          }"
+          :class="tabClass(item)"
         />
       </q-tabs>
     </q-header>
@@ -76,10 +74,12 @@
           <ar-category
             v-for="cat in cats"
             :key="cat"
+            :data-cat="cat"
             :object="catOf(cat)"
             :papers="papers[cat]"
             class="q-ma-md"
-            />
+            v-intersection="setCur"
+          />
         </div>
       </q-page>
     </q-page-container>
@@ -110,6 +110,7 @@ export default {
   },
   data() {
     return {
+      curCat: null,
       leftDrawerOpen: false,
       rightDrawerOpen: false,
       cats:
@@ -125,6 +126,14 @@ export default {
   methods: {
     catOf(cat) {
       return this.categories.find((it) => it.value === cat)
+    },
+    setCur(entry) {
+      if (entry.isIntersecting) {
+        this.curCat = entry.target.dataset.cat
+      }
+    },
+    tabClass(cat) {
+      return (this.curCat === cat) ? 'q-tab--active' : ''
     },
   },
   watch: {
