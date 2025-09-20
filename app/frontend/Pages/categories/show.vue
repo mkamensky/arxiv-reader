@@ -2,7 +2,7 @@
   <q-page padding class="q-pt-xl">
     <div>
       <ar-paper
-        v-for="paper in allPapers"
+        v-for="paper in papers"
         :key="paper.id"
         :object="paper"
         class="q-ma-md"
@@ -12,18 +12,12 @@
     <q-page-sticky expand position="top">
       <q-toolbar class="bg-accent text-white">
         <q-toolbar-title>{{ category.label }}</q-toolbar-title>
-        <q-btn icon="$event" color="primary" :label="date?.toDateString()">
+        <q-btn icon="$event" color="primary" :label="date">
           <q-popup-proxy
             cover
-            @before-show="updateProxy"
             transition-show="scale"
             transition-hide="scale">
-            <q-date v-model="proxyDate" today-btn mask="ddd MMM DD YYYY">
-              <div class="row items-center justify-end q-gutter-sm">
-                <q-btn label="Cancel" color="primary" flat v-close-popup />
-                <q-btn label="OK" color="primary" flat @click="saveDate" v-close-popup />
-              </div>
-            </q-date>
+            <q-date :model-value="date" @update:model-value="saveDate" today-btn mask="YYYY-MM-DD" v-close-popup />
           </q-popup-proxy>
         </q-btn>
       </q-toolbar>
@@ -33,7 +27,6 @@
 
 <script>
 import ArPaper from '@/Components/ArPaper.vue'
-import { date } from 'quasar'
 
 export default {
   components: {
@@ -47,32 +40,22 @@ export default {
     papers: {
       type: Array,
     },
+    date: {
+      type: String,
+    },
   },
   data() {
     return {
-      allPapers: this.papers,
-      proxyDate: new Date(),
-      date: new Date(),
     }
   },
-  created() {
-    this.initialUrl = this.$page.url
-  },
   methods: {
-    updateProxy () {
-      this.proxyDate = this.date
-    },
-    saveDate () {
-      this.date = new Date(this.proxyDate)
+    saveDate (value, reason, details) {
       this.$inertia.reload({
         preserveScroll: false,
         data: {
-          date: date.formatDate(this.date, 'YYYY-MM-DD'),
+          date: value,
         },
-        only: ['papers'],
-        onSuccess: () => {
-          this.allPapers = this.papers
-        },
+        only: ['papers', 'date'],
       })
     },
   },

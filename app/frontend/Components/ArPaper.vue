@@ -9,7 +9,7 @@
             text-color="black"
             no-caps
           >
-            <span v-html="$mdi(object.title)" />
+            <span v-html="$mdi(object.label)" />
           </q-btn>
           <q-btn
             icon="$pdf"
@@ -39,7 +39,7 @@
             v-for="author in object.authors"
             :key="author.id"
             :href="$show_path('authors', author.arxiv)"
-            :label="author.name"
+            :label="$mdi(author.name)"
             text-color="primary"
             color="white"
             no-caps
@@ -115,7 +115,7 @@ export default {
   },
   data() {
     return {
-      show: false,
+      show: true,
     }
   },
   computed: {

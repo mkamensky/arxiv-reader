@@ -5,13 +5,22 @@ class ApplicationRecord < ActiveRecord::Base
   primary_abstract_class
   self.abstract_class = true
 
+  # for quasar components
+  def label
+    title
+  end
+
+  def value
+    arxiv
+  end
+
   class << self
-    # rubocop:disable Naming/PredicateName
+    # rubocop:disable Naming/PredicatePrefix
     def has_many_through(assoc, vias, **)
       has_many vias, dependent: :destroy
       has_many assoc, through: vias, **
     end
-    # rubocop:enable Naming/PredicateName
+    # rubocop:enable Naming/PredicatePrefix
 
     def arxiv(id)
       @arxiv ||= {}
@@ -23,7 +32,10 @@ class ApplicationRecord < ActiveRecord::Base
     end
 
     def inertia_params
-      {}
+      {
+        only: %i[],
+        methods: %i[label value],
+      }
     end
   end
 

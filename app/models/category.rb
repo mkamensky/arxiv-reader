@@ -20,23 +20,7 @@ class Category < ApplicationRecord
     self.subject ||= Subject.from_category(arxiv)
   end
 
-  # for quasar components
-  def label
-    title
-  end
-
-  def value
-    arxiv
-  end
-
   class << self
-    def inertia_params
-      super.vdeep_merge(
-        only: %i[],
-        methods: %i[label value],
-      )
-    end
-
     def arxiv(id)
       # https://arxiv.org/category_taxonomy
       id = 'eess.SY' if id == 'cs.SY'

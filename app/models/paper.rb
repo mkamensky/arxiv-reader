@@ -76,7 +76,7 @@ class Paper < ApplicationRecord
       super.vdeep_merge(
         only: %i[
           abs arxiv abstract comment category_id id journal_ref pdf
-          submitted revised tags title version
+          submitted revised tags version
         ],
         include: {
           authors: { only: %i[name arxiv] },

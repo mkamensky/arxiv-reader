@@ -1,0 +1,34 @@
+<template>
+  <div :id="object.value">
+  <q-toolbar class="bg-accent text-white">
+    <q-toolbar-title>{{ object.label }}</q-toolbar-title>
+  </q-toolbar>
+
+  <div v-if="papers?.length">
+    <ar-paper
+      v-for="paper in papers"
+      :key="paper.id"
+      :object="paper"
+      class="q-ma-md"
+      />
+  </div>
+  <div v-else>
+    Nothing today!
+  </div>
+  </div>
+</template>
+
+<script>
+  import ArPaper from '@/Components/ArPaper.vue'
+
+  export default {
+    components: {
+    ArPaper,
+  },
+
+  props: {
+    object: Object,
+    papers: Array,
+  },
+}
+</script>
