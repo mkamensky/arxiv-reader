@@ -4,12 +4,12 @@
     <q-toolbar-title>{{ object.label }}</q-toolbar-title>
   </q-toolbar>
 
-  <div v-if="papers?.length">
+  <div v-if="papers?.length" class="row">
     <ar-paper
       v-for="paper in papers"
       :key="paper.id"
       :object="paper"
-      class="q-ma-md"
+      class="q-pa-md col-12 col-lg-6"
       />
   </div>
   <div v-else>
