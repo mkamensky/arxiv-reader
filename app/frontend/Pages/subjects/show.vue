@@ -14,17 +14,16 @@
 
         <q-btn-group>
           <q-btn color="amber" text-color="black" glossy icon="$menuLeft" @click="prevDate" />
-            <q-btn color="amber" text-color="black" glossy ripple icon="$event" :label="date">
-              <q-popup-proxy
-                cover
-                transition-show="scale"
-                transition-hide="scale">
-                <q-date :model-value="date" @update:model-value="saveDate" today-btn mask="YYYY-MM-DD" v-close-popup />
-              </q-popup-proxy>
-            </q-btn>
-            <q-btn color="amber" text-color="black" glossy icon="$menuRight" @click="nextDate" />
+          <q-btn color="amber" text-color="black" glossy ripple icon="$event" :label="date">
+            <q-popup-proxy
+              cover
+              transition-show="scale"
+              transition-hide="scale">
+              <q-date :model-value="date" @update:model-value="saveDate" today-btn mask="YYYY-MM-DD" v-close-popup />
+            </q-popup-proxy>
+          </q-btn>
+          <q-btn color="amber" text-color="black" glossy icon="$menuRight" @click="nextDate" />
         </q-btn-group>
-
 
       </q-toolbar>
       <q-tabs

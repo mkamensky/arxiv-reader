@@ -1,12 +1,12 @@
 # frozen_string_literal: true
 
 source 'https://rubygems.org'
-git_source(:github) { |repo| "https://github.com/#{repo}.git" }
+git_source(:github) { "https://github.com/#{it}.git" }
 
 ruby '~>3'
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails', branch: 'main'
-gem 'rails', '>=7'
+gem 'rails', '>=8'
 
 # Use sqlite3 as the database for Active Record
 gem 'pg'
@@ -25,7 +25,7 @@ gem 'devise'
 
 group :development, :test do
   # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem
-  gem 'debug', platforms: %i[mri mingw x64_mingw]
+  gem 'debug', platforms: %i[mri]
 
   # Automatic Ruby code style checking tool.
   # (https://github.com/rubocop/rubocop)
@@ -56,6 +56,14 @@ group :development do
 
   # Speed up commands on slow machines / big apps [https://github.com/rails/spring]
   gem 'spring'
+
+  gem "capistrano", require: false
+  gem "capistrano-rails", require: false
+  gem 'capistrano-bundler', require: false
+  gem 'capistrano-rbenv', '~> 2.0', require: false
+  gem 'capistrano-rbenv-install', require: false
+  gem 'ed25519', require: false
+  gem 'bcrypt_pbkdf', require: false
 end
 
 group :test do
