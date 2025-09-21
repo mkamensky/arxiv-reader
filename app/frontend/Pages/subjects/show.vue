@@ -26,13 +26,6 @@
         </q-btn-group>
 
 
-        <q-btn
-          dense
-          flat
-          round
-          icon="$menu"
-          @click="rightDrawerOpen = !rightDrawerOpen"
-          />
       </q-toolbar>
       <q-tabs
         align="justify"
@@ -78,10 +71,6 @@
       </div>
     </q-drawer>
 
-    <q-drawer v-model="rightDrawerOpen" side="right" overlay elevated>
-      <!-- drawer content -->
-    </q-drawer>
-
     <q-page-container>
       <q-page padding class="q-pt-xl">
         <div>
@@ -97,13 +86,6 @@
       </q-page>
     </q-page-container>
 
-    <q-footer reveal elevated class="bg-grey-8 text-white">
-      <q-toolbar>
-        <q-toolbar-title>
-          <div>Title</div>
-        </q-toolbar-title>
-      </q-toolbar>
-    </q-footer>
    </q-layout>
 
 </template>
@@ -125,7 +107,6 @@ export default {
     return {
       curCat: null,
       leftDrawerOpen: false,
-      rightDrawerOpen: false,
       cats:
       this.$q.localStorage.getItem('cats') ||
       this.categories.map((cat) => cat.value),
