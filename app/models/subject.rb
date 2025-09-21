@@ -5,7 +5,7 @@ class Subject < ApplicationRecord
 
   friendly_id :arxiv
 
-  ARXIV_EPOCH = Date.parse('1991-08-14').freeze
+  ARXIV_EPOCH = Date.parse('2005-09-16').freeze
   public_constant :ARXIV_EPOCH
 
   has_many :categories, dependent: :destroy
