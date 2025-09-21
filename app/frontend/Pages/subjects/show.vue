@@ -29,10 +29,12 @@
         color="yellow"
         active-color="red"
         active-class="active"
+        switch-indicator
         shrink
         stretch
         inline-label
         no-caps
+        class="bg-info text-black"
       >
         <q-route-tab
           v-for="item in cats"
