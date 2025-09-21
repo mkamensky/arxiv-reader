@@ -103,6 +103,10 @@ GEM
     capistrano-rbenv-install (1.2.0)
       capistrano (>= 3.0)
       capistrano-rbenv (>= 2.0)
+    capistrano3-puma (6.2.0)
+      capistrano (~> 3.7)
+      capistrano-bundler
+      puma (>= 5.1, < 7.0)
     capybara (3.40.0)
       addressable
       matrix
@@ -229,7 +233,7 @@ GEM
       date
       stringio
     public_suffix (6.0.2)
-    puma (7.0.3)
+    puma (6.6.1)
       nio4r (~> 2.0)
     racc (1.8.1)
     rack (3.2.1)
@@ -403,6 +407,7 @@ DEPENDENCIES
   capistrano-rails
   capistrano-rbenv (~> 2.0)
   capistrano-rbenv-install
+  capistrano3-puma (>= 6.2)
   capybara
   debug
   devise
@@ -421,7 +426,7 @@ DEPENDENCIES
   oj
   pagy
   pg
-  puma (>= 5.0)
+  puma (>= 6.0)
   rack-mini-profiler
   rails (>= 8)
   rails_semantic_logger

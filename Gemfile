@@ -23,6 +23,9 @@ gem 'bootsnap', require: false
 
 gem 'devise'
 
+# Use the Puma web server [https://github.com/puma/puma]
+gem 'puma', '>=6.0'
+
 group :development, :test do
   # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem
   gem 'debug', platforms: %i[mri]
@@ -45,8 +48,6 @@ group :development, :test do
 end
 
 group :development do
-  # Use the Puma web server [https://github.com/puma/puma]
-  gem 'puma', '>=5.0'
 
   # Use console on exceptions pages [https://github.com/rails/web-console]
   gem 'web-console'
@@ -58,6 +59,7 @@ group :development do
   gem 'spring'
 
   gem "capistrano", require: false
+  gem 'capistrano3-puma', '>= 6.2', require: false
   gem "capistrano-rails", require: false
   gem 'capistrano-bundler', require: false
   gem 'capistrano-rbenv', '~> 2.0', require: false
