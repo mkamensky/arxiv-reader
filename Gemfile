@@ -48,7 +48,6 @@ group :development, :test do
 end
 
 group :development do
-
   # Use console on exceptions pages [https://github.com/rails/web-console]
   gem 'web-console'
 
@@ -88,12 +87,16 @@ gem 'sqlite3', require: false # to interface with asl
 gem 'oj'
 
 gem 'amazing_print'
-gem 'rails_semantic_logger'
+#gem 'rails_semantic_logger'
 gem 'friendly_id'
-gem 'pagy'
+#gem 'pagy'
 gem 'faraday', require: false
 gem 'faraday-retry', require: false
 gem 'faraday-follow_redirects', require: false
 gem 'feedjira', require: false
 gem 'oai', require: false
 gem 'libxml-ruby', require: false
+
+group :production do
+  gem 'sd_notify'
+end

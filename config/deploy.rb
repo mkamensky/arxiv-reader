@@ -84,7 +84,7 @@ set :puma_init_active_record, true
 
 set :puma_control_app, false
 set :puma_systemctl_user, :user
-set :puma_service_unit_type, 'simple' # or notify
+set :puma_service_unit_type, :notify
 set :puma_enable_socket_service, true # mendatory in our case
 set :puma_service_unit_env_vars, %W[
   RBENV_ROOT=/home/deploy/.rbenv
