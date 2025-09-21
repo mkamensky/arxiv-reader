@@ -23,7 +23,7 @@ class SubjectsController < ApplicationController
     @date = Date.parse(params[:date])
     @date = subject&.last_before(@date) if prv
     @date = subject&.first_after(@date) if nxt
-  rescue TypeError
+  rescue TypeError, NoMethodError
     @date = subject&.last_update || (Time.zone.today - 1.day)
   end
 
