@@ -21,6 +21,10 @@ class CategoriesController < ApplicationController
     Time.zone.today
   end
 
+  def categories
+    []
+  end
+
   def papers
     return unless category
 
