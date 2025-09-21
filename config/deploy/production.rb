@@ -23,6 +23,9 @@ role :web, %w[deploy@dibbler.verymad.net]
 role :db, %w[deploy@dibbler.verymad.net]
 role :app, %w[deploy@dibbler.verymad.net]
 
+set :stage, :production
+set :rails_env, 'production'
+
 # Configuration
 # =============
 # You can set any configuration variable like in config/deploy.rb

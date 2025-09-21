@@ -8,7 +8,7 @@ Type=<%= service_unit_type %>
 WatchdogSec=10
 <%="User=#{puma_user(@role)}" if fetch(:puma_systemctl_user) == :system %>
 WorkingDirectory=<%= current_path %>
-ExecStart=<%= expanded_bundle_command %> exec --keep-file-descriptors puma -e <%= fetch(:puma_env) %> -C <%= shared_path %>/puma.rb
+ExecStart=<%= expanded_bundle_command %> exec --keep-file-descriptors puma -e <%= fetch(:puma_env) %> -C <%= shared_path %>/config/puma.rb
 ExecReload=/bin/kill -USR1 $MAINPID
 PIDFile=<%= fetch(:puma_pid)%>
 <%- Array(fetch(:puma_service_unit_env_files)).each do |file| %>
