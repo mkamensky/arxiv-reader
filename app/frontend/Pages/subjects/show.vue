@@ -5,14 +5,26 @@
         <q-btn
           dense
           flat
-          round
+          rounded
           icon="$menu"
           @click="leftDrawerOpen = !leftDrawerOpen"
         />
 
         <q-toolbar-title>{{ subject.label }}</q-toolbar-title>
 
-        <q-btn icon="$event" color="secondary" :label="date" />
+        <q-btn-group>
+          <q-btn color="amber" text-color="black" glossy icon="$menuLeft" @click="prevDate" />
+            <q-btn color="amber" text-color="black" glossy ripple icon="$event" :label="date">
+              <q-popup-proxy
+                cover
+                transition-show="scale"
+                transition-hide="scale">
+                <q-date :model-value="date" @update:model-value="saveDate" today-btn mask="YYYY-MM-DD" v-close-popup />
+              </q-popup-proxy>
+            </q-btn>
+            <q-btn color="amber" text-color="black" glossy icon="$menuRight" @click="nextDate" />
+        </q-btn-group>
+
 
         <q-btn
           dense
@@ -20,7 +32,7 @@
           round
           icon="$menu"
           @click="rightDrawerOpen = !rightDrawerOpen"
-        />
+          />
       </q-toolbar>
       <q-tabs
         align="justify"
@@ -35,7 +47,7 @@
         inline-label
         no-caps
         class="bg-info text-black"
-      >
+        >
         <q-route-tab
           v-for="item in cats"
           :key="item"
@@ -43,7 +55,7 @@
           :label="item"
           :href="`#${item}`"
           :class="tabClass(item)"
-        />
+          />
       </q-tabs>
     </q-header>
 
@@ -53,7 +65,7 @@
       side="left"
       bordered
       column
-    >
+      >
       <div class="q-pa-md relative-position">
         <h6 class="q-ma-sm">Categories</h6>
         <q-option-group
@@ -62,7 +74,7 @@
           type="toggle"
           class="scroll overflow-auto"
           style="max-height: 500px"
-        />
+          />
       </div>
     </q-drawer>
 
@@ -76,12 +88,11 @@
           <ar-category
             v-for="cat in cats"
             :key="cat"
-            :data-cat="cat"
             :object="catOf(cat)"
             :papers="papers[cat]"
             class="q-ma-md"
             v-intersection="setCur"
-          />
+            />
         </div>
       </q-page>
     </q-page-container>
@@ -93,7 +104,7 @@
         </q-toolbar-title>
       </q-toolbar>
     </q-footer>
-  </q-layout>
+   </q-layout>
 
 </template>
 
@@ -116,8 +127,8 @@ export default {
       leftDrawerOpen: false,
       rightDrawerOpen: false,
       cats:
-        this.$q.localStorage.getItem('cats') ||
-        this.categories.map((cat) => cat.value),
+      this.$q.localStorage.getItem('cats') ||
+      this.categories.map((cat) => cat.value),
     }
   },
   computed: {
@@ -131,12 +142,29 @@ export default {
     },
     setCur(entry) {
       if (entry.isIntersecting) {
-        this.curCat = entry.target.dataset.cat
+        this.curCat = entry.target.id
       }
+      return true
     },
     tabClass(cat) {
       return (this.curCat === cat) ? 'q-tab--active' : ''
     },
+    saveDate(value, reason, details) {
+      this.$inertia.reload({
+        preserveScroll: false,
+        data: {
+          date: value,
+        },
+        only: ['papers', 'date'],
+      })
+    },
+    prevDate() {
+      this.saveDate(`${this.date}-`)
+    },
+    nextDate() {
+      this.saveDate(`${this.date}+`)
+    },
+
   },
   watch: {
     cats: {

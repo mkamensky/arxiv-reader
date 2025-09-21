@@ -16,9 +16,15 @@ class SubjectsController < ApplicationController
   end
 
   def date
-    @date ||= Date.parse(params[:date])
+    return @date if @date
+
+    prv = params[:date].sub!(/-$/, '')
+    nxt = params[:date].sub!(/\+$/, '')
+    @date = Date.parse(params[:date])
+    @date = subject&.last_before(@date) if prv
+    @date = subject&.first_after(@date) if nxt
   rescue TypeError
-    @date ||= subject&.last_update || (Time.zone.today - 1.day)
+    @date = subject&.last_update || (Time.zone.today - 1.day)
   end
 
   def papers

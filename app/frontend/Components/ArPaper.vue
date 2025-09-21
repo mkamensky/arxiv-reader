@@ -1,4 +1,5 @@
 <template>
+  <article>
   <q-card>
     <q-card-actions class="bg-teal text-white">
       <div>
@@ -104,6 +105,7 @@
       </q-card-section>
     </q-slide-transition>
   </q-card>
+  </article>
 </template>
 
 <script>

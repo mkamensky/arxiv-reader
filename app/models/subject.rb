@@ -14,8 +14,16 @@ class Subject < ApplicationRecord
     Paper.with_subject(arxiv)
   end
 
+  def first_after(date = ARXIV_EPOCH)
+    papers.where(submitted: (date + 1.day)...).minimum(:submitted)
+  end
+
+  def last_before(date = Time.zone.today + 1.day)
+    papers.where(submitted: ...date).maximum(:submitted)
+  end
+
   def last_update
-    papers.maximum(:submitted) || ARXIV_EPOCH
+    last_before || ARXIV_EPOCH
   end
 
   def refresh_from_arxiv(**opts)

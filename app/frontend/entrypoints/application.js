@@ -110,6 +110,8 @@ const myIcons = {
   pdf: 'mdi-file-pdf-box',
   download: 'mdi-download-box',
   event: 'mdi-calendar-today',
+  menuLeft: 'mdi-menu-left',
+  menuRight: 'mdi-menu-right',
 }
 
 const pages = import.meta.glob('../Pages/**/*.vue', { eager: true })
