@@ -28,7 +28,7 @@ set :deploy_to, '/home/deploy/arxiv-reader'
 set :pty, true
 
 # Default value for :linked_files is []
-append :linked_files, "config/database.yml", 'config/master.key', 'config/puma.rb'
+append :linked_files, "config/database.yml", 'config/master.key'
 
 namespace :deploy do
   namespace :check do
