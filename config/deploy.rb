@@ -89,9 +89,11 @@ set :puma_enable_socket_service, true # mendatory in our case
 set :puma_service_unit_env_vars, %W[
   RBENV_ROOT=/home/deploy/.rbenv
   RBENV_VERSION=#{fetch(:rbenv_ruby)}
+  RAILS_ENV=#{fetch(:stage)}
+  PUMA_SOCKET=#{fetch(:puma_bind)}
 ]
 
 # nginx
-set :nginx_config_name, 'arxiv-reader'
+set :nginx_config_name, fetch(:application)
 set :nginx_server_name, 'dibbler.verymad.net'
 set :nginx_use_ssl, false # will be handled by certbot

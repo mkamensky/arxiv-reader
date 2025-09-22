@@ -1,5 +1,5 @@
 <template>
-   <q-layout view="hHh LpR lFr">
+  <q-layout view="hHh LpR lFr">
     <q-header elevated class="bg-primary text-white" height-hint="98">
       <q-toolbar>
         <q-btn
@@ -8,22 +8,22 @@
           rounded
           icon="$menu"
           @click="leftDrawerOpen = !leftDrawerOpen"
-        />
+          />
 
-        <q-toolbar-title>{{ subject.label }}</q-toolbar-title>
+          <q-toolbar-title>{{ subject.label }}</q-toolbar-title>
 
-        <q-btn-group>
-          <q-btn color="amber" text-color="black" glossy icon="$menuLeft" @click="prevDate" />
-          <q-btn color="amber" text-color="black" glossy ripple icon="$event" :label="date">
-            <q-popup-proxy
-              cover
-              transition-show="scale"
-              transition-hide="scale">
-              <q-date :model-value="date" @update:model-value="saveDate" today-btn mask="YYYY-MM-DD" v-close-popup />
-            </q-popup-proxy>
-          </q-btn>
-          <q-btn color="amber" text-color="black" glossy icon="$menuRight" @click="nextDate" />
-        </q-btn-group>
+          <q-btn-group>
+            <q-btn color="amber" text-color="black" glossy icon="$menuLeft" @click="prevDate" />
+            <q-btn color="amber" text-color="black" glossy ripple icon="$event" :label="date">
+              <q-popup-proxy
+                cover
+                transition-show="scale"
+                transition-hide="scale">
+                <q-date :model-value="date" @update:model-value="saveDate" today-btn mask="YYYY-MM-DD" v-close-popup />
+              </q-popup-proxy>
+            </q-btn>
+            <q-btn color="amber" text-color="black" glossy icon="$menuRight" @click="nextDate" />
+          </q-btn-group>
 
       </q-toolbar>
       <q-tabs
@@ -85,7 +85,7 @@
       </q-page>
     </q-page-container>
 
-   </q-layout>
+  </q-layout>
 
 </template>
 
@@ -108,7 +108,7 @@ export default {
       leftDrawerOpen: false,
       cats:
       this.$q.localStorage.getItem('cats') ||
-      this.categories.map((cat) => cat.value),
+      this.subject.categories.map((cat) => cat.value),
     }
   },
   computed: {
