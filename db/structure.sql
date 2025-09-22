@@ -1,6 +1,7 @@
 SET statement_timeout = 0;
 SET lock_timeout = 0;
 SET idle_in_transaction_session_timeout = 0;
+SET transaction_timeout = 0;
 SET client_encoding = 'UTF8';
 SET standard_conforming_strings = on;
 SELECT pg_catalog.set_config('search_path', '', false);
@@ -385,11 +386,7 @@ CREATE TABLE public.users (
     author_id bigint,
     created_at timestamp(6) without time zone NOT NULL,
     updated_at timestamp(6) without time zone NOT NULL,
-    prefs jsonb DEFAULT '{}'::jsonb NOT NULL,
-    encrypted_password character varying DEFAULT ''::character varying NOT NULL,
-    reset_password_token character varying,
-    reset_password_sent_at timestamp(6) without time zone,
-    remember_created_at timestamp(6) without time zone
+    prefs jsonb DEFAULT '{}'::jsonb NOT NULL
 );
 
 
@@ -790,13 +787,6 @@ CREATE UNIQUE INDEX index_users_on_email ON public.users USING btree (email);
 
 
 --
--- Name: index_users_on_reset_password_token; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE UNIQUE INDEX index_users_on_reset_password_token ON public.users USING btree (reset_password_token);
-
-
---
 -- Name: bookmarks fk_rails_0560fccafc; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -907,22 +897,22 @@ ALTER TABLE ONLY public.recommendations
 SET search_path TO "$user", public;
 
 INSERT INTO "schema_migrations" (version) VALUES
-('20230715145201'),
-('20230715150048'),
-('20230715211303'),
-('20230715215812'),
-('20230715221956'),
-('20230716050204'),
-('20230716050339'),
-('20230716051011'),
-('20230716052228'),
-('20230716053617'),
-('20230716053905'),
-('20230716055143'),
-('20230716063858'),
-('20230716064651'),
-('20230716070432'),
+('20250922213144'),
+('20230717130228'),
 ('20230716073038'),
-('20230717130228');
-
+('20230716070432'),
+('20230716064651'),
+('20230716063858'),
+('20230716055143'),
+('20230716053905'),
+('20230716053617'),
+('20230716052228'),
+('20230716051011'),
+('20230716050339'),
+('20230716050204'),
+('20230715221956'),
+('20230715215812'),
+('20230715211303'),
+('20230715150048'),
+('20230715145201');
 
