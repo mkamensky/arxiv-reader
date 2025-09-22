@@ -2,6 +2,7 @@
 
 class Author < ApplicationRecord
   include FriendlyId
+
   friendly_id :arxiv
 
   has_many_through :papers, :authorships
@@ -11,6 +12,10 @@ class Author < ApplicationRecord
 
   validates :name, presence: true
   validates :arxiv, uniqueness: true
+
+  def label
+    name
+  end
 
   scope :in_category, ->(cat) {
     joins(papers: :category).distinct.where(
@@ -26,13 +31,23 @@ class Author < ApplicationRecord
 
   before_validation :update_arxiv
 
-  def self.arxiv_base(name)
-    parts = name.split
-    parts.reduce(parts.pop) { |res, it| "#{res}_#{it[0]}" }.parameterize
-  end
-
   def arxiv_base
     @arxiv_base ||= self.class.arxiv_base(name)
+  end
+
+  class << self
+    def arxiv_base(name)
+      parts = name.split
+      parts.reduce(parts.pop) { |res, item| "#{res}_#{item.first}" }.parameterize
+    end
+
+    def inertia_params
+      super.vdeep_merge(
+        include: {
+          papers: Paper.inertia_params,
+        },
+      )
+    end
   end
 
   protected

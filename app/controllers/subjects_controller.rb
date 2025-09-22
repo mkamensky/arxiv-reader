@@ -1,10 +1,10 @@
 class SubjectsController < ApplicationController
-  def index
-    render_page
-  end
-
   def show
-    render_page('show')
+    render inertia: {
+      subject: -> { subject&.inertia_json },
+      papers: -> { papers },
+      date: -> { date },
+    }
   end
 
   protected
@@ -31,13 +31,5 @@ class SubjectsController < ApplicationController
     @papers ||= subject&.categories&.to_h do
       [it.arxiv, it.papers.where(submitted: date).as_json(Paper.inertia_params)]
     end
-  end
-
-  def render_page(page = 'index')
-    render inertia: "subjects/#{page}", props: {
-      subject: -> { subject&.inertia_json },
-      papers: -> { papers },
-      date: -> { date },
-    }
   end
 end
