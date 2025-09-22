@@ -1,7 +1,7 @@
 class SubjectsController < ApplicationController
   def show
     render inertia: {
-      subject: -> { subject&.inertia_json },
+      subject: -> { subject&.inertia_json(include: { categories: Category.inertia_params }) },
       papers: -> { papers },
       date: -> { date },
     }
@@ -29,7 +29,7 @@ class SubjectsController < ApplicationController
 
   def papers
     @papers ||= subject&.categories&.to_h do
-      [it.arxiv, it.papers.where(submitted: date).as_json(Paper.inertia_params)]
+      [it.arxiv, it.papers.where(submitted: date).as_json(Paper.inertia_params(include: { authors: Author.inertia_params }))]
     end
   end
 end

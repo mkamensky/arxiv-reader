@@ -46,14 +46,6 @@ class Subject < ApplicationRecord
   end
 
   class << self
-    def inertia_params
-      super.vdeep_merge(
-        include: {
-          categories: Category.inertia_params,
-        },
-      )
-    end
-
     def from_category(cid)
       cid = cid.to_s.downcase
       ar = case cid

@@ -5,7 +5,7 @@
       <div>
         <q-btn-group push class="q-mb-sm">
           <q-btn
-            :href="$show_path('papers', object.arxiv)"
+            :href="$show_path('papers', object.value)"
             color="amber"
             text-color="black"
             no-caps
@@ -25,7 +25,7 @@
             color="orange-7"
             text-color="black"
             dense
-            :download="`${object.arxiv}.pdf`"
+            :download="`${object.value}.pdf`"
           />
           <q-btn
             icon="svguse:/icons.svg#arxiv"
@@ -39,8 +39,8 @@
           <q-btn
             v-for="author in object.authors"
             :key="author.id"
-            :href="$show_path('authors', author.arxiv)"
-            :label="$mdi(author.name)"
+            :href="$show_path('authors', author.value)"
+            :label="$mdi(author.label)"
             text-color="primary"
             color="white"
             no-caps

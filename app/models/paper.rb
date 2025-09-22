@@ -72,15 +72,12 @@ class Paper < ApplicationRecord
       papers.each_value { create_from_arxiv(it) }
     end
 
-    def inertia_params
+    def inertia_params(**opts)
       super.vdeep_merge(
         only: %i[
-          abs arxiv abstract comment category_id id journal_ref pdf
+          abs abstract comment category_id id journal_ref pdf
           submitted revised tags version
         ],
-        include: {
-          authors: { only: %i[name arxiv] },
-        },
       )
     end
   end

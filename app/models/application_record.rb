@@ -31,15 +31,16 @@ class ApplicationRecord < ActiveRecord::Base
       arxiv(id)
     end
 
-    def inertia_params
+    def inertia_params(**opts)
       {
         only: %i[],
         methods: %i[label value],
+        **opts,
       }
     end
   end
 
-  def inertia_json
-    as_json(self.class.inertia_params)
+  def inertia_json(**)
+    as_json(self.class.inertia_params(**))
   end
 end

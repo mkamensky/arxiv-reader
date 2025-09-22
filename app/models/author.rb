@@ -40,14 +40,6 @@ class Author < ApplicationRecord
       parts = name.split
       parts.reduce(parts.pop) { |res, item| "#{res}_#{item.first}" }.parameterize
     end
-
-    def inertia_params
-      super.vdeep_merge(
-        include: {
-          papers: Paper.inertia_params,
-        },
-      )
-    end
   end
 
   protected
