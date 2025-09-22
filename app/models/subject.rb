@@ -31,7 +31,7 @@ class Subject < ApplicationRecord
     require 'arxiv/api'
     res = []
     Arxiv::Api::Paper.from_oai(
-      set: arxiv, from: last_update.to_date, **opts,
+      set: arxiv, from: last_update.to_date - 3.days, **opts,
     ) do
       next unless it
 
