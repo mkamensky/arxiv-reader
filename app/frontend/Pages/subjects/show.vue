@@ -1,13 +1,18 @@
 <template>
   <q-header elevated class="bg-primary text-white" height-hint="98">
     <q-toolbar>
-      <q-btn
-        dense
-        flat
-        rounded
-        icon="$menu"
-        @click="leftDrawerOpen = !leftDrawerOpen"
-        />
+      <left-drawer>
+        <div class="q-pa-md relative-position">
+          <h6 class="q-ma-sm">Categories</h6>
+          <q-option-group
+            v-model="cats"
+            :options="categories"
+            type="toggle"
+            class="scroll overflow-auto"
+            style="max-height: 500px"
+            />
+        </div>
+      </left-drawer>
 
         <q-toolbar-title>{{ subject.label }}</q-toolbar-title>
 
@@ -25,6 +30,7 @@
         </q-btn-group>
 
     </q-toolbar>
+
     <q-tabs
       align="justify"
       outside-arrows
@@ -50,24 +56,6 @@
     </q-tabs>
   </q-header>
 
-  <q-drawer
-    v-model="leftDrawerOpen"
-    show-if-above
-    side="left"
-    bordered
-    column
-    >
-    <div class="q-pa-md relative-position">
-      <h6 class="q-ma-sm">Categories</h6>
-      <q-option-group
-        v-model="cats"
-        :options="categories"
-        type="toggle"
-        class="scroll overflow-auto"
-        style="max-height: 500px"
-        />
-    </div>
-  </q-drawer>
 
   <q-page-container>
     <q-page padding class="q-pt-xl">
@@ -85,14 +73,15 @@
 
   </q-page-container>
 
-
 </template>
 
 <script>
 import ArCategory from '@/Components/ArCategory.vue'
+import LeftDrawer from '@/Components/LeftDrawer.vue'
 
 export default {
   components: {
+    LeftDrawer,
     ArCategory,
   },
 
@@ -104,7 +93,6 @@ export default {
   data() {
     return {
       curCat: null,
-      leftDrawerOpen: false,
       cats:
       this.$q.localStorage.getItem('cats') ||
       this.subject.categories.map((cat) => cat.value),
