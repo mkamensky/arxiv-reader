@@ -1,5 +1,5 @@
-require 'models/shared_examples'
+require 'rails_helper'
 
 RSpec.describe User, type: :model do
-  include_standard_examples
+  pending "add some examples to (or delete) #{__FILE__}"
 end

@@ -1,4 +1,6 @@
 Rails.application.routes.draw do
+  resource :session
+  resources :passwords, param: :token
   constraints(id: %r{[^/]+}) do
     resources :subjects, export: true
     resources :authors, export: true

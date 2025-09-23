@@ -4,6 +4,8 @@ class User < ApplicationRecord
   include FriendlyId
 
   friendly_id :arxiv, use: %i[finders]
+  has_secure_password
+  has_many :sessions, dependent: :destroy
 
   belongs_to :author, optional: true
   has_many_through :papers, :bookmarks
@@ -12,5 +14,5 @@ class User < ApplicationRecord
   has_many_through :authors, :followships
 
   validates :email, presence: true, uniqueness: true
-  before_save { email&.downcase! }
+  normalizes :email, with: ->(e) { e.strip.downcase }
 end

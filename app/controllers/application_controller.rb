@@ -1,4 +1,5 @@
 class ApplicationController < ActionController::Base
+  include Authentication
   include InertiaCsrf
 
   use_inertia_instance_props

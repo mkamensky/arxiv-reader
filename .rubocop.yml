@@ -69,6 +69,9 @@ Style/ClassAndModuleChildren:
 Style/ClassMethodsDefinitions:
   Enabled: false
 
+Style/EmptyMethod:
+  EnforcedStyle: expanded
+
 Style/ItBlockParameter:
   EnforcedStyle: always
 
