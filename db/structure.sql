@@ -344,6 +344,39 @@ CREATE TABLE public.schema_migrations (
 
 
 --
+-- Name: sessions; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.sessions (
+    id bigint NOT NULL,
+    user_id bigint NOT NULL,
+    ip_address character varying,
+    user_agent character varying,
+    created_at timestamp(6) without time zone NOT NULL,
+    updated_at timestamp(6) without time zone NOT NULL
+);
+
+
+--
+-- Name: sessions_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE public.sessions_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: sessions_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE public.sessions_id_seq OWNED BY public.sessions.id;
+
+
+--
 -- Name: subjects; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -386,7 +419,8 @@ CREATE TABLE public.users (
     author_id bigint,
     created_at timestamp(6) without time zone NOT NULL,
     updated_at timestamp(6) without time zone NOT NULL,
-    prefs jsonb DEFAULT '{}'::jsonb NOT NULL
+    prefs jsonb DEFAULT '{}'::jsonb NOT NULL,
+    password_digest character varying
 );
 
 
@@ -470,6 +504,13 @@ ALTER TABLE ONLY public.papers ALTER COLUMN id SET DEFAULT nextval('public.paper
 --
 
 ALTER TABLE ONLY public.recommendations ALTER COLUMN id SET DEFAULT nextval('public.recommendations_id_seq'::regclass);
+
+
+--
+-- Name: sessions id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.sessions ALTER COLUMN id SET DEFAULT nextval('public.sessions_id_seq'::regclass);
 
 
 --
@@ -572,6 +613,14 @@ ALTER TABLE ONLY public.recommendations
 
 ALTER TABLE ONLY public.schema_migrations
     ADD CONSTRAINT schema_migrations_pkey PRIMARY KEY (version);
+
+
+--
+-- Name: sessions sessions_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.sessions
+    ADD CONSTRAINT sessions_pkey PRIMARY KEY (id);
 
 
 --
@@ -766,6 +815,13 @@ CREATE INDEX index_recommendations_on_user_id ON public.recommendations USING bt
 
 
 --
+-- Name: index_sessions_on_user_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_sessions_on_user_id ON public.sessions USING btree (user_id);
+
+
+--
 -- Name: index_subjects_on_arxiv; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -816,6 +872,14 @@ ALTER TABLE ONLY public.categorisations
 
 ALTER TABLE ONLY public.followships
     ADD CONSTRAINT fk_rails_458330adae FOREIGN KEY (user_id) REFERENCES public.users(id);
+
+
+--
+-- Name: sessions fk_rails_758836b4f0; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.sessions
+    ADD CONSTRAINT fk_rails_758836b4f0 FOREIGN KEY (user_id) REFERENCES public.users(id);
 
 
 --
@@ -897,6 +961,8 @@ ALTER TABLE ONLY public.recommendations
 SET search_path TO "$user", public;
 
 INSERT INTO "schema_migrations" (version) VALUES
+('20250922215550'),
+('20250922215549'),
 ('20250922213144'),
 ('20230717130228'),
 ('20230716073038'),

@@ -1,91 +1,90 @@
 <template>
-  <q-layout view="hHh LpR lFr">
-    <q-header elevated class="bg-primary text-white" height-hint="98">
-      <q-toolbar>
-        <q-btn
-          dense
-          flat
-          rounded
-          icon="$menu"
-          @click="leftDrawerOpen = !leftDrawerOpen"
-          />
+  <q-header elevated class="bg-primary text-white" height-hint="98">
+    <q-toolbar>
+      <q-btn
+        dense
+        flat
+        rounded
+        icon="$menu"
+        @click="leftDrawerOpen = !leftDrawerOpen"
+        />
 
-          <q-toolbar-title>{{ subject.label }}</q-toolbar-title>
+        <q-toolbar-title>{{ subject.label }}</q-toolbar-title>
 
-          <q-btn-group>
-            <q-btn color="amber" text-color="black" glossy icon="$menuLeft" @click="prevDate" />
-            <q-btn color="amber" text-color="black" glossy ripple icon="$event" :label="date">
-              <q-popup-proxy
-                cover
-                transition-show="scale"
-                transition-hide="scale">
-                <q-date :model-value="date" @update:model-value="saveDate" today-btn mask="YYYY-MM-DD" v-close-popup />
-              </q-popup-proxy>
-            </q-btn>
-            <q-btn color="amber" text-color="black" glossy icon="$menuRight" @click="nextDate" />
-          </q-btn-group>
+        <q-btn-group>
+          <q-btn color="amber" text-color="black" glossy icon="$menuLeft" @click="prevDate" />
+          <q-btn color="amber" text-color="black" glossy ripple icon="$event" :label="date">
+            <q-popup-proxy
+              cover
+              transition-show="scale"
+              transition-hide="scale">
+              <q-date :model-value="date" @update:model-value="saveDate" today-btn mask="YYYY-MM-DD" v-close-popup />
+            </q-popup-proxy>
+          </q-btn>
+          <q-btn color="amber" text-color="black" glossy icon="$menuRight" @click="nextDate" />
+        </q-btn-group>
 
-      </q-toolbar>
-      <q-tabs
-        align="justify"
-        outside-arrows
-        indicator-color="red"
-        color="yellow"
-        active-color="red"
-        active-class="active"
-        switch-indicator
-        shrink
-        stretch
-        inline-label
-        no-caps
-        class="bg-info text-black"
-        >
-        <q-route-tab
-          v-for="item in cats"
-          :key="item"
-          :name="item"
-          :label="item"
-          :href="`#${item}`"
-          :class="tabClass(item)"
-          />
-      </q-tabs>
-    </q-header>
-
-    <q-drawer
-      v-model="leftDrawerOpen"
-      show-if-above
-      side="left"
-      bordered
-      column
+    </q-toolbar>
+    <q-tabs
+      align="justify"
+      outside-arrows
+      indicator-color="red"
+      color="yellow"
+      active-color="red"
+      active-class="active"
+      switch-indicator
+      shrink
+      stretch
+      inline-label
+      no-caps
+      class="bg-info text-black"
       >
-      <div class="q-pa-md relative-position">
-        <h6 class="q-ma-sm">Categories</h6>
-        <q-option-group
-          v-model="cats"
-          :options="categories"
-          type="toggle"
-          class="scroll overflow-auto"
-          style="max-height: 500px"
+      <q-route-tab
+        v-for="item in cats"
+        :key="item"
+        :name="item"
+        :label="item"
+        :href="`#${item}`"
+        :class="tabClass(item)"
+        />
+    </q-tabs>
+  </q-header>
+
+  <q-drawer
+    v-model="leftDrawerOpen"
+    show-if-above
+    side="left"
+    bordered
+    column
+    >
+    <div class="q-pa-md relative-position">
+      <h6 class="q-ma-sm">Categories</h6>
+      <q-option-group
+        v-model="cats"
+        :options="categories"
+        type="toggle"
+        class="scroll overflow-auto"
+        style="max-height: 500px"
+        />
+    </div>
+  </q-drawer>
+
+  <q-page-container>
+    <q-page padding class="q-pt-xl">
+      <div>
+        <ar-category
+          v-for="cat in cats"
+          :key="cat"
+          :object="catOf(cat)"
+          :papers="papers[cat]"
+          class="q-ma-md"
+          v-intersection="setCur"
           />
       </div>
-    </q-drawer>
+    </q-page>
 
-    <q-page-container>
-      <q-page padding class="q-pt-xl">
-        <div>
-          <ar-category
-            v-for="cat in cats"
-            :key="cat"
-            :object="catOf(cat)"
-            :papers="papers[cat]"
-            class="q-ma-md"
-            v-intersection="setCur"
-            />
-        </div>
-      </q-page>
-    </q-page-container>
+  </q-page-container>
 
-  </q-layout>
 
 </template>
 

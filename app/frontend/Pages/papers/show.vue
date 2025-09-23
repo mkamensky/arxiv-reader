@@ -1,28 +1,27 @@
 <template>
-  <q-layout view="hHh LpR lFr">
-    <q-header elevated class="bg-primary text-white" height-hint="98">
-      <q-toolbar>
-        <q-btn
-          dense
-          flat
-          rounded
-          icon="$menu"
-          @click="leftDrawerOpen = !leftDrawerOpen"
+  <q-header elevated class="bg-primary text-white" height-hint="98">
+    <q-toolbar>
+      <q-btn
+        dense
+        flat
+        rounded
+        icon="$menu"
+        @click="leftDrawerOpen = !leftDrawerOpen"
         />
 
         <q-toolbar-title>{{ paper.label }}</q-toolbar-title>
 
-      </q-toolbar>
-    </q-header>
+    </q-toolbar>
+  </q-header>
 
-    <q-drawer
-      v-model="leftDrawerOpen"
-      show-if-above
-      side="left"
-      bordered
-      column
-      >
-      <div class="q-ma-md q-pt-lg">
+  <q-drawer
+    v-model="leftDrawerOpen"
+    show-if-above
+    side="left"
+    bordered
+    column
+    >
+    <div class="q-ma-md q-pt-lg">
       <q-list separator>
         <q-item-label header>Authors</q-item-label>
 
@@ -32,12 +31,12 @@
           :href="$show_path('authors', author.value)"
           clickable
           v-ripple
-        >
+          >
           <q-item-section avatar>
             <q-icon name="$bulletRight" />
           </q-item-section>
           <q-item-section v-html="$mdi(author.label)" />
-        </q-item>
+          </q-item>
       </q-list>
 
       <q-list separator>
@@ -77,31 +76,29 @@
       <div v-if="paper.comment">
         <h6>Comments</h6>
         <div v-html="$md(paper.comment)" />
+        </div>
+
+        <q-btn
+          icon="svguse:/icons.svg#arxiv"
+          :href="paper.abs"
+          color="orange-8"
+          text-color="black"
+          dense
+          >
+          View on the ArXiv
+        </q-btn>
       </div>
+  </q-drawer>
 
-      <q-btn
-        icon="svguse:/icons.svg#arxiv"
-        :href="paper.abs"
-        color="orange-8"
-        text-color="black"
-        dense
-        >
-        View on the ArXiv
-      </q-btn>
-      </div>
-    </q-drawer>
-
-    <q-page-container>
-      <q-page padding class="q-pt-xl">
-        <article>
-          <q-responsive ratio="1.6">
-            <object :data="paper.pdf" type="application/pdf" width=99% height=99% />
-          </q-responsive>
-        </article>
-      </q-page>
-    </q-page-container>
-
-  </q-layout>
+  <q-page-container>
+    <q-page padding class="q-pt-xl">
+      <article>
+        <q-responsive ratio="1.6">
+          <object :data="paper.pdf" type="application/pdf" width=99% height=99% />
+        </q-responsive>
+      </article>
+    </q-page>
+  </q-page-container>
 
 </template>
 

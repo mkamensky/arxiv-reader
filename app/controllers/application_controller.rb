@@ -5,9 +5,9 @@ class ApplicationController < ActionController::Base
   use_inertia_instance_props
 
   inertia_share auth: -> {
-    if user_signed_in?
+    if authenticated?
       {
-        user: current_user.email,
+        user: Current.user.email,
       }
     end
   }
