@@ -6,6 +6,9 @@ class SessionsController < ApplicationController
   end
 
   def create
+    user_info = request.env['omniauth.auth']
+    raise user_info
+
     if (user = User.authenticate_by(params.permit(:email, :password)))
       start_new_session_for user
       redirect_to after_authentication_url

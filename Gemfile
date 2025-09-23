@@ -3,12 +3,11 @@
 source 'https://rubygems.org'
 git_source(:github) { "https://github.com/#{it}.git" }
 
-ruby '~>3'
+ruby '>=3.4'
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails', branch: 'main'
 gem 'rails', '>=8'
 
-# Use sqlite3 as the database for Active Record
 gem 'pg'
 
 # Use Active Model has_secure_password
@@ -20,8 +19,6 @@ gem 'bootsnap', require: false
 
 # Use Active Storage variants [https://guides.rubyonrails.org/active_storage_overview.html#transforming-images]
 # gem 'image_processing', '~> 1.2'
-
-gem 'devise'
 
 # Use the Puma web server [https://github.com/puma/puma]
 gem 'puma', '>=6.0'
@@ -57,6 +54,8 @@ group :development do
   # Speed up commands on slow machines / big apps [https://github.com/rails/spring]
   gem 'spring'
 
+  gem 'amazing_print'
+
   gem "capistrano", require: false
   gem 'capistrano3-puma', '>= 6.2', require: false
   gem "capistrano-rails", require: false
@@ -81,21 +80,20 @@ gem 'vite_rails', '>=3.0'
 
 gem 'js_from_routes'
 
-gem 'sqlite3', require: false # to interface with asl
+#gem 'sqlite3', require: false # to interface with asl
 
 # fast json
 gem 'oj'
 
-gem 'amazing_print'
-#gem 'rails_semantic_logger'
 gem 'friendly_id'
-#gem 'pagy'
 gem 'faraday', require: false
 gem 'faraday-retry', require: false
 gem 'faraday-follow_redirects', require: false
 gem 'feedjira', require: false
 gem 'oai', require: false
 gem 'libxml-ruby', require: false
+gem 'omniauth'
+gem "omniauth-rails_csrf_protection"
 
 group :production do
   gem 'sd_notify'
