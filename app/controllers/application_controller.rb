@@ -5,11 +5,9 @@ class ApplicationController < ActionController::Base
   use_inertia_instance_props
 
   inertia_share auth: -> {
-    if authenticated?
-      {
-        user: Current.user.email,
-      }
-    end
+    {
+      user: Current.user&.inertia_json,
+    }
   }
 
   inertia_share head: -> { page_head }

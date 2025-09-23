@@ -6,19 +6,24 @@ class SessionsController < ApplicationController
   end
 
   def create
-    user_info = request.env['omniauth.auth']
-    raise user_info
+    @user_info = request.env['omniauth.auth']
 
-    if (user = User.authenticate_by(params.permit(:email, :password)))
+    if (user = User.authenticate_by(user_params))
       start_new_session_for user
-      redirect_to after_authentication_url
+      redirect_back_or_to after_authentication_url
     else
-      redirect_to new_session_path, alert: "Try another email address or password."
+      redirect_back_or_to after_authentication_url, inertia: { errors: { base: 'Auth failed!' } }
     end
   end
 
   def destroy
     terminate_session
     redirect_to new_session_path
+  end
+
+  protected
+
+  def user_params
+    params.expect(session: %i[email password])
   end
 end

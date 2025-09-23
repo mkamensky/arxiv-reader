@@ -24,6 +24,8 @@ gem 'bootsnap', require: false
 gem 'puma', '>=6.0'
 
 group :development, :test do
+  gem 'js_from_routes'
+
   # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem
   gem 'debug', platforms: %i[mri]
 
@@ -77,8 +79,6 @@ end
 gem 'inertia_rails', '>=3.0'
 
 gem 'vite_rails', '>=3.0'
-
-gem 'js_from_routes'
 
 #gem 'sqlite3', require: false # to interface with asl
 

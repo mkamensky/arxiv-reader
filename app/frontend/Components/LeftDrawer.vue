@@ -4,10 +4,10 @@
         flat
         rounded
         icon="$menu"
-        @click="leftDrawerOpen = !leftDrawerOpen"
+        @click="drawerOpen = !drawerOpen"
         />
   <q-drawer
-    v-model="leftDrawerOpen"
+    v-model="drawerOpen"
     show-if-above
     side="left"
     bordered
@@ -26,7 +26,7 @@ export default {
   },
   data() {
     return {
-      leftDrawerOpen: false,
+      drawerOpen: false,
     }
   },
   computed: {
