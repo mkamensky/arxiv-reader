@@ -3,7 +3,7 @@
 class User < ApplicationRecord
   include FriendlyId
 
-  friendly_id :arxiv, use: %i[finders]
+  friendly_id :email, use: %i[finders]
   has_secure_password
   has_many :sessions, dependent: :destroy
 
@@ -15,4 +15,12 @@ class User < ApplicationRecord
 
   validates :email, presence: true, uniqueness: true
   normalizes :email, with: ->(e) { e.strip.downcase }
+
+  def label
+    name || email
+  end
+
+  def value
+    email
+  end
 end

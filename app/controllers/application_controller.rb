@@ -12,9 +12,15 @@ class ApplicationController < ActionController::Base
 
   inertia_share head: -> { page_head }
 
+  inertia_share flash: -> { flash.to_hash }
+
   protected
 
   def page_head
     {}
+  end
+
+  def redir_back(**opts)
+    redirect_back_or_to after_authentication_url, inertia: opts
   end
 end

@@ -1,9 +1,6 @@
 class SessionsController < ApplicationController
-  before_action :require_authentication, except: %i[new create]
+  before_action :require_authentication, except: %i[create]
   rate_limit to: 10, within: 3.minutes, only: :create, with: -> { redirect_to new_session_url, alert: "Try again later." }
-
-  def new
-  end
 
   def create
     @user_info = request.env['omniauth.auth']
