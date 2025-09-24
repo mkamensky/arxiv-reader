@@ -1,5 +1,8 @@
 class UsersController < ApplicationController
-  rate_limit to: 10, within: 3.minutes, only: :create, with: -> { redir_back(messages: { alert: 'Try again later' }) }
+  rate_limit to: 10, within: 3.minutes, only: :create, with: -> {
+    flash.alert = 'Try again later'
+    redir_back
+  }
 
   def create
     user = User.create(user_params)
