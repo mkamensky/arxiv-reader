@@ -40,27 +40,17 @@
       <login-form v-else />
     </q-drawer>
 
-    <slot />
+    <q-page-container>
+      <slot />
+    </q-page-container>
 
-    <q-banner
-      v-if="$page.props.flash.alert"
-      inline-actions
-      class="bg-warning"
-      >
+    <q-banner v-if="$page.props.flash.alert" inline-actions class="bg-warning">
       {{ $page.props.flash.alert }}
     </q-banner>
-    <q-banner
-      v-if="$page.props.flash.notice"
-      inline-actions
-      class="bg-info"
-      >
+    <q-banner v-if="$page.props.flash.notice" inline-actions class="bg-info">
       {{ $page.props.flash.notice }}
     </q-banner>
-    <q-banner
-      v-if="$page.props.flash.error"
-      inline-actions
-      class="bg-accent"
-      >
+    <q-banner v-if="$page.props.flash.error" inline-actions class="bg-accent">
       {{ $page.props.flash.error }}
     </q-banner>
   </q-layout>

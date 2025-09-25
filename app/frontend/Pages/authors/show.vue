@@ -1,25 +1,17 @@
 <template>
-  <q-page-container>
-    <q-page
-      padding
-      class="q-pt-xl"
-    >
-      <div
-        v-if="papers?.length"
-        class="row"
-      >
-        <ar-paper
-          v-for="paper in papers"
-          :key="paper.id"
-          :object="paper"
-          class="q-pa-md col-12 col-lg-6"
+  <q-page padding class="q-pt-xl" >
+    <div v-if="papers?.length" class="row">
+      <ar-paper
+        v-for="paper in papers"
+        :key="paper.id"
+        :object="paper"
+        class="q-pa-md col-12 col-lg-6"
         />
-      </div>
-      <div v-else>
-        Nothing yet!
-      </div>
-    </q-page>
-  </q-page-container>
+    </div>
+    <div v-else>
+      Nothing yet!
+    </div>
+  </q-page>
 </template>
 
 <script>
