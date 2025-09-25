@@ -18,22 +18,20 @@
 <script>
 import LoginForm from '@/Layouts/Components/LoginForm.vue'
 import UserCard from '@/Layouts/Components/UserCard.vue'
+import userMixin from '@/mixins/userMixin'
+
 
 export default {
   components: {
     LoginForm,
     UserCard,
   },
+  mixins: [userMixin],
   props: {
   },
   data() {
     return {
     }
-  },
-  computed: {
-    current_user() {
-      return this.$page.props.auth.user
-    },
   },
 }
 </script>

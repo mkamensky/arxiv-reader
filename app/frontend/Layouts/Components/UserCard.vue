@@ -27,15 +27,13 @@
 
 <script>
 import { router } from '@inertiajs/vue3'
+import userMixin from '@/mixins/userMixin'
+
 export default {
+  mixins: [userMixin],
   data() {
     return {
     }
-  },
-  computed: {
-    current_user() {
-      return this.$page.props.auth.user
-    },
   },
   methods: {
     logout(evt) {
