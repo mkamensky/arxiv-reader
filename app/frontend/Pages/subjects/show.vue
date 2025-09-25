@@ -18,10 +18,9 @@
         column
         class="text-black"
         >
-        <div class="q-pa-md q-mt-lg relative-position">
-          <q-toolbar glossy class="bg-accent">
+        <div class="q-pa-xs relative-position">
+          <q-toolbar glossy class="bg-accent rounded-borders">
             <q-toolbar-title>Categories</q-toolbar-title>
-            <space />
             <q-btn icon="$close" flat round dense @click="drawerOpen=false" />
           </q-toolbar>
           <q-option-group
