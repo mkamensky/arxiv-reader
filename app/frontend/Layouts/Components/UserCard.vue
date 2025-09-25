@@ -1,7 +1,9 @@
 <template>
   <div class="row no-wrap q-pa-md">
     <div class="column">
-      <div class="text-h6 q-mb-md">Settings</div>
+      <div class="text-h6 q-mb-md">
+        Settings
+      </div>
     </div>
 
     <q-separator vertical inset class="q-mx-lg" />
@@ -11,14 +13,16 @@
         <img :src="current_user.avatar">
       </q-avatar>
 
-      <div class="text-subtitle1 q-mb-xs">{{ current_user.label }}</div>
+      <div class="text-subtitle1 q-mb-xs">
+        {{ current_user.label }}
+      </div>
 
       <q-btn
+        v-close-popup
         color="primary"
         label="Logout"
         push
         size="sm"
-        v-close-popup
         @click="logout"
       />
     </div>

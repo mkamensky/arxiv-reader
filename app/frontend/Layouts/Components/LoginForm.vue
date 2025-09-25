@@ -52,7 +52,7 @@
               clearable
               required
             >
-              <template v-slot:append>
+              <template #append>
                 <q-icon
                   :name="showPwd ? '$visible' : '$invisible'"
                   class="cursor-pointer"
@@ -107,7 +107,7 @@
               clearable
               required
             >
-              <template v-slot:append>
+              <template #append>
                 <q-icon
                   :name="showPwd ? '$visible' : '$invisible'"
                   class="cursor-pointer"

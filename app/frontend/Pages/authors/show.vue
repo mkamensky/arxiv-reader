@@ -1,12 +1,12 @@
 <template>
-  <q-page padding class="q-pt-xl" >
+  <q-page padding class="q-pt-xl">
     <div v-if="papers?.length" class="row">
       <ar-paper
         v-for="paper in papers"
         :key="paper.id"
         :object="paper"
         class="q-pa-md col-12 col-lg-6"
-        />
+      />
     </div>
     <div v-else>
       Nothing yet!

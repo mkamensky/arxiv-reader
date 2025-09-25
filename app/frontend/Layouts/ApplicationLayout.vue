@@ -6,7 +6,7 @@
       rel="stylesheet"
       media="screen"
       href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons/css/academicons.min.css"
-      >
+    >
   </Head>
 
   <q-layout view="hHh LpR lFr">
@@ -34,8 +34,7 @@
       bordered
       column
       class="text-black"
-      >
-
+    >
       <user-card v-if="current_user" />
       <login-form v-else />
     </q-drawer>

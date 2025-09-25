@@ -36,6 +36,7 @@ export  default defineConfig([
       "vue/multi-word-component-names": "off",
       "vue/require-default-prop": "off",
       "vue/no-reserved-component-names": "off",
+      "vue/no-v-text-v-html-on-component": "off",
       "vue/no-v-html": "off",
       "vue/max-attributes-per-line": ["warn", {"singleline" : 3}],
       "no-console": process.env.NODE_ENV === "production" ? "error" : "off",
