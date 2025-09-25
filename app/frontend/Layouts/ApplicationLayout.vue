@@ -6,22 +6,39 @@
       rel="stylesheet"
       media="screen"
       href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons/css/academicons.min.css"
-    >
+      >
   </Head>
 
   <q-layout view="hHh LpR lFr">
-  <q-header
-    elevated
-    class="bg-primary text-white"
-    height-hint="98"
-  >
-    <q-toolbar>
-      <left-drawer v-if="current_user">
-        foobar
-      </left-drawer>
-      <q-toolbar-title id="pageTitle">{{ $page.props.head.title }}</q-toolbar-title>
-    </q-toolbar>
-  </q-header>
+    <q-header
+      elevated
+      reveal
+      class="bg-primary text-white"
+      height-hint="98"
+    >
+      <q-toolbar glossy>
+        <q-btn
+          flat
+          class="bg-accent"
+          :icon="current_user ? '$loggedin' : '$login'"
+          @click="drawerOpen = !drawerOpen"
+        />
+        <q-toolbar-title>{{ $page.props.head.title }}</q-toolbar-title>
+      </q-toolbar>
+    </q-header>
+
+    <q-drawer
+      v-model="drawerOpen"
+      show-if-above
+      side="left"
+      bordered
+      column
+      class="text-black"
+      >
+
+      <user-card v-if="current_user" />
+      <login-form v-else />
+    </q-drawer>
 
     <slot />
 
@@ -29,47 +46,42 @@
       v-if="$page.props.flash.alert"
       inline-actions
       class="bg-warning"
-    >
+      >
       {{ $page.props.flash.alert }}
     </q-banner>
     <q-banner
       v-if="$page.props.flash.notice"
       inline-actions
       class="bg-info"
-    >
+      >
       {{ $page.props.flash.notice }}
     </q-banner>
     <q-banner
       v-if="$page.props.flash.error"
       inline-actions
       class="bg-accent"
-    >
+      >
       {{ $page.props.flash.error }}
     </q-banner>
-    <q-page-sticky
-      position="bottom-right"
-      :offset="[18, 18]"
-    >
-      <login-button />
-    </q-page-sticky>
   </q-layout>
 </template>
 
 <script>
-import LoginButton from '@/Layouts/Components/LoginButton.vue'
-import LeftDrawer from '@/Components/LeftDrawer.vue'
+import LoginForm from '@/Layouts/Components/LoginForm.vue'
+import UserCard from '@/Layouts/Components/UserCard.vue'
 import { Head } from '@inertiajs/vue3'
 import userMixin from '@/mixins/userMixin'
 
 export default {
   components: {
     Head,
-    LoginButton,
-    LeftDrawer,
+    LoginForm,
+    UserCard,
   },
   mixins: [userMixin],
   data() {
     return {
+      drawerOpen: false,
     }
   },
   computed: {

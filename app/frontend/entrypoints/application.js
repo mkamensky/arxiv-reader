@@ -69,6 +69,8 @@ const myIcons = {
   deleteOutline: 'mdi-delete-outline',
   hide: 'mdi-chevron-up',
   show: 'mdi-chevron-down',
+  right: 'mdi-chevron-right',
+  left: 'mdi-chevron-left',
   close: 'mdi-close',
   calendar: 'mdi-calendar',
   time: 'mdi-clock-outline',
