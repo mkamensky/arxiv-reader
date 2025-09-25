@@ -1,11 +1,11 @@
 <template>
-        <q-btn
-        dense
-        flat
-        rounded
-        icon="$menu"
-        @click="drawerOpen = !drawerOpen"
-        />
+  <q-btn
+    dense
+    flat
+    rounded
+    icon="$menu"
+    @click="drawerOpen = !drawerOpen"
+  />
   <q-drawer
     v-model="drawerOpen"
     show-if-above
@@ -13,7 +13,7 @@
     bordered
     column
     class="text-black"
-    >
+  >
     <slot />
   </q-drawer>
 </template>
