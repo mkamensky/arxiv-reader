@@ -1,12 +1,26 @@
 <template>
-  <q-header
-    elevated
-    class="bg-primary text-white"
-    height-hint="98"
-  >
-    <q-toolbar>
-      <left-drawer>
-        <div class="q-ma-md q-pt-lg">
+  <q-page-container>
+    <q-page
+      padding
+      class="q-pt-xl"
+    >
+      <article>
+        <q-responsive ratio="1.6">
+          <object
+            :data="paper.pdf"
+            type="application/pdf"
+            width="99%"
+            height="99%"
+          />
+        </q-responsive>
+      </article>
+    </q-page>
+      <q-page-sticky position="top-right" :offset="[18, 10]">
+
+  <q-btn icon="$plus" fab-mini color="accent">
+   <q-popup-proxy fit transition-show="scale" transition-hide="scale">
+        <div class="q-ma-md">
+          <h5>More Info</h5>
           <q-list separator>
             <q-item-label header>
               Authors
@@ -85,42 +99,21 @@
             :href="paper.abs"
             color="orange-8"
             text-color="black"
-            dense
           >
             View on the ArXiv
           </q-btn>
         </div>
-      </left-drawer>
+    </q-popup-proxy>
+  </q-btn>
+    </q-page-sticky>
 
-      <q-toolbar-title>{{ paper.label }}</q-toolbar-title>
-    </q-toolbar>
-  </q-header>
-
-  <q-page-container>
-    <q-page
-      padding
-      class="q-pt-xl"
-    >
-      <article>
-        <q-responsive ratio="1.6">
-          <object
-            :data="paper.pdf"
-            type="application/pdf"
-            width="99%"
-            height="99%"
-          />
-        </q-responsive>
-      </article>
-    </q-page>
   </q-page-container>
+
 </template>
 
 <script>
-import LeftDrawer from '@/Components/LeftDrawer.vue'
-
 export default {
   components: {
-    LeftDrawer,
   },
   props: {
     paper: Object,

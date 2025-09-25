@@ -12,4 +12,6 @@ class AuthorsController < ApplicationController
 
     @author ||= Author.find(params[:id])
   end
+
+  alias_method :object, :author
 end

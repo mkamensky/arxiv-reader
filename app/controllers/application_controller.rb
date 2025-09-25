@@ -17,7 +17,14 @@ class ApplicationController < ActionController::Base
   protected
 
   def page_head
-    {}
+    { title: page_title }
+  end
+
+  def object
+  end
+
+  def page_title
+    object&.label
   end
 
   def redir_back(**opts)

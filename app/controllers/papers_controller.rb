@@ -12,4 +12,6 @@ class PapersController < ApplicationController
 
     @paper ||= Paper.find(params[:id])
   end
+
+  alias_method :object, :paper
 end
