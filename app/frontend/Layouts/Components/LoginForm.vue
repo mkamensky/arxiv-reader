@@ -192,7 +192,7 @@ export default {
     },
     submit(evt) {
       if (evt) evt.preventDefault()
-      this.form.submit('post', this.path, {
+      this.form.post(this.path, {
         preserveScroll: true,
         preserveState: true,
         //onSuccess: this.success,

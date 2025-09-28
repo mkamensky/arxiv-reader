@@ -114,6 +114,8 @@ const myIcons = {
   event: 'mdi-calendar-today',
   menuLeft: 'mdi-menu-left',
   menuRight: 'mdi-menu-right',
+  bookmarkOn: 'mdi-bookmark-check-outline',
+  bookmark: 'mdi-bookmark-outline',
 }
 
 const pages = import.meta.glob('../Pages/**/*.vue', { eager: true })
@@ -150,16 +152,17 @@ createInertiaApp({
       .component('Link', Link)
       .component('RouterLink', {
         functional: true,
-        render(h, context) {
-          const data = { ...context.data }
-          delete data.nativeOn
-          const props = data.props || {}
-          props.href = props.to
-          return h('Link', data, context.children)
+        render(page, context) {
+          const props = page.$attrs || {}
+          props.href ??= props.to
+          return h('Link', props, context)
         },
       })
     app.config.globalProperties.$show_path = function (what, id) {
       return routes[what].show.path({ id: id })
+    }
+    app.config.globalProperties.$update_path = function (what, id) {
+      return routes[what].update.path({ id: id })
     }
     app.config.globalProperties.$create_path = function (what) {
       return routes[what].create.path()

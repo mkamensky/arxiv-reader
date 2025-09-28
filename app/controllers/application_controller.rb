@@ -6,7 +6,14 @@ class ApplicationController < ActionController::Base
 
   inertia_share auth: -> {
     {
-      user: Current.user&.inertia_json,
+      user: Current.user&.inertia_json(
+        include: {
+          bpapers: Paper.inertia_params(
+            include: { authors: Author.inertia_params },
+          ),
+          fauthors: Author.inertia_params,
+        },
+      ),
     }
   }
 

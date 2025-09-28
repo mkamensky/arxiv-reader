@@ -33,7 +33,7 @@ class ApplicationRecord < ActiveRecord::Base
 
     def inertia_params(**opts)
       {
-        only: %i[],
+        only: %i[id],
         methods: %i[label value],
         **opts,
       }

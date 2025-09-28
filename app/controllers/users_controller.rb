@@ -15,9 +15,25 @@ class UsersController < ApplicationController
     end
   end
 
+  def update
+    user = User.find(params[:id])
+    if user.update(user_params)
+      redir_back
+    else
+      redir_back(errors: user.errors)
+    end
+  rescue ActiveRecord::RecordInvalid => e
+    debugger
+  end
+
   protected
 
   def user_params
-    params.expect(user: %i[email password name])
+    params.expect(
+      user: [
+        :email, :password, :name,
+        { bpaper_ids: [], fauthor_ids: [] }
+      ],
+    )
   end
 end

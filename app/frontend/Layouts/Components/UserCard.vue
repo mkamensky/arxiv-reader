@@ -27,6 +27,34 @@
       />
     </div>
   </div>
+  <q-toolbar>
+    <q-toolbar-title>
+      Bookmarked
+    </q-toolbar-title>
+  </q-toolbar>
+  <q-list style="max-height: 40%" class="scroll overflow-auto">
+    <q-item
+      v-for="item in current_user.bpapers || []"
+      :key="item.value"
+    >
+      <q-item-section>
+        <q-btn no-caps flat :href="$show_path('papers', item.value)">
+          <q-item-label>{{ item.label }}</q-item-label>
+          <q-item-label caption>
+            {{ item.authors.map(it => it.label).join(', ') }}
+          </q-item-label>
+        </q-btn>
+      </q-item-section>
+      <q-item-section side>
+        <q-btn
+          round
+          icon="$close"
+          class="bg-secondary text-white"
+          @click="removeBookmark(item)"
+        />
+      </q-item-section>
+    </q-item>
+  </q-list>
 </template>
 
 <script>

@@ -4,7 +4,7 @@ Rails.application.routes.draw do
 
   #resources :passwords, param: :token, export: true, only: %i[new create edit update]
   constraints(id: %r{[^/]+}) do
-    resources :users, export: true, only: %i[create]
+    resources :users, export: true, only: %i[create update]
     resource :session, export: true, only: %i[create destroy]
     resources :subjects, export: true, only: %i[index show]
     resources :authors, export: true, only: %i[show]

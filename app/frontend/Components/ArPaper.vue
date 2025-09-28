@@ -16,13 +16,6 @@
               <span v-html="$mdi(object.label)" />
             </q-btn>
             <q-btn
-              icon="$pdf"
-              :href="object.pdf"
-              color="orange"
-              text-color="black"
-              dense
-            />
-            <q-btn
               icon="$download"
               :href="object.pdf"
               color="orange-7"
@@ -36,6 +29,20 @@
               color="orange-8"
               text-color="black"
               dense
+            />
+            <q-btn
+              v-if="current_user"
+              :icon="bookmarked(object) ? '$bookmarkOn' : '$bookmark'"
+              color="orange-5"
+              text-color="black"
+              @click="toggleBookmark"
+            />
+            <q-btn
+              v-if="current_user"
+              icon="$star"
+              color="orange-5"
+              text-color="black"
+              @click="star"
             />
           </q-btn-group>
           <div class="text-subtitle2 q-gutter-md">
@@ -139,7 +146,10 @@
 </template>
 
 <script>
+import userMixin from '@/mixins/userMixin'
+
 export default {
+  mixins: [userMixin],
   props: {
     object: {
       type: Object,
@@ -164,6 +174,13 @@ export default {
   methods: {
     dateStr(date) {
       return new Date(date)?.toDateString() || date
+    },
+    toggleBookmark() {
+      if (this.bookmarked(this.object)) {
+        this.removeBookmark(this.object)
+      } else {
+        this.bookmark(this.object)
+      }
     },
   },
 }
