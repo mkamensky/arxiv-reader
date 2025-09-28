@@ -94,6 +94,8 @@ const myIcons = {
   loggedin: 'mdi-account-check',
   userpage: 'mdi-account',
   star: 'mdi-star',
+  starAdd: 'mdi-star-plus-outline',
+  starRemove: 'mdi-star-remove',
   search: 'mdi-magnify',
   rotateLeft: 'mdi-rotate-left',
   rotateRight: 'mdi-rotate-right',

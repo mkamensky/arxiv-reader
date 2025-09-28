@@ -18,47 +18,63 @@ export default {
 
   },
   methods: {
+    hasItem(list, item) {
+      return this[list].has(item.id)
+    },
+    addToList(list, item) {
+      if (!this.hasItem(list, item)) {
+        this.current_user[list].push(item)
+        this.updateList(list)
+      }
+    },
+    removeItem(list, item) {
+      if (this.hasItem(list, item)) {
+        this.current_user[list] =
+          this.current_user[list]
+          .filter(it => it.id != item.id)
+        this.updateList(list)
+      }
+    },
+    updateList(list) {
+      const ids = list.replace(/s$/, '_ids')
+      router.patch(this.$update_path('users', this.current_user.id), {
+        user: { [ids]: Array.from(this[list]), },
+      }, {
+        only: [list],
+        preserveScroll: true,
+        preserveState: true,
+      })
+    },
+    toggleListItem(list, item) {
+      if (this.hasItem(list, item)) {
+        this.removeItem(list, item)
+      } else {
+        this.addToList(list, item)
+      }
+    },
+    toggleBookmark(paper) {
+      return this.toggleListItem('bpapers', paper)
+    },
     bookmarked(paper) {
-      return this.bpapers.has(paper.id)
-    },
-    starred(paper) {
-      return this.stars.has(paper.id)
-    },
-    followed(author) {
-      return this.fauthors.has(author.id)
+      return this.hasItem('bpapers', paper)
     },
     bookmark(paper) {
-      if (!this.bookmarked(paper)) {
-        this.current_user.bpapers.push(paper)
-        this.updateBookmarks()
-      }
+      return this.addToList('bpapers', paper)
     },
     removeBookmark(paper) {
-      if (this.bookmarked(paper)) {
-        this.current_user.bpapers =
-          this.current_user.bpapers
-          .filter(it => it.id != paper.id)
-        this.updateBookmarks()
-      }
+      return this.removeItem('bpapers', paper)
     },
-    updateBookmarks() {
-        router.patch(this.$update_path('users', this.current_user.id), {
-          user: { bpaper_ids: Array.from(this.bpapers), },
-        }, {
-          only: ['bpapers'],
-          preserveScroll: true,
-          preserveState: true,
-        })
-    },
-    star(paper) {
-      if (!this.starred(paper)) {
-        this.current_user.starred.push(paper)
-      }
+    followed(author) {
+      return this.hasItem('fauthors', author)
     },
     follow(author) {
-      if (!this.followed(author)) {
-        this.current_user.followed.push(author)
-      }
+      return this.addToList('fauthors', author)
+    },
+    removeAuthor(author) {
+      return this.removeItem('fauthors', author)
+    },
+    toggleFollow(author) {
+      return this.toggleListItem('fauthors', author)
     },
   },
 }

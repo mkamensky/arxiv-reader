@@ -29,7 +29,7 @@
   </div>
   <q-toolbar>
     <q-toolbar-title>
-      Bookmarked
+      Bookmarked papers
     </q-toolbar-title>
   </q-toolbar>
   <q-list style="max-height: 40%" class="scroll overflow-auto">
@@ -51,6 +51,31 @@
           icon="$close"
           class="bg-secondary text-white"
           @click="removeBookmark(item)"
+        />
+      </q-item-section>
+    </q-item>
+  </q-list>
+  <q-toolbar>
+    <q-toolbar-title>
+      Followed authors
+    </q-toolbar-title>
+  </q-toolbar>
+  <q-list style="max-height: 40%" class="scroll overflow-auto">
+    <q-item
+      v-for="item in current_user.fauthors || []"
+      :key="item.value"
+    >
+      <q-item-section>
+        <q-btn no-caps flat :href="$show_path('authors', item.value)">
+          <q-item-label>{{ item.label }}</q-item-label>
+        </q-btn>
+      </q-item-section>
+      <q-item-section side>
+        <q-btn
+          round
+          icon="$close"
+          class="bg-secondary text-white"
+          @click="removeAuthor(item)"
         />
       </q-item-section>
     </q-item>

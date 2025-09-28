@@ -35,29 +35,33 @@
               :icon="bookmarked(object) ? '$bookmarkOn' : '$bookmark'"
               color="orange-5"
               text-color="black"
-              @click="toggleBookmark"
-            />
-            <q-btn
-              v-if="current_user"
-              icon="$star"
-              color="orange-5"
-              text-color="black"
-              @click="star"
+              @click="toggleBookmark(object)"
             />
           </q-btn-group>
           <div class="text-subtitle2 q-gutter-md">
-            <q-btn
+            <q-btn-group
               v-for="author in object.authors"
               :key="author.id"
-              :href="$show_path('authors', author.value)"
-              :label="$mdi(author.label)"
-              text-color="primary"
-              color="white"
-              no-caps
               size="md"
               glossy
               padding="xs"
-            />
+            >
+              <q-btn
+                :href="$show_path('authors', author.value)"
+                :label="$mdi(author.label)"
+                text-color="primary"
+                color="white"
+                glossy
+                no-caps
+              />
+              <q-btn
+                v-if="current_user"
+                :icon="followed(author) ? '$starRemove' : '$starAdd'"
+                text-color="white"
+                outline
+                @click="toggleFollow(author)"
+              />
+            </q-btn-group>
           </div>
         </div>
         <q-space />
@@ -174,13 +178,6 @@ export default {
   methods: {
     dateStr(date) {
       return new Date(date)?.toDateString() || date
-    },
-    toggleBookmark() {
-      if (this.bookmarked(this.object)) {
-        this.removeBookmark(this.object)
-      } else {
-        this.bookmark(this.object)
-      }
     },
   },
 }
