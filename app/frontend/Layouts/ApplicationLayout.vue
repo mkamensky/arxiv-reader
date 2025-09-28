@@ -12,7 +12,6 @@
   <q-layout view="hHh LpR lFr">
     <q-header
       elevated
-      reveal
       class="bg-primary text-white"
       height-hint="98"
     >
