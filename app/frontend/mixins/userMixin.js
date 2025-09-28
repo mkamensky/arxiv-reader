@@ -8,9 +8,6 @@ export default {
     bpapers() {
       return new Set(this.current_user?.bpapers?.map(it => it.id) || [])
     },
-    stars() {
-      return new Set(this.current_user?.starred?.map(it => it.id) || [])
-    },
     fauthors() {
       return new Set(this.current_user?.fauthors?.map(it => it.id) || [])
     },
