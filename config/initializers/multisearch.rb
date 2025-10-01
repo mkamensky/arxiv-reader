@@ -1,0 +1,2 @@
+PgSearch.multisearch_options = {
+}

@@ -81,11 +81,6 @@ const myIcons = {
   alert: 'mdi-alert-octagram',
   login: 'mdi-account-question',
   menu: 'mdi-menu',
-  people: 'mdi-account-box-multiple',
-  research: 'mdi-infinity',
-  teaching: 'mdi-human-male-board',
-  community: 'mdi-account-group',
-  internal: 'mdi-clipboard-flow',
   admin: 'mdi-cogs',
   help: 'mdi-help-box',
   enter: 'mdi-login',
@@ -118,6 +113,7 @@ const myIcons = {
   menuRight: 'mdi-menu-right',
   bookmarkOn: 'mdi-bookmark-check-outline',
   bookmark: 'mdi-bookmark-outline',
+  comment: 'mdi-comment-text-outline',
 }
 
 const pages = import.meta.glob('../Pages/**/*.vue', { eager: true })
@@ -168,6 +164,9 @@ createInertiaApp({
     }
     app.config.globalProperties.$create_path = function (what) {
       return routes[what].create.path()
+    }
+    app.config.globalProperties.$index_path = function (what) {
+      return routes[what].index.path()
     }
     const premkdn = (it) => (it || '').toString().replace(/--/g, '\u2013')
     app.config.globalProperties.$md = (mkdn) => markdown.render(premkdn(mkdn))

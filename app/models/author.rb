@@ -17,15 +17,15 @@ class Author < ApplicationRecord
     name
   end
 
-  scope :in_category, ->(cat) {
+  scope :in_category, -> {
     joins(papers: :category).distinct.where(
-      papers: { categories: { arxiv: cat } },
+      papers: { categories: { arxiv: it } },
     )
   }
 
-  scope :in_subject, ->(subj) {
+  scope :in_subject, -> {
     joins(papers: { category: :subject }).distinct.where(
-      papers: { categories: { subjects: { arxiv: subj } } },
+      papers: { categories: { subjects: { arxiv: it } } },
     )
   }
 

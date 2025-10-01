@@ -10,6 +10,8 @@ gem 'rails', '>=8'
 
 gem 'pg'
 
+gem 'pg_search'
+
 # Use Active Model has_secure_password
 # [https://guides.rubyonrails.org/active_model_basics.html#securepassword]
 gem 'bcrypt', '>=3.1.7'

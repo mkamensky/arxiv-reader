@@ -278,7 +278,8 @@ CREATE TABLE public.papers (
     tags character varying[] DEFAULT '{}'::character varying[],
     journal_ref character varying,
     created_at timestamp(6) without time zone NOT NULL,
-    updated_at timestamp(6) without time zone NOT NULL
+    updated_at timestamp(6) without time zone NOT NULL,
+    searchable tsvector GENERATED ALWAYS AS (((setweight(to_tsvector('english'::regconfig, (COALESCE(title, ''::character varying))::text), 'A'::"char") || setweight(to_tsvector('english'::regconfig, COALESCE(abstract, ''::text)), 'B'::"char")) || setweight(to_tsvector('english'::regconfig, COALESCE(comment, ''::text)), 'C'::"char"))) STORED
 );
 
 
@@ -299,6 +300,39 @@ CREATE SEQUENCE public.papers_id_seq
 --
 
 ALTER SEQUENCE public.papers_id_seq OWNED BY public.papers.id;
+
+
+--
+-- Name: pg_search_documents; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.pg_search_documents (
+    id bigint NOT NULL,
+    content text,
+    searchable_type character varying,
+    searchable_id bigint,
+    created_at timestamp(6) without time zone NOT NULL,
+    updated_at timestamp(6) without time zone NOT NULL
+);
+
+
+--
+-- Name: pg_search_documents_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE public.pg_search_documents_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: pg_search_documents_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE public.pg_search_documents_id_seq OWNED BY public.pg_search_documents.id;
 
 
 --
@@ -500,6 +534,13 @@ ALTER TABLE ONLY public.papers ALTER COLUMN id SET DEFAULT nextval('public.paper
 
 
 --
+-- Name: pg_search_documents id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.pg_search_documents ALTER COLUMN id SET DEFAULT nextval('public.pg_search_documents_id_seq'::regclass);
+
+
+--
 -- Name: recommendations id; Type: DEFAULT; Schema: public; Owner: -
 --
 
@@ -597,6 +638,14 @@ ALTER TABLE ONLY public.friendly_id_slugs
 
 ALTER TABLE ONLY public.papers
     ADD CONSTRAINT papers_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: pg_search_documents pg_search_documents_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.pg_search_documents
+    ADD CONSTRAINT pg_search_documents_pkey PRIMARY KEY (id);
 
 
 --
@@ -780,6 +829,13 @@ CREATE INDEX index_papers_on_category_id ON public.papers USING btree (category_
 
 
 --
+-- Name: index_papers_on_searchable; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_papers_on_searchable ON public.papers USING gin (searchable);
+
+
+--
 -- Name: index_papers_on_submitted; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -791,6 +847,13 @@ CREATE INDEX index_papers_on_submitted ON public.papers USING btree (submitted);
 --
 
 CREATE INDEX index_papers_on_tags ON public.papers USING btree (tags);
+
+
+--
+-- Name: index_pg_search_documents_on_searchable; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_pg_search_documents_on_searchable ON public.pg_search_documents USING btree (searchable_type, searchable_id);
 
 
 --
@@ -961,6 +1024,9 @@ ALTER TABLE ONLY public.recommendations
 SET search_path TO "$user", public;
 
 INSERT INTO "schema_migrations" (version) VALUES
+('20251001091914'),
+('20251001091202'),
+('20250928170134'),
 ('20250922215550'),
 ('20250922215549'),
 ('20250922213144'),

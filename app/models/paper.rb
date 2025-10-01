@@ -1,6 +1,17 @@
 # frozen_string_literal: true
 
 class Paper < ApplicationRecord
+  include PgSearch::Model
+
+  pg_search_scope :search_all,
+                  against: { title: 'A', abstract: 'B', comment: 'C' },
+                  using: {
+                    tsearch: {
+                      dictionary: 'english',
+                      tsvector_column: 'searchable',
+                    },
+                  }
+
   include FriendlyId
 
   friendly_id :arxiv
@@ -17,11 +28,15 @@ class Paper < ApplicationRecord
   validates :abs, presence: true
   validates :version, uniqueness: { scope: :arxiv }
 
-  scope :with_subject, ->(subj) {
+  scope :with_subject, -> {
     joins(category: :subject).distinct.where(
-      category: { subjects: { arxiv: subj } },
+      category: { subjects: { arxiv: it } },
     )
   }
+
+  def author_names
+    authors.map(&:name).join('; ')
+  end
 
   class << self
     def attrs_from_arxiv(apaper, **opts)
@@ -51,6 +66,7 @@ class Paper < ApplicationRecord
       new(attrs_from_arxiv(apaper, **))
     end
 
+    # rubocop: disable Lint/Debugger, Lint/UselessAssignment
     def create_from_arxiv(apaper, **)
       create!(
         attrs_from_arxiv(
@@ -58,13 +74,14 @@ class Paper < ApplicationRecord
         ),
       )
     rescue ActiveRecord::RecordInvalid => e
-      debugger unless [
+      debugger if [
         'Validation failed: Version has already been taken',
         'Validation failed: Category must exist',
-      ].include?(e.message)
+      ].exclude?(e.message)
     rescue StandardError => e
       debugger
     end
+    # rubocop: enable Lint/Debugger, Lint/UselessAssignment
 
     def create_from_db(file = Rails.root.join('data', 'papers.db'))
       require 'arxiv/api'

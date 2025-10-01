@@ -23,6 +23,20 @@
           @click="drawerOpen = !drawerOpen"
         />
         <q-toolbar-title>{{ $page.props.head.title }}</q-toolbar-title>
+        <q-input
+          v-model="query"
+          outlined
+          class="bg-info"
+          label="Search"
+          type="search"
+          stack-label
+          clearable
+          @keyup.enter="search"
+        >
+          <template #append>
+            <q-icon name="$search" @click="search" />
+          </template>
+        </q-input>
       </q-toolbar>
     </q-header>
 
@@ -57,7 +71,7 @@
 <script>
 import LoginForm from '@/Layouts/Components/LoginForm.vue'
 import UserCard from '@/Layouts/Components/UserCard.vue'
-import { Head } from '@inertiajs/vue3'
+import { Head, router } from '@inertiajs/vue3'
 import userMixin from '@/mixins/userMixin'
 
 export default {
@@ -70,9 +84,15 @@ export default {
   data() {
     return {
       drawerOpen: false,
+      query: '',
     }
   },
   computed: {
+  },
+  methods: {
+    search() {
+      router.get(this.$index_path('papers'), {q: this.query})
+    },
   },
 }
 </script>

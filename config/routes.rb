@@ -8,7 +8,7 @@ Rails.application.routes.draw do
     resource :session, export: true, only: %i[create destroy]
     resources :subjects, export: true, only: %i[index show]
     resources :authors, export: true, only: %i[show]
-    resources :papers, export: true, only: %i[show]
+    resources :papers, export: true, only: %i[index show]
   end
 
   root "subjects#show"

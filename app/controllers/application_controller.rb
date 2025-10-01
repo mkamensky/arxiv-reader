@@ -30,8 +30,12 @@ class ApplicationController < ActionController::Base
   def object
   end
 
+  def index_page_title
+    'ArxivReader'
+  end
+
   def page_title
-    object&.label
+    object ? object.label : index_page_title
   end
 
   def redir_back(**opts)

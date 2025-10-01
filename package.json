@@ -37,7 +37,7 @@
     "vue-cli-plugin-quasar": ">=5.1.2"
   },
   "dependencies": {
-    "@inertiajs/vue3": ">=2.1.5",
+    "@inertiajs/vue3": ">=2.2.4",
     "@js-from-routes/client": ">=1.0.4",
     "@quasar/extras": ">=1.17.0",
     "@traptitech/markdown-it-katex": ">=3.6.0",

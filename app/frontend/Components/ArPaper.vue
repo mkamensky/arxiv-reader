@@ -87,62 +87,77 @@
           v-show="show"
           class="text-white bg-grey-9"
         >
-          <div class="row">
-            <q-list
-              dense
-              dark
-              class="row col"
-            >
-              <q-item>
-                <q-item-section>
-                  <q-item-label overline>
-                    Version
-                  </q-item-label>
-                  <q-item-label>{{ object.version }}</q-item-label>
-                </q-item-section>
-              </q-item>
-              <q-item>
-                <q-item-section>
-                  <q-item-label overline>
-                    Submitted
-                  </q-item-label>
-                  <q-item-label>{{ submitted }}</q-item-label>
-                </q-item-section>
-              </q-item>
-              <q-item>
-                <q-item-section v-if="revised">
-                  <q-item-label overline>
-                    Revised
-                  </q-item-label>
-                  <q-item-label>{{ revised }}</q-item-label>
-                </q-item-section>
-              </q-item>
-              <q-item v-if="object.journal_ref">
-                <q-item-section>
-                  <q-item-label overline>
-                    Journal Ref
-                  </q-item-label>
-                  <q-item-label>{{ object.journal_ref }}</q-item-label>
-                </q-item-section>
-              </q-item>
-              <q-item
-                v-for="tag in object.tags"
-                :key="tag"
-              >
-                <q-item-section>
-                  <q-item-label overline>
-                    MSC classes
-                  </q-item-label>
-                  <q-item-label>{{ tag }}</q-item-label>
-                </q-item-section>
-              </q-item>
-            </q-list>
-            <div
-              v-if="object.comment"
-              class="col"
-              v-html="$md(object.comment)"
-            />
-          </div>
+          <q-list
+            dense
+            dark
+            class="row justify-between"
+          >
+            <q-item>
+              <q-item-section avatar style="min-width: 0px">
+                <q-icon name="svguse:/icons.svg#arxiv" />
+              </q-item-section>
+              <q-item-section>
+                <q-item-label overline>
+                  ArXiv
+                </q-item-label>
+                <q-item-label>{{ object.value }}</q-item-label>
+              </q-item-section>
+            </q-item>
+            <q-item>
+              <q-item-section>
+                <q-item-label overline>
+                  Version
+                </q-item-label>
+                <q-item-label>{{ object.version }}</q-item-label>
+              </q-item-section>
+            </q-item>
+            <q-item>
+              <q-item-section>
+                <q-item-label overline>
+                  Submitted
+                </q-item-label>
+                <q-item-label>{{ submitted }}</q-item-label>
+              </q-item-section>
+            </q-item>
+            <q-item>
+              <q-item-section v-if="revised">
+                <q-item-label overline>
+                  Revised
+                </q-item-label>
+                <q-item-label>{{ revised }}</q-item-label>
+              </q-item-section>
+            </q-item>
+            <q-item v-if="object.journal_ref">
+              <q-item-section>
+                <q-item-label overline>
+                  Journal Ref
+                </q-item-label>
+                <q-item-label>{{ object.journal_ref }}</q-item-label>
+              </q-item-section>
+            </q-item>
+            <q-item v-if="object.tags.length">
+              <q-item-section>
+                <q-item-label overline>
+                  MSC classes
+                </q-item-label>
+                <q-item-label
+                  v-for="tag in object.tags"
+                  :key="tag"
+                >
+                  {{ tag }}
+                </q-item-label>
+              </q-item-section>
+            </q-item>
+            <q-item v-if="object.comment">
+              <q-item-section avatar>
+                <q-icon name="$comment">
+                  <q-tooltip max-width="30rem">
+                    <div v-html="$md(object.comment)" />
+                  </q-tooltip>
+                </q-icon>
+              </q-item-section>
+            </q-item>
+          </q-list>
         </q-card-section>
       </q-slide-transition>
     </q-card>
