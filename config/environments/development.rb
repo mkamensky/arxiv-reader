@@ -68,4 +68,6 @@ Rails.application.configure do
 
   # Uncomment if you wish to allow Action Cable access from any origin.
   #config.action_cable.disable_request_forgery_protection = true
+  # forgery protection doesn't work with omniauth TODO
+  #config.action_controller.allow_forgery_protection = false
 end

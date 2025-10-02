@@ -159,6 +159,7 @@
       method="post"
       class="col"
     >
+      <input type="hidden" name="authenticity_token" :value="xsrf">
       <q-btn type="submit" :label="service" :icon="`$${service}`">
         <q-tooltip>
           Login with {{ service }}
@@ -189,6 +190,12 @@ export default {
     }
   },
   computed: {
+    xsrf() {
+      const splitCookies = document.cookie.split('; ');
+      return splitCookies
+        .find(cookie => cookie.startsWith("XSRF-TOKEN="))
+        .split('=')[1]
+    },
     form() {
       return this.forms[this.tab]
     },
