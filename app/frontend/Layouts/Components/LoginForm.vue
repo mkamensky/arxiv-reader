@@ -150,10 +150,30 @@
       </q-tab-panel>
     </q-tab-panels>
   </q-card>
+  <separator />
+  <div class="row">
+    <q-form
+      v-for="service in $options.services"
+      :key="service"
+      :action="`/auth/${service}`"
+      method="post"
+      class="col"
+    >
+      <q-btn type="submit" :label="service" :icon="`$${service}`">
+        <q-tooltip>
+          Login with {{ service }}
+        </q-tooltip>
+      </q-btn>
+    </q-form>
+  </div>
 </template>
 
 <script>
+
 export default {
+  components: {
+  },
+  services: ['developer', 'github'],
   data() {
     return {
       tab: 'sessions',

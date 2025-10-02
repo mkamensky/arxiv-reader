@@ -96,6 +96,8 @@ gem 'oai', require: false
 gem 'libxml-ruby', require: false
 gem 'omniauth'
 gem "omniauth-rails_csrf_protection"
+gem 'omniauth-github'
+gem 'omniauth-google-oauth2'
 
 group :production do
   gem 'sd_notify'

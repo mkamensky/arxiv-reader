@@ -114,6 +114,8 @@ const myIcons = {
   bookmarkOn: 'mdi-bookmark-check-outline',
   bookmark: 'mdi-bookmark-outline',
   comment: 'mdi-comment-text-outline',
+  github: 'mdi-github',
+  developer: 'mdi-code-braces',
 }
 
 const pages = import.meta.glob('../Pages/**/*.vue', { eager: true })
@@ -164,6 +166,9 @@ createInertiaApp({
     }
     app.config.globalProperties.$create_path = function (what) {
       return routes[what].create.path()
+    }
+    app.config.globalProperties.$delete_path = function (what, id) {
+      return routes[what].delete.path({ id: id })
     }
     app.config.globalProperties.$index_path = function (what) {
       return routes[what].index.path()

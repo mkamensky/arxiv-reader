@@ -1,6 +1,10 @@
 # frozen_string_literal: true
 
 class SessionPolicy < ApplicationPolicy
+  def omni?
+    create?
+  end
+
   def show?
     user == record&.user
   end

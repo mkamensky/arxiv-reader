@@ -4,14 +4,23 @@ class SessionsController < ApplicationController
     redir_back
   }
 
-  def create
-    @user_info = request.env['omniauth.auth']
+  def omni
+    debugger unless userinfo
 
+    user = User.find_or_create_by!(email: userinfo[:email]) do
+      it.name = userinfo[:name]
+      it.password = it.password_confirmation = SecureRandom.base64(24)
+      #it.avatar = userinfo[:image]
+    end
+    login(user)
+    redir_back
+  rescue ActiveRecord::RecordInvalid => e
+    debugger
+  end
+
+  def create
     if (user = User.authenticate_by(user_params))
-      terminate_session
-      start_new_session_for user
-      pundit_reset!
-      skip_authorization
+      login(user)
       redir_back
     else
       redir_back errors: { base: 'Auth failed!' }
@@ -31,5 +40,16 @@ class SessionsController < ApplicationController
 
   def user_params
     params.expect(session: %i[email password])
+  end
+
+  def login(user)
+    terminate_session
+    start_new_session_for user
+    pundit_reset!
+    skip_authorization
+  end
+
+  def userinfo
+    @userinfo ||= (request.env['omniauth.auth'] || {})[:info]
   end
 end

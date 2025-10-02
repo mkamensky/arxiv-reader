@@ -1,5 +1,5 @@
 Rails.application.routes.draw do
-  #get 'auth/:provider/callback', export: true, to: 'sessions#create'
+  get 'auth/:provider/callback', export: true, to: 'sessions#omni'
   #get '/login', export: true, to: 'sessions#new'
 
   #resources :passwords, param: :token, export: true, only: %i[new create edit update]

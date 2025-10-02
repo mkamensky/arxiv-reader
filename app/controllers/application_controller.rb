@@ -3,9 +3,13 @@ class ApplicationController < ActionController::Base
   include Pundit::Authorization
   include InertiaCsrf
 
+  protect_from_forgery with: :null_session
+
   before_action :auth
   after_action :verify_authorized
   after_action :verify_policy_scoped, only: %i[index]
+  rescue_from ActionController::InvalidAuthenticityToken,
+              with: :inertia_page_expired_error
 
   def index
   end
@@ -50,8 +54,16 @@ class ApplicationController < ActionController::Base
     redirect_back_or_to after_authentication_url, inertia: opts
   end
 
+  def auth_item
+    %w[show update destroy].include?(action_name) ? object : model
+  end
+
   def auth
-    authorize object || model
+    if auth_item
+      authorize auth_item
+    else
+      skip_authorization
+    end
   end
 
   def user_inertia_params
@@ -63,5 +75,9 @@ class ApplicationController < ActionController::Base
         fauthors: Author.inertia_params,
       },
     }
+  end
+
+  def inertia_page_expired_error
+    redirect_back_or_to('/', allow_other_host: false, notice: "The page expired, please try again.")
   end
 end
