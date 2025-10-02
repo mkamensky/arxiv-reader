@@ -9,11 +9,7 @@ class CategoriesController < ApplicationController
 
   protected
 
-  def category
-    return unless params[:id]
-
-    @category ||= Category.find(params[:id])
-  end
+  alias_method :category, :object
 
   def date
     Date.parse(params[:date])

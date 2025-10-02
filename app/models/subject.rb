@@ -9,6 +9,7 @@ class Subject < ApplicationRecord
   public_constant :ARXIV_EPOCH
 
   has_many :categories, dependent: :destroy
+  has_many :users
 
   def papers
     Paper.with_subject(arxiv)

@@ -100,3 +100,5 @@ gem "omniauth-rails_csrf_protection"
 group :production do
   gem 'sd_notify'
 end
+
+gem "pundit"

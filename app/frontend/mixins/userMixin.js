@@ -11,8 +11,6 @@ export default {
     fauthors() {
       return new Set(this.current_user?.fauthors?.map(it => it.id) || [])
     },
-
-
   },
   methods: {
     hasItem(list, item) {
@@ -32,8 +30,8 @@ export default {
         this.updateList(list)
       }
     },
-    updateList(list) {
-      const ids = list.replace(/s$/, '_ids')
+    updateList(list, ids = null) {
+      ids ??= list.replace(/s$/, '_ids')
       router.patch(this.$update_path('users', this.current_user.id), {
         user: { [ids]: Array.from(this[list]), },
       }, {

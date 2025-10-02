@@ -8,7 +8,10 @@ class SessionsController < ApplicationController
     @user_info = request.env['omniauth.auth']
 
     if (user = User.authenticate_by(user_params))
+      terminate_session
       start_new_session_for user
+      pundit_reset!
+      skip_authorization
       redir_back
     else
       redir_back errors: { base: 'Auth failed!' }
@@ -21,6 +24,10 @@ class SessionsController < ApplicationController
   end
 
   protected
+
+  def object
+    cur_session
+  end
 
   def user_params
     params.expect(session: %i[email password])

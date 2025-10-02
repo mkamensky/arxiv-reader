@@ -1,4 +1,7 @@
 class SubjectsController < ApplicationController
+  DEFAULT_SUBJECT = Subject.find('math')
+  public_constant :DEFAULT_SUBJECT
+
   def show
     render inertia: {
       subject: -> {
@@ -13,13 +16,11 @@ class SubjectsController < ApplicationController
 
   protected
 
-  def subject
-    return unless params[:id]
-
-    @subject ||= Subject.find(params[:id])
+  def object
+    @object ||= super || current_user&.subject || DEFAULT_SUBJECT
   end
 
-  alias_method :object, :subject
+  alias_method :subject, :object
 
   def date
     return @date if @date
@@ -44,5 +45,9 @@ class SubjectsController < ApplicationController
           ),
       ]
     end
+  end
+
+  def user_inertia_params
+    super.vdeep_merge(include: { categories:  Category.inertia_params })
   end
 end

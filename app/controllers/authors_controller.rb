@@ -13,13 +13,5 @@ class AuthorsController < ApplicationController
     }
   end
 
-  protected
-
-  def author
-    return unless params[:id]
-
-    @author ||= Author.find(params[:id])
-  end
-
-  alias_method :object, :author
+  alias_method :author, :object
 end

@@ -13,8 +13,11 @@ class User < ApplicationRecord
   has_many_through :recommended, :recommendations, source: :paper
   has_many_through :fauthors, :followships, source: :author
 
+  belongs_to :subject, optional: true # default subject
+  has_many_through :categories, :usercats
+
   validates :email, presence: true, uniqueness: true
-  normalizes :email, with: ->(e) { e.strip.downcase }
+  normalizes :email, with: -> { it.strip.downcase }
 
   def label
     name || email

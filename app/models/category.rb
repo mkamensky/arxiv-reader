@@ -8,6 +8,7 @@ class Category < ApplicationRecord
   has_many :papers, dependent: :destroy
   belongs_to :subject
   has_many_through :secondaries, :categorisations, source: :paper
+  has_many_through :users, :usercats
 
   delegate :refresh_from_arxiv, to: :subject
 

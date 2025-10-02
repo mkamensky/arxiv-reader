@@ -20,13 +20,7 @@ class PapersController < ApplicationController
 
   protected
 
-  def paper
-    return unless params[:id]
-
-    @paper ||= Paper.find(params[:id])
-  end
-
-  alias_method :object, :paper
+  alias_method :paper, :object
 
   def q
     params[:q]
@@ -35,7 +29,7 @@ class PapersController < ApplicationController
   def spapers
     return if q.blank?
 
-    @spapers ||= Paper.search_all(q)
+    @spapers ||= policy_scope(Paper.search_all(q))
   end
 
   def paper_json(ppr = paper)

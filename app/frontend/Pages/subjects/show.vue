@@ -5,7 +5,7 @@
         v-for="cat in cats"
         :key="cat"
         v-intersection="setCur"
-        :object="catOf(cat)"
+        :object="catMap[cat]"
         :papers="papers[cat]"
         class="q-ma-md"
       />
@@ -30,7 +30,7 @@
         </q-toolbar>
         <q-option-group
           v-model="cats"
-          :options="categories"
+          :options="allCategories"
           type="toggle"
           class="scroll overflow-auto"
         />
@@ -121,11 +121,13 @@
 
 <script>
 import ArCategory from '@/Components/ArCategory.vue'
+import userMixin from '@/mixins/userMixin'
 
 export default {
   components: {
     ArCategory,
   },
+  mixins: [userMixin],
 
   props: {
     subject: Object,
@@ -136,28 +138,38 @@ export default {
     return {
       curCat: null,
       drawerOpen: false,
-      cats:
-      this.$q.localStorage.getItem('cats') ||
-      this.subject.categories.map((cat) => cat.value),
+      cats: this.current_user?.categories?.map(cat => cat.value) ||
+            this.$q.localStorage.getItem('cats') ||
+            this.subject.categories.map((cat) => cat.value)
     }
   },
   computed: {
-    categories() {
+    allCategories() {
       return this.subject.categories
+    },
+    categories() {
+      return new Set(this.current_user?.categories?.map(it => it.id) || [])
+    },
+    catMap() {
+      return this.allCategories
+        .reduce((res, cur) => ({...res, [cur.value]: cur}), {})
     },
   },
   watch: {
     cats: {
       handler(val) {
-        this.$q.localStorage.set('cats', val)
+        if (this.current_user) {
+          this.current_user.categories =
+            this.cats.map(cat => this.catMap[cat])
+          this.updateList('categories', 'category_ids')
+        } else {
+          this.$q.localStorage.set('cats', val)
+        }
       },
       immediate: true,
     },
   },
   methods: {
-    catOf(cat) {
-      return this.categories.find((it) => it.value === cat)
-    },
     setCur(entry) {
       if (entry.isIntersecting) {
         this.curCat = entry.target.id
