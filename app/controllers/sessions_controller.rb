@@ -7,11 +7,13 @@ class SessionsController < ApplicationController
   def omni
     debugger unless userinfo
 
-    user = User.find_or_create_by!(email: userinfo[:email]) do
+    user = User.find_or_initialize_by(email: userinfo[:email]) do
       it.name = userinfo[:name]
       it.password = it.password_confirmation = SecureRandom.base64(24)
-      #it.avatar = userinfo[:image]
     end
+    user.avatar ||= userinfo[:image]
+    user.github ||= userinfo[:nickname]
+    user.save!
     login(user)
     redir_back
   rescue ActiveRecord::RecordInvalid => e
@@ -29,7 +31,8 @@ class SessionsController < ApplicationController
 
   def destroy
     terminate_session
-    redir_back
+    redirect_to subject_path
+    #redir_back
   end
 
   protected

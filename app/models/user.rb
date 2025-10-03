@@ -19,6 +19,10 @@ class User < ApplicationRecord
   validates :email, presence: true, uniqueness: true
   normalizes :email, with: -> { it.strip.downcase }
 
+  def self.inertia_params(**)
+    super.vdeep_merge(only: %i[avatar])
+  end
+
   def label
     name || email
   end

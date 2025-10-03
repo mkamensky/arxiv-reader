@@ -103,7 +103,7 @@ export default {
       if (evt) evt.preventDefault()
       router.delete(this.$create_path('sessions'), {
         preserveScroll: true,
-        preserveState: true,
+        preserveState: false,
       })
     },
   },

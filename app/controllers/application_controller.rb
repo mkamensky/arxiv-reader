@@ -14,7 +14,7 @@ class ApplicationController < ActionController::Base
   def index
   end
 
-  use_inertia_instance_props
+  #use_inertia_instance_props
 
   inertia_share auth: -> {
     { user: current_user&.inertia_json(**user_inertia_params) }

@@ -22,6 +22,8 @@ class SubjectsController < ApplicationController
 
   alias_method :subject, :object
 
+  # rubocop: disable Metrics/PerceivedComplexity
+  # rubocop: disable Metrics/CyclomaticComplexity
   def date
     return @date if @date
 
@@ -33,6 +35,8 @@ class SubjectsController < ApplicationController
   rescue TypeError, NoMethodError
     @date = subject&.last_update || (Time.zone.today - 1.day)
   end
+  # rubocop: enable Metrics/PerceivedComplexity
+  # rubocop: enable Metrics/CyclomaticComplexity
 
   def papers
     @papers ||= subject&.categories&.to_h do
@@ -48,6 +52,6 @@ class SubjectsController < ApplicationController
   end
 
   def user_inertia_params
-    super.vdeep_merge(include: { categories:  Category.inertia_params })
+    super.vdeep_merge(include: { categories: Category.inertia_params })
   end
 end

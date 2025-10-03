@@ -19,7 +19,7 @@
         <q-btn
           flat
           class="bg-accent"
-          :icon="current_user ? '$loggedin' : '$login'"
+          :icon="icon"
           @click="drawerOpen = !drawerOpen"
         />
         <q-toolbar-title>{{ $page.props.head.title }}</q-toolbar-title>
@@ -88,6 +88,14 @@ export default {
     }
   },
   computed: {
+    icon() {
+      if (this.current_user) {
+        return this.current_user.avatar.length > 0 ?
+          `img:${this.current_user.avatar}` : '$loggedin'
+      } else {
+        return '$login'
+      }
+    },
   },
   methods: {
     search() {
