@@ -36,7 +36,7 @@ export default {
         user: { [ids]: Array.from(this[list]), },
       }, {
         only: [list],
-        preserveScroll: true,
+        preserveScroll: false,
         preserveState: true,
       })
     },

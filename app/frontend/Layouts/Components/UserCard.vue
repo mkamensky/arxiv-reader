@@ -88,7 +88,6 @@
 </template>
 
 <script>
-import { router } from '@inertiajs/vue3'
 import userMixin from '@/mixins/userMixin'
 
 export default {
@@ -101,9 +100,10 @@ export default {
   methods: {
     logout(evt) {
       if (evt) evt.preventDefault()
-      router.delete(this.$create_path('sessions'), {
+      this.$inertia.replaceProp('auth', {}, {}) // TODO
+      this.$inertia.delete(this.$create_path('sessions'), {
         preserveScroll: true,
-        preserveState: false,
+        preserveState: true,
       })
     },
   },

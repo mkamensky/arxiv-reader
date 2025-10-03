@@ -10,6 +10,7 @@ class ApplicationController < ActionController::Base
   after_action :verify_policy_scoped, only: %i[index]
   rescue_from ActionController::InvalidAuthenticityToken,
               with: :inertia_page_expired_error
+  rescue_from StandardError, with: :inertia_error_page
 
   def index
   end
@@ -79,5 +80,15 @@ class ApplicationController < ActionController::Base
 
   def inertia_page_expired_error
     redirect_back_or_to('/', allow_other_host: false, notice: "The page expired, please try again.")
+  end
+
+  def inertia_error_page(exception)
+    raise exception if Rails.env.local?
+
+    status = ActionDispatch::ExceptionWrapper.new(nil, exception).status_code
+
+    render inertia: 'ErrorPage',
+           props: { status:, message: exception.message },
+           status:
   end
 end
