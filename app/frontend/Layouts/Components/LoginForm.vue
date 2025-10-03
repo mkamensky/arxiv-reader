@@ -1,171 +1,165 @@
 <template>
-  <q-card>
-    <q-toolbar glossy>
-      <q-toolbar-title>
-        <q-tabs
-          v-model="tab"
-          class="text-teal"
+  <div class="column fit">
+    <q-card class="q-mb-lg">
+      <q-toolbar glossy>
+        <q-toolbar-title>
+          <q-tabs
+            v-model="tab"
+            class="text-teal"
+          >
+            <q-tab label="Login" name="sessions" />
+            <q-tab label="Sign Up" name="users" />
+          </q-tabs>
+        </q-toolbar-title>
+      </q-toolbar>
+
+      <q-separator />
+
+      <q-tab-panels
+        v-model="tab"
+        animated
+      >
+        <q-tab-panel name="sessions">
+          <q-form @submit.prevent="submit">
+            <q-card-section>
+              <q-input
+                v-model="session.email"
+                class="q-mb-md"
+                autocomplete="email"
+                autofocus
+                clearable
+                label="Email"
+                type="email"
+                required
+                error-message="Please enter a valid email"
+              />
+              <q-input
+                v-model="session.password"
+                :type="showPwd ? 'text' : 'password'"
+                class="q-mb-md"
+                autocomplete="current-password"
+                label="Password"
+                clearable
+                required
+              >
+                <template #append>
+                  <q-icon
+                    :name="showPwd ? '$visible' : '$invisible'"
+                    class="cursor-pointer"
+                    @click="showPwd = !showPwd"
+                  />
+                </template>
+              </q-input>
+            </q-card-section>
+
+            <q-separator />
+
+            <q-card-actions class="row justify-evenly q-my-md">
+              <q-btn
+                color="primary"
+                type="submit"
+                :disabled="form.processing"
+              >
+                Submit
+              </q-btn>
+              <q-space />
+              <q-btn color="secondary" type="reset" @click="reset">
+                Reset
+              </q-btn>
+            </q-card-actions>
+          </q-form>
+        </q-tab-panel>
+
+        <q-tab-panel name="users">
+          <q-form @submit.prevent="submit">
+            <q-card-section>
+              <q-input
+                v-model="user.email"
+                class="q-mb-md"
+                autocomplete="email"
+                autofocus
+                clearable
+                label="Email"
+                type="email"
+                required
+              />
+              <q-input
+                v-model="user.password"
+                :type="showPwd ? 'text' : 'password'"
+                class="q-mb-md"
+                autocomplete="new-password"
+                label="Password"
+                clearable
+                required
+              >
+                <template #append>
+                  <q-icon
+                    :name="showPwd ? '$visible' : '$invisible'"
+                    class="cursor-pointer"
+                    @click="showPwd = !showPwd"
+                  />
+                </template>
+              </q-input>
+
+              <q-input
+                v-model="user.name"
+                class="q-mb-md"
+                autocomplete="name"
+                autofocus
+                clearable
+                label="Full name"
+                type="text"
+                required
+              />
+            </q-card-section>
+            <q-separator />
+            <q-card-actions class="row justify-evenly q-my-md">
+              <q-btn
+                color="primary"
+                type="submit"
+                :disabled="form.processing"
+              >
+                Submit
+              </q-btn>
+              <q-space />
+              <q-btn color="secondary" type="reset" @click="reset">
+                Reset
+              </q-btn>
+            </q-card-actions>
+          </q-form>
+        </q-tab-panel>
+      </q-tab-panels>
+    </q-card>
+
+    <q-card class="q-my-lg">
+      <q-toolbar class="bg-secondary" glossy>
+        <q-toolbar-title>Or, login/sign-up via:</q-toolbar-title>
+      </q-toolbar>
+
+      <q-separator dark inset />
+
+      <q-card-actions class="row justify-evenly q-my-md">
+        <q-form
+          v-for="service in $options.services"
+          :key="service"
+          :action="`/auth/${service}`"
+          method="post"
+          class="col q-mx-sm"
         >
-          <q-tab
-            label="Login"
-            name="sessions"
-          />
-          <q-tab
-            label="Sign Up"
-            name="users"
-          />
-        </q-tabs>
-      </q-toolbar-title>
-      <q-btn
-        v-close-popup
-        flat
-        icon="$close"
-      />
-    </q-toolbar>
-
-    <q-separator />
-
-    <q-tab-panels
-      v-model="tab"
-      animated
-    >
-      <q-tab-panel name="sessions">
-        <q-form @submit.prevent="submit">
-          <q-card-section>
-            <q-input
-              v-model="session.email"
-              class="q-mb-md"
-              autocomplete="email"
-              autofocus
-              clearable
-              label="Email"
-              type="email"
-              required
-              error-message="Please enter a valid email"
-            />
-            <q-input
-              v-model="session.password"
-              :type="showPwd ? 'text' : 'password'"
-              class="q-mb-md"
-              autocomplete="current-password"
-              label="Password"
-              clearable
-              required
-            >
-              <template #append>
-                <q-icon
-                  :name="showPwd ? '$visible' : '$invisible'"
-                  class="cursor-pointer"
-                  @click="showPwd = !showPwd"
-                />
-              </template>
-            </q-input>
-          </q-card-section>
-
-          <q-separator />
-
-          <q-card-actions class="row justify-evenly q-my-md">
-            <q-btn
-              v-close-popup
-              color="primary"
-              type="submit"
-              :disabled="form.processing"
-            >
-              Submit
-            </q-btn>
-            <q-space />
-            <q-btn
-              color="secondary"
-              type="reset"
-              @click="reset"
-            >
-              Reset
-            </q-btn>
-          </q-card-actions>
+          <input type="hidden" name="authenticity_token" :value="xsrf">
+          <q-btn
+            color="primary"
+            type="submit"
+            :label="service"
+            :icon="`$${service}`"
+            class="absolute-center fit"
+          >
+            <q-tooltip>Login with {{ service }}</q-tooltip>
+          </q-btn>
+          <q-separator vertical inset dark />
         </q-form>
-      </q-tab-panel>
-
-      <q-tab-panel name="users">
-        <q-form @submit.prevent="submit">
-          <q-card-section>
-            <q-input
-              v-model="user.email"
-              class="q-mb-md"
-              autocomplete="email"
-              autofocus
-              clearable
-              label="Email"
-              type="email"
-              required
-            />
-            <q-input
-              v-model="user.password"
-              :type="showPwd ? 'text' : 'password'"
-              class="q-mb-md"
-              autocomplete="new-password"
-              label="Password"
-              clearable
-              required
-            >
-              <template #append>
-                <q-icon
-                  :name="showPwd ? '$visible' : '$invisible'"
-                  class="cursor-pointer"
-                  @click="showPwd = !showPwd"
-                />
-              </template>
-            </q-input>
-
-            <q-input
-              v-model="user.name"
-              class="q-mb-md"
-              autocomplete="name"
-              autofocus
-              clearable
-              label="Full name"
-              type="text"
-              required
-            />
-          </q-card-section>
-          <q-separator />
-          <q-card-actions class="row justify-evenly q-my-md">
-            <q-btn
-              v-close-popup
-              color="primary"
-              type="submit"
-              :disabled="form.processing"
-            >
-              Submit
-            </q-btn>
-            <q-space />
-            <q-btn
-              color="secondary"
-              type="reset"
-              @click="reset"
-            >
-              Reset
-            </q-btn>
-          </q-card-actions>
-        </q-form>
-      </q-tab-panel>
-    </q-tab-panels>
-  </q-card>
-  <separator />
-  <div class="row">
-    <q-form
-      v-for="service in $options.services"
-      :key="service"
-      :action="`/auth/${service}`"
-      method="post"
-      class="col"
-    >
-      <input type="hidden" name="authenticity_token" :value="xsrf">
-      <q-btn type="submit" :label="service" :icon="`$${service}`">
-        <q-tooltip>
-          Login with {{ service }}
-        </q-tooltip>
-      </q-btn>
-    </q-form>
+      </q-card-actions>
+    </q-card>
   </div>
 </template>
 
@@ -174,7 +168,7 @@
 export default {
   components: {
   },
-  services: ['developer', 'github', 'google'],
+  services: ['github', 'google'],
   data() {
     return {
       tab: 'sessions',

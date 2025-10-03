@@ -14,7 +14,6 @@
         {{ current_user.label }}
       </div>
       <q-btn
-        v-close-popup
         color="primary"
         label="Logout"
         push
