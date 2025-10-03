@@ -117,6 +117,7 @@ const myIcons = {
   github: 'mdi-github',
   google: 'mdi-google',
   developer: 'mdi-code-braces',
+  mathoverflow: 'mdi-stack-overflow',
 }
 
 const pages = import.meta.glob('../Pages/**/*.vue', { eager: true })

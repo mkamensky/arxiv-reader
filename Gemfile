@@ -94,7 +94,7 @@ gem 'faraday-follow_redirects', require: false
 gem 'feedjira', require: false
 gem 'oai', require: false
 gem 'libxml-ruby', require: false
-gem 'omniauth'
+gem 'omniauth', '>=2.1.4'
 gem "omniauth-rails_csrf_protection"
 gem 'omniauth-github'
 gem 'omniauth-google-oauth2'

@@ -451,7 +451,7 @@ DEPENDENCIES
   libxml-ruby
   oai
   oj
-  omniauth
+  omniauth (>= 2.1.4)
   omniauth-github
   omniauth-google-oauth2
   omniauth-rails_csrf_protection
