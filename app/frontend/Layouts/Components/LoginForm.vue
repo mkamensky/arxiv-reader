@@ -174,7 +174,7 @@
 export default {
   components: {
   },
-  services: ['developer', 'github'],
+  services: ['developer', 'github', 'google'],
   data() {
     return {
       tab: 'sessions',

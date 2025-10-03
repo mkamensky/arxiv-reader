@@ -8,11 +8,11 @@ class SessionsController < ApplicationController
     debugger unless userinfo
 
     user = User.find_or_initialize_by(email: userinfo[:email]) do
-      it.name = userinfo[:name]
       it.password = it.password_confirmation = SecureRandom.base64(24)
     end
+    user.name ||= userinfo[:name]
     user.avatar ||= userinfo[:image]
-    user.github ||= userinfo[:nickname]
+    user.github ||= userinfo[:nickname] if provider == 'github'
     user.save!
     login(user)
     redir_back
@@ -52,7 +52,15 @@ class SessionsController < ApplicationController
     skip_authorization
   end
 
+  def authinfo
+    @authinfo ||= request.env['omniauth.auth'] || {}
+  end
+
   def userinfo
-    @userinfo ||= (request.env['omniauth.auth'] || {})[:info]
+    authinfo[:info]
+  end
+
+  def provider
+    authinfo[:provider]
   end
 end

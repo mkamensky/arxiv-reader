@@ -115,6 +115,7 @@ const myIcons = {
   bookmark: 'mdi-bookmark-outline',
   comment: 'mdi-comment-text-outline',
   github: 'mdi-github',
+  google: 'mdi-google',
   developer: 'mdi-code-braces',
 }
 
