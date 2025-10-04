@@ -20,7 +20,8 @@ module InertiaCsrf
 
   # Rails uses HTTP_X_CSRF_TOKEN, but axios sends HTTP_X_XSRF_TOKEN (different name, X instead of C)
   # By overriding `request_authenticity_tokens` we can tell Rails to check HTTP_X_XSRF_TOKEN, too
-  # Source: https://github.com/rails/rails/blob/v6.0.3.2/actionpack/lib/action_controller/metal/request_forgery_protection.rb#L305-L308
+  # Source:
+  # https://github.com/rails/rails/blob/v8.0.3/actionpack/lib/action_controller/metal/request_forgery_protection.rb#L475-478
   def request_authenticity_tokens
     super << request.headers['HTTP_X_XSRF_TOKEN']
   end

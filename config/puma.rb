@@ -48,7 +48,7 @@ end
 
 # Enable systemd notify support
 if ENV["NOTIFY_SOCKET"]
-  on_booted do
+  after_booted do
     require 'sd_notify'
     SdNotify.ready
   end
