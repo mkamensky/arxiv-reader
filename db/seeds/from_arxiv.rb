@@ -1,11 +1,11 @@
 #[Paper, Author].each(&:destroy_all)
 
+Rails.logger = Logger.new(Rails.env.local? ? $stdout : 'log/arxiv_update.log')
+
 math = Subject.find('math')
 papers = math.refresh_from_arxiv(verbose: true)
-# rubocop: disable Rails/Output
 if papers.blank?
-  puts 'Added no new papers'
+  Rails.logger.info 'Added no new papers'
 else
-  puts "Added #{papers.count} papers, starting with #{papers.first.submitted}"
+  Rails.logger.info "Added #{papers.count} papers, starting with #{papers.first.submitted}"
 end
-# rubocop: enable Rails/Output

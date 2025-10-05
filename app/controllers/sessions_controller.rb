@@ -5,8 +5,6 @@ class SessionsController < ApplicationController
   }
 
   def omni
-    debugger unless userinfo
-
     user = User.find_or_initialize_by(email: userinfo[:email]) do
       it.password = it.password_confirmation = SecureRandom.base64(24)
     end
@@ -16,8 +14,8 @@ class SessionsController < ApplicationController
     user.save!
     login(user)
     redir_back
-  rescue ActiveRecord::RecordInvalid => e
-    debugger
+    #  rescue ActiveRecord::RecordInvalid => e
+    #    debugger
   end
 
   def create

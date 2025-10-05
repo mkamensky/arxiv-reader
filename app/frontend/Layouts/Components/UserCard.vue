@@ -1,5 +1,5 @@
 <template>
-  <div class="row no-wrap q-pa-md">
+  <div class="row no-wrap justify-between q-pa-md">
     <div class="column">
       <div class="text-h6 q-mb-md">
         Settings
