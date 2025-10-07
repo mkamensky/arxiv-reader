@@ -59,6 +59,8 @@ class Paper < ApplicationRecord
         pdf: apaper.pdf,
         #tags: apaper.aux_tags,
         journal_ref: apaper.journal_ref,
+        primary: apaper.msc_class&.first || [],
+        secondary: apaper.msc_class&.second || [],
       }
     end
 

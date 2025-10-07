@@ -99,7 +99,10 @@ export default {
   },
   methods: {
     search() {
-      router.get(this.$index_path('papers'), {q: this.query})
+      router.get(this.$index_path('papers'), {q: this.query}, {
+        onStart() { this.$q.loading.show({ delay: 100 }) },
+        onFinish() { this.$q.loading.hide() },
+      })
     },
   },
 }

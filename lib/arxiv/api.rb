@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 module Arxiv
+  # rubocop: disable Metrics/ModuleLength
   module Api
     extend self
 
@@ -62,7 +63,7 @@ module Arxiv
     def parse_authors(value)
       res = if value.is_a?(String)
         # from oai arxivRaw, TODO
-        /[()]/.match?(value) ? nil : value.split(/, (?!Jr[.]?)| and /)
+        /[()]/.match?(value) ? nil : value.split(/, (?!Jr[.]?)(?:and )?| and /)
       elsif value.is_a?(Hash)
         value['author']
       else
@@ -72,7 +73,19 @@ module Arxiv
       res&.uniq { it.is_a?(Hash) ? it['name'] : it }
     end
 
-    # rubocop:disable Rails/TimeZone, Metrics/PerceivedComplexity,     Metrics/CyclomaticComplexity
+    def parse_msc(value)
+      @prim = @sec = nil
+      if value =~ /^(.*) \(Primary\) *(.*) \(Secondary\)$/
+        @prim = $1
+        @sec = $2
+      else
+        @prim = value
+      end
+      [@prim.split(', '), @sec&.split(', ')]
+    end
+
+    # rubocop:disable Rails/TimeZone, Metrics/PerceivedComplexity
+    # rubocop:disable Metrics/CyclomaticComplexity
     def merge(hash, key, value)
       if key == 'authors'
         hash[key] = parse_authors(value)
@@ -87,7 +100,7 @@ module Arxiv
       elsif key == 'categories'
         hash[key] = value.split
       elsif key == 'msc-class'
-        hash['msc_class'] = value.split('; ')
+        hash['msc_class'] = parse_msc(value)
       elsif hash.key?(key)
         if hash[key].is_a?(Array)
           hash[key] << value
@@ -175,7 +188,7 @@ module Arxiv
           oa = Arxiv::Api.oai(**)
           return [] if oa.blank?
 
-          oa.full.each { yield from_oai_item(it) }
+          oa.full.each { yield from_oai_item(it), it }
         end
 
         def from_oai_item(item)
@@ -282,5 +295,6 @@ module Arxiv
       end
     end
     # rubocop: enable Metrics/ClassLength
+    # rubocop: enable Metrics/ModuleLength
   end
 end

@@ -279,7 +279,9 @@ CREATE TABLE public.papers (
     journal_ref character varying,
     created_at timestamp(6) without time zone NOT NULL,
     updated_at timestamp(6) without time zone NOT NULL,
-    searchable tsvector GENERATED ALWAYS AS (((setweight(to_tsvector('english'::regconfig, (COALESCE(title, ''::character varying))::text), 'A'::"char") || setweight(to_tsvector('english'::regconfig, COALESCE(abstract, ''::text)), 'B'::"char")) || setweight(to_tsvector('english'::regconfig, COALESCE(comment, ''::text)), 'C'::"char"))) STORED
+    searchable tsvector GENERATED ALWAYS AS (((setweight(to_tsvector('english'::regconfig, (COALESCE(title, ''::character varying))::text), 'A'::"char") || setweight(to_tsvector('english'::regconfig, COALESCE(abstract, ''::text)), 'B'::"char")) || setweight(to_tsvector('english'::regconfig, COALESCE(comment, ''::text)), 'C'::"char"))) STORED,
+    "primary" character varying[] DEFAULT '{}'::character varying[],
+    secondary character varying[] DEFAULT '{}'::character varying[]
 );
 
 
@@ -1133,6 +1135,7 @@ ALTER TABLE ONLY public.recommendations
 SET search_path TO "$user", public;
 
 INSERT INTO "schema_migrations" (version) VALUES
+('20251007154657'),
 ('20251002193744'),
 ('20251001190420'),
 ('20251001185844'),
