@@ -11,7 +11,7 @@ class User < ApplicationRecord
   has_many_through :bpapers, :bookmarks, source: :paper
   # auto recommendations, currently unused
   has_many_through :recommended, :recommendations, source: :paper
-  has_many_through :fauthors, :followships, source: :author
+  has_many_through :fauthors, :followships, -> { order(:name) }, source: :author
 
   belongs_to :subject, optional: true # default subject
   has_many_through :categories, :usercats
