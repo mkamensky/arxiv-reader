@@ -16,9 +16,9 @@ class ApplicationRecord < ActiveRecord::Base
 
   class << self
     # rubocop:disable Naming/PredicatePrefix
-    def has_many_through(assoc, vias, **)
+    def has_many_through(assoc, vias, *, **)
       has_many vias, dependent: :destroy
-      has_many assoc, through: vias, **
+      has_many assoc, *, through: vias, **
     end
     # rubocop:enable Naming/PredicatePrefix
 
