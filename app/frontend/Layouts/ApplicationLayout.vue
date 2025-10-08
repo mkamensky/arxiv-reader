@@ -72,6 +72,7 @@
 import LoginForm from '@/Layouts/Components/LoginForm.vue'
 import UserCard from '@/Layouts/Components/UserCard.vue'
 import { Head, router } from '@inertiajs/vue3'
+import { Loading } from 'quasar'
 import userMixin from '@/mixins/userMixin'
 
 export default {
@@ -100,8 +101,8 @@ export default {
   methods: {
     search() {
       router.get(this.$index_path('papers'), {q: this.query}, {
-        onStart() { this.$q.loading.show({ delay: 100 }) },
-        onFinish() { this.$q.loading.hide() },
+        onStart() { Loading.show({ delay: 100 }) },
+        onFinish() { Loading.hide() },
       })
     },
   },

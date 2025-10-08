@@ -62,7 +62,7 @@
           Followed authors
         </q-toolbar-title>
       </q-toolbar>
-      <q-list style="max-height: 40%" class="scroll overflow-auto">
+      <q-list style="max-height: 80%" class="scroll overflow-auto">
         <q-item
           v-for="item in current_user.fauthors || []"
           :key="item.value"
