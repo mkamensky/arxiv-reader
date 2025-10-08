@@ -5,6 +5,19 @@ class Author < ApplicationRecord
 
   friendly_id :arxiv
 
+  include PgSearch::Model
+
+  multisearchable
+
+  pg_search_scope :search_all,
+                  against: { name: 'A', name_variants: 'B' },
+                  using: {
+                    tsearch: {
+                      dictionary: 'english',
+                      tsvector_column: 'searchable',
+                    },
+                  }
+
   has_many_through :papers, :authorships
   has_many :categories, through: :papers
   has_many :subjects, through: :categories
@@ -12,6 +25,7 @@ class Author < ApplicationRecord
 
   validates :name, presence: true
   validates :arxiv, uniqueness: true
+  validates :name_variants, presence: true
 
   def label
     name
@@ -30,9 +44,26 @@ class Author < ApplicationRecord
   }
 
   before_validation :update_arxiv
+  before_validation :update_variants
 
   def arxiv_base
     @arxiv_base ||= self.class.arxiv_base(name)
+  end
+
+  def name=(val)
+    self.name_variants |= [val]
+    super
+  end
+
+  # merge other authors that are variants of this
+  def merge_variants(*others)
+    others.each do
+      self.papers |= it.papers
+      self.users |= it.users
+      self.name_variants |= [it.name] | it.name_variants
+      save!
+      it.destroy!
+    end
   end
 
   class << self
@@ -43,6 +74,10 @@ class Author < ApplicationRecord
   end
 
   protected
+
+  def update_variants
+    self.name_variants |= [name]
+  end
 
   def update_arxiv
     return if arxiv.present?

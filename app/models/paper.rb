@@ -40,13 +40,19 @@ class Paper < ApplicationRecord
 
   class << self
     def attrs_from_arxiv(apaper, **opts)
-      auth_find = opts[:auth_find] || :find_or_initialize_by
       {
         category: Category.arxiv(apaper.primary),
         categories:
           apaper.secondaries.filter_map { Category.arxiv(it) }.uniq,
         authors: apaper.author_names.filter_map do
-          Author.public_send(auth_find, name: it)
+          if block_given?
+            yield it
+          elsif opts[:auth_find]
+            Author.public_send(opts[:auth_find], it)
+          else
+            Author.find_by("? = ANY (name_variants)", it) ||
+              Author.new(name: it)
+          end
         end,
         submitted: apaper.submitted,
         revised: apaper.revised,
@@ -71,9 +77,10 @@ class Paper < ApplicationRecord
     # rubocop: disable Lint/Debugger, Lint/UselessAssignment
     def create_from_arxiv(apaper, **)
       create!(
-        attrs_from_arxiv(
-          apaper, auth_find: :find_or_create_by, **
-        ),
+        attrs_from_arxiv(apaper, **) do
+          Author.find_by("? = ANY (name_variants)", it) ||
+            Author.create!(name: it)
+        end,
       )
     rescue ActiveRecord::RecordInvalid => e
       debugger if [

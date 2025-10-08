@@ -42,7 +42,9 @@ CREATE TABLE public.authors (
     name character varying NOT NULL,
     arxiv character varying,
     created_at timestamp(6) without time zone NOT NULL,
-    updated_at timestamp(6) without time zone NOT NULL
+    updated_at timestamp(6) without time zone NOT NULL,
+    name_variants character varying[] DEFAULT '{}'::character varying[],
+    searchable tsvector GENERATED ALWAYS AS ((setweight(to_tsvector('english'::regconfig, (COALESCE(name, ''::character varying))::text), 'A'::"char") || setweight(array_to_tsvector((name_variants)::text[]), 'B'::"char"))) STORED
 );
 
 
@@ -748,6 +750,20 @@ CREATE UNIQUE INDEX index_authors_on_arxiv ON public.authors USING btree (arxiv)
 
 
 --
+-- Name: index_authors_on_name_variants; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_authors_on_name_variants ON public.authors USING btree (name_variants);
+
+
+--
+-- Name: index_authors_on_searchable; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_authors_on_searchable ON public.authors USING gin (searchable);
+
+
+--
 -- Name: index_authorships_on_author_id; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -1135,6 +1151,8 @@ ALTER TABLE ONLY public.recommendations
 SET search_path TO "$user", public;
 
 INSERT INTO "schema_migrations" (version) VALUES
+('20251008081904'),
+('20251008070307'),
 ('20251007154657'),
 ('20251002193744'),
 ('20251001190420'),
