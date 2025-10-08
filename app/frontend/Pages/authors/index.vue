@@ -4,6 +4,13 @@
       <section v-for="author in authors" :key="author.id">
         <q-toolbar class="bg-info glossy col-12">
           <q-toolbar-title>{{ author.label }}</q-toolbar-title>
+          <q-btn
+            v-if="current_user"
+            :icon="followed(author) ? '$starRemove' : '$starAdd'"
+            text-color="white"
+            outline
+            @click="toggleFollow(author)"
+          />
         </q-toolbar>
         <ar-paper
           v-for="paper in author.papers"
@@ -21,12 +28,13 @@
 
 <script>
 import ArPaper from '@/Components/ArPaper.vue'
+import userMixin from '@/mixins/userMixin'
 
 export default {
   components: {
     ArPaper,
   },
-
+  mixins: [userMixin],
   props: {
     authors: Array,
   },
