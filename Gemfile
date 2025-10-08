@@ -12,6 +12,8 @@ gem 'pg'
 
 gem 'pg_search'
 
+gem 'active_record_extended'
+
 # Use Active Model has_secure_password
 # [https://guides.rubyonrails.org/active_model_basics.html#securepassword]
 gem 'bcrypt', '>=3.1.7'

@@ -95,7 +95,7 @@ class Paper < ApplicationRecord
       super.vdeep_merge(
         only: %i[
           abs abstract comment category_id id journal_ref pdf
-          submitted revised tags version
+          submitted revised tags version primary secondary
         ],
       )
     end

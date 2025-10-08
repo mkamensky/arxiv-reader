@@ -63,6 +63,7 @@ module Arxiv
     def parse_authors(value)
       res = if value.is_a?(String)
         # from oai arxivRaw, TODO
+        value.sub!(/with an appendix by.*$/i, '')
         /[()]/.match?(value) ? nil : value.split(/, (?!Jr[.]?)(?:and )?| and /)
       elsif value.is_a?(Hash)
         value['author']
