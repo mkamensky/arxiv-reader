@@ -7,7 +7,7 @@ Rails.application.routes.draw do
   constraints(id: %r{[^/]+}) do
     resources :users, export: true, only: %i[create update]
     resource :session, export: true, only: %i[create destroy]
-    resources :authors, export: true, only: %i[show]
+    resources :authors, export: true, only: %i[index show]
     resources :papers, export: true, only: %i[index show]
   end
 

@@ -24,17 +24,19 @@
         />
         <q-toolbar-title>{{ $page.props.head.title }}</q-toolbar-title>
         <q-input
-          v-model="query"
+          v-for="what in ['authors', 'papers']"
+          :key="what"
+          v-model="query[what]"
           outlined
           class="bg-info"
-          label="Search"
+          :label="`Search ${what}`"
           type="search"
           stack-label
           clearable
-          @keyup.enter="search"
+          @keyup.enter="search(what)"
         >
           <template #append>
-            <q-icon name="$search" @click="search" />
+            <q-icon name="$search" @click="search(what)" />
           </template>
         </q-input>
       </q-toolbar>
@@ -85,7 +87,10 @@ export default {
   data() {
     return {
       drawerOpen: false,
-      query: '',
+      query: {
+        papers: '',
+        authors: '',
+      }
     }
   },
   computed: {
@@ -99,8 +104,8 @@ export default {
     },
   },
   methods: {
-    search() {
-      router.get(this.$index_path('papers'), {q: this.query}, {
+    search(what) {
+      router.get(this.$index_path(what), {q: this.query[what]}, {
         onStart() { Loading.show({ delay: 100 }) },
         onFinish() { Loading.hide() },
       })
