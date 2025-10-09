@@ -15,7 +15,7 @@ class AuthorsController < ApplicationController
   protected
 
   def q
-    params[:q]
+    @q ||= params[:q].presence && LaTeX.decode(params[:q])
   end
 
   def sauthors

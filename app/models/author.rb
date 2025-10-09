@@ -43,6 +43,8 @@ class Author < ApplicationRecord
     )
   }
 
+  normalizes :name, with: -> { LaTeX.decode(it) }
+
   before_validation :update_arxiv
   before_validation :update_variants
 
@@ -76,7 +78,7 @@ class Author < ApplicationRecord
   protected
 
   def update_variants
-    self.name_variants |= [name]
+    self.name_variants |= [name] | [I18n.transliterate(name)]
   end
 
   def update_arxiv
