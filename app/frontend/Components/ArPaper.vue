@@ -76,9 +76,9 @@
           <div v-html="$md(object.abstract)" />
         </q-card-section>
       </q-slide-transition>
-      <q-card-section class="text-white bg-grey-9">
-        <q-list dense dark class="row justify-between">
-          <q-item :href="object.abs">
+      <q-card-section class="text-white bg-grey-9 q-pa-sm">
+        <q-list dense dark class="row justify-between items-center">
+          <q-item :href="object.abs" class="bg-secondary">
             <q-item-section avatar style="min-width: 0px">
               <q-icon name="svguse:/icons.svg#arxiv" />
             </q-item-section>
@@ -121,7 +121,7 @@
               <q-item-label>{{ object.journal_ref }}</q-item-label>
             </q-item-section>
           </q-item>
-          <q-item v-if="object.primary.length">
+          <q-item v-if="object.primary.length" style="max-width: 30%">
             <q-item-section>
               <q-item-label overline>
                 MSC classes
@@ -138,7 +138,7 @@
               </q-item-label>
             </q-item-section>
           </q-item>
-          <q-item v-if="object.secondary.length">
+          <q-item v-if="object.secondary.length" style="max-width: 30%">
             <q-item-section>
               <q-item-label overline>
                 Secondary MSC classes
@@ -158,7 +158,7 @@
             </q-item-section>
           </q-item>
           <q-item v-if="object.comment">
-            <q-item-section avatar>
+            <q-item-section avatar class="content-center">
               <q-icon name="$comment">
                 <q-tooltip max-width="30rem">
                   <div v-html="$md(object.comment)" />
@@ -212,7 +212,9 @@ export default {
   },
   methods: {
     dateStr(date) {
-      return new Date(date)?.toDateString() || date
+      return new Date(date)?.toLocaleDateString(undefined, {
+        day: 'numeric', month: 'short', year: 'numeric'
+      }) || date
     },
   },
 }

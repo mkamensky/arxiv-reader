@@ -106,7 +106,7 @@
             stretch
             inline-label
             no-caps
-            class="bg-info text-black justify-evenly"
+            class="bg-info text-black justify-evenly q-ma-sm"
           >
             <q-route-tab
               v-for="item in cats"

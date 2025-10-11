@@ -22,7 +22,7 @@
           :icon="icon"
           @click="drawerOpen = !drawerOpen"
         />
-        <q-btn icon="$home" href="/" />
+        <q-btn icon="$home" href="/" class="q-mx-md bg-accent" />
         <q-toolbar-title>{{ $page.props.head.title }}</q-toolbar-title>
         <q-input
           v-for="what in ['authors', 'papers']"
