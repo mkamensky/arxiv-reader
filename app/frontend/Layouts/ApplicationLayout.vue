@@ -22,13 +22,15 @@
           :icon="icon"
           @click="drawerOpen = !drawerOpen"
         />
+        <q-btn icon="$home" href="/" />
         <q-toolbar-title>{{ $page.props.head.title }}</q-toolbar-title>
         <q-input
           v-for="what in ['authors', 'papers']"
           :key="what"
           v-model="query[what]"
           outlined
-          class="bg-info"
+          dense
+          class="bg-info q-ma-xs"
           :label="`Search ${what}`"
           type="search"
           stack-label

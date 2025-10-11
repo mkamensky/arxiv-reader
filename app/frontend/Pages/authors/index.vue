@@ -12,12 +12,14 @@
             @click="toggleFollow(author)"
           />
         </q-toolbar>
-        <ar-paper
-          v-for="paper in author.papers"
-          :key="paper.id"
-          :object="paper"
-          class="q-pa-md col-12 col-lg-6"
-        />
+        <div class="row">
+          <ar-paper
+            v-for="paper in author.papers"
+            :key="paper.id"
+            :object="paper"
+            class="q-pa-md col-12 col-lg-6"
+          />
+        </div>
       </section>
     </div>
     <div v-else>

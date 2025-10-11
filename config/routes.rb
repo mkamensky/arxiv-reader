@@ -4,7 +4,7 @@ Rails.application.routes.draw do
 
   #resources :passwords, param: :token, export: true, only: %i[new create edit update]
   resources :subjects, export: true, only: %i[show], defaults: { id: :math }
-  constraints(id: %r{[^/]+}) do
+  constraints(id: %r{[a-zA-Z0-9./]+}) do
     resources :users, export: true, only: %i[create update]
     resource :session, export: true, only: %i[create destroy]
     resources :authors, export: true, only: %i[index show]
