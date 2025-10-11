@@ -9,6 +9,7 @@ class SubjectsController < ApplicationController
           include: { categories: Category.inertia_params },
         )
       },
+      subjects: -> { policy_scope(Subject).as_json(Subject.inertia_params) },
       papers: -> { papers },
       date: -> { date },
     }

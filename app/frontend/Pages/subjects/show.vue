@@ -19,7 +19,23 @@
     >
       <div class="q-pa-xs relative-position">
         <q-toolbar glossy class="bg-accent rounded-borders">
-          <q-toolbar-title>Categories</q-toolbar-title>
+          <q-toolbar-title>
+            <q-btn-dropdown split color="secondary" :label="subject.label">
+              <q-list>
+                <q-item
+                  v-for="sub in subjects"
+                  :key="sub.value"
+                  v-close-popup
+                  :href="$show_path('subjects', sub.value)"
+                  clickable
+                >
+                  <q-item-section>
+                    <q-item-label>{{ sub.label }}</q-item-label>
+                  </q-item-section>
+                </q-item>
+              </q-list>
+            </q-btn-dropdown>
+          </q-toolbar-title>
           <q-btn
             icon="$close"
             flat
@@ -33,6 +49,7 @@
           :options="allCategories"
           type="toggle"
           class="scroll overflow-auto"
+          style="max-height: 80vh"
         />
       </div>
     </q-drawer>
@@ -133,6 +150,7 @@ export default {
     subject: Object,
     date: String,
     papers: Object,
+    subjects: Array,
   },
   data() {
     return {
