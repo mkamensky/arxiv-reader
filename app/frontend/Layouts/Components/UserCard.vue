@@ -75,6 +75,7 @@
           <q-item-section side>
             <q-btn
               round
+              size="sm"
               icon="$close"
               class="bg-secondary text-white"
               @click="removeAuthor(item)"
