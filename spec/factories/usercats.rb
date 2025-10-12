@@ -1,6 +1,6 @@
 FactoryBot.define do
   factory :usercat do
-    user { nil }
-    category { nil }
+    user
+    category
   end
 end

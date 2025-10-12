@@ -33,6 +33,7 @@ rescue ActiveRecord::PendingMigrationError => e
   abort e.to_s.strip
 end
 
+# rubocop: disable Style/ItBlockParameter
 RSpec.configure do |config|
   config.include FactoryBot::Syntax::Methods
 
@@ -64,13 +65,11 @@ RSpec.configure do |config|
   # arbitrary gems may also be filtered via:
   # config.filter_gems_from_backtrace("gem name")
 
-  config.expect_with :rspec do |c|
-    c.syntax = :expect
+  config.expect_with :rspec do
+    it.syntax = :expect
   end
-
-  config.include Devise::Test::ControllerHelpers, type: :controller
-  config.include Warden::Test::Helpers
 end
+# rubocop: enable Style/ItBlockParameter
 
 # rubocop:disable Style/TopLevelMethodDefinition
 def include_standard_examples(type = metadata[:type])

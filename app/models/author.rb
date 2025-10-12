@@ -46,7 +46,7 @@ class Author < ApplicationRecord
   normalizes :name, with: -> { LaTeX.decode(it) }
 
   before_validation :update_arxiv
-  before_validation :update_variants
+  before_save :update_variants
 
   def arxiv_base
     @arxiv_base ||= self.class.arxiv_base(name)
@@ -70,6 +70,8 @@ class Author < ApplicationRecord
 
   class << self
     def arxiv_base(name)
+      return if name.blank?
+
       parts = name.split
       parts.reduce(parts.pop) { |res, item| "#{res}_#{item.first}" }.parameterize
     end

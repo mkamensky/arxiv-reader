@@ -10,16 +10,20 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_07_16_073038) do
+ActiveRecord::Schema[8.0].define(version: 2025_10_08_081904) do
   # These are extensions that must be enabled in order to support this database
-  enable_extension "plpgsql"
+  enable_extension "pg_catalog.plpgsql"
 
   create_table "authors", force: :cascade do |t|
     t.string "name", null: false
     t.string "arxiv"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "name_variants", default: [], array: true
+    t.virtual "searchable", type: :tsvector, as: "(setweight(to_tsvector('english'::regconfig, (COALESCE(name, ''::character varying))::text), 'A'::\"char\") || setweight(array_to_tsvector((name_variants)::text[]), 'B'::\"char\"))", stored: true
     t.index ["arxiv"], name: "index_authors_on_arxiv", unique: true
+    t.index ["name_variants"], name: "index_authors_on_name_variants"
+    t.index ["searchable"], name: "index_authors_on_searchable", using: :gin
   end
 
   create_table "authorships", force: :cascade do |t|
@@ -71,6 +75,17 @@ ActiveRecord::Schema[7.0].define(version: 2023_07_16_073038) do
     t.index ["user_id"], name: "index_followships_on_user_id"
   end
 
+  create_table "friendly_id_slugs", force: :cascade do |t|
+    t.string "slug", null: false
+    t.integer "sluggable_id", null: false
+    t.string "sluggable_type", limit: 50
+    t.string "scope"
+    t.datetime "created_at"
+    t.index ["slug", "sluggable_type", "scope"], name: "index_friendly_id_slugs_on_slug_and_sluggable_type_and_scope", unique: true
+    t.index ["slug", "sluggable_type"], name: "index_friendly_id_slugs_on_slug_and_sluggable_type"
+    t.index ["sluggable_type", "sluggable_id"], name: "index_friendly_id_slugs_on_sluggable_type_and_sluggable_id"
+  end
+
   create_table "papers", force: :cascade do |t|
     t.string "arxiv"
     t.string "title"
@@ -86,11 +101,24 @@ ActiveRecord::Schema[7.0].define(version: 2023_07_16_073038) do
     t.string "journal_ref"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.virtual "searchable", type: :tsvector, as: "((setweight(to_tsvector('english'::regconfig, (COALESCE(title, ''::character varying))::text), 'A'::\"char\") || setweight(to_tsvector('english'::regconfig, COALESCE(abstract, ''::text)), 'B'::\"char\")) || setweight(to_tsvector('english'::regconfig, COALESCE(comment, ''::text)), 'C'::\"char\"))", stored: true
+    t.string "primary", default: [], array: true
+    t.string "secondary", default: [], array: true
     t.index ["arxiv", "version"], name: "index_papers_on_arxiv_and_version", unique: true
     t.index ["arxiv"], name: "index_papers_on_arxiv"
     t.index ["category_id"], name: "index_papers_on_category_id"
+    t.index ["searchable"], name: "index_papers_on_searchable", using: :gin
     t.index ["submitted"], name: "index_papers_on_submitted"
     t.index ["tags"], name: "index_papers_on_tags"
+  end
+
+  create_table "pg_search_documents", force: :cascade do |t|
+    t.text "content"
+    t.string "searchable_type"
+    t.bigint "searchable_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["searchable_type", "searchable_id"], name: "index_pg_search_documents_on_searchable"
   end
 
   create_table "recommendations", force: :cascade do |t|
@@ -104,12 +132,31 @@ ActiveRecord::Schema[7.0].define(version: 2023_07_16_073038) do
     t.index ["user_id"], name: "index_recommendations_on_user_id"
   end
 
+  create_table "sessions", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.string "ip_address"
+    t.string "user_agent"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_id"], name: "index_sessions_on_user_id"
+  end
+
   create_table "subjects", force: :cascade do |t|
     t.string "title"
     t.string "arxiv", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["arxiv"], name: "index_subjects_on_arxiv", unique: true
+  end
+
+  create_table "usercats", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.bigint "category_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["category_id", "user_id"], name: "index_usercats_on_category_id_and_user_id", unique: true
+    t.index ["category_id"], name: "index_usercats_on_category_id"
+    t.index ["user_id"], name: "index_usercats_on_user_id"
   end
 
   create_table "users", force: :cascade do |t|
@@ -119,13 +166,14 @@ ActiveRecord::Schema[7.0].define(version: 2023_07_16_073038) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.jsonb "prefs", default: {}, null: false
-    t.string "encrypted_password", default: "", null: false
-    t.string "reset_password_token"
-    t.datetime "reset_password_sent_at"
-    t.datetime "remember_created_at"
+    t.string "password_digest"
+    t.bigint "subject_id"
+    t.string "avatar"
+    t.string "github"
     t.index ["author_id"], name: "index_users_on_author_id"
     t.index ["email"], name: "index_users_on_email", unique: true
-    t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
+    t.index ["github"], name: "index_users_on_github", nulls_not_distinct: true
+    t.index ["subject_id"], name: "index_users_on_subject_id"
   end
 
   add_foreign_key "authorships", "authors"
@@ -140,5 +188,9 @@ ActiveRecord::Schema[7.0].define(version: 2023_07_16_073038) do
   add_foreign_key "papers", "categories"
   add_foreign_key "recommendations", "papers"
   add_foreign_key "recommendations", "users"
+  add_foreign_key "sessions", "users"
+  add_foreign_key "usercats", "categories"
+  add_foreign_key "usercats", "users"
   add_foreign_key "users", "authors"
+  add_foreign_key "users", "subjects"
 end

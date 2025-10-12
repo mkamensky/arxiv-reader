@@ -1,7 +1,7 @@
 FactoryBot.define do
   factory :author do
     name { Faker::Movies::Lebowski.character }
-    sequence(:arxiv) { |cc| "#{(name || '').parameterize}_#{cc}" }
+    #sequence(:arxiv) { "#{(name || '').parameterize}_#{it}" }
 
     transient do
       paper_count { 0 }
