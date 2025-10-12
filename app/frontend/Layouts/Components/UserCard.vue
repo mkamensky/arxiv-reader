@@ -48,6 +48,7 @@
           <q-item-section side>
             <q-btn
               round
+              size="sm"
               icon="$close"
               class="bg-secondary text-white"
               @click="removeBookmark(item)"
@@ -62,7 +63,7 @@
           Followed authors
         </q-toolbar-title>
       </q-toolbar>
-      <q-list style="max-height: 80%" class="scroll overflow-auto">
+      <q-list style="max-height: 80%" dense class="scroll overflow-auto">
         <q-item
           v-for="item in current_user.fauthors || []"
           :key="item.value"
@@ -75,7 +76,7 @@
           <q-item-section side>
             <q-btn
               round
-              size="sm"
+              size="xs"
               icon="$close"
               class="bg-secondary text-white"
               @click="removeAuthor(item)"

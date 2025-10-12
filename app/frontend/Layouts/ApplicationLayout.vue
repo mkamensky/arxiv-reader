@@ -98,7 +98,7 @@ export default {
   computed: {
     icon() {
       if (this.current_user) {
-        return this.current_user.avatar.length > 0 ?
+        return this.current_user.avatar?.length ?
           `img:${this.current_user.avatar}` : '$loggedin'
       } else {
         return '$login'

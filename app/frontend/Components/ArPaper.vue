@@ -1,7 +1,7 @@
 <template>
   <article>
     <q-card>
-      <q-card-actions class="bg-teal text-white">
+      <q-card-actions :class="`${bookmarked(object) ? 'bg-teal-2' : 'bg-secondary'} text-white`">
         <div>
           <q-btn-group
             push
@@ -52,7 +52,7 @@
                 :href="$show_path('authors', author.value)"
                 :label="$mdi(author.label)"
                 text-color="primary"
-                color="white"
+                :color="followed(author) ? 'yellow-3' : 'white'"
                 glossy
                 no-caps
               />

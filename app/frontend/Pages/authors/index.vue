@@ -2,7 +2,7 @@
   <q-page padding class="q-pt-xl">
     <div v-if="authors?.length" class="row">
       <section v-for="author in authors" :key="author.id">
-        <q-toolbar class="bg-info glossy col-12">
+        <q-toolbar :class="`${followed(author) ? 'bg-cyan-3' : 'bg-info'} glossy col-12`">
           <q-toolbar-title>{{ author.label }}</q-toolbar-title>
           <q-btn
             v-if="current_user"
