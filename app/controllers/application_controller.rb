@@ -6,6 +6,13 @@ class ApplicationController < ActionController::Base
   protect_from_forgery with: :null_session
 
   before_action :auth
+  before_action do
+    Rails.error.set_context(
+      request_url: request.original_url,
+      params: params,
+      session: session.inspect,
+    )
+  end
   after_action :verify_authorized
   after_action :verify_policy_scoped, only: %i[index]
   rescue_from ActionController::InvalidAuthenticityToken,

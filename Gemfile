@@ -105,6 +105,7 @@ gem 'omniauth-google-oauth2'
 
 group :production do
   gem 'sd_notify'
+  gem 'solid_errors'
 end
 
 gem "pundit"

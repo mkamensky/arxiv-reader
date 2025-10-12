@@ -17,4 +17,10 @@ test:
   database: ArxivTest
 
 production:
-  <<: *default
+  primary: &primary_production
+    <<: *default
+  errors:
+    <<: *primary_production
+    database: ArxivReaderErrors
+    migration_paths: db/errors_migrate
+

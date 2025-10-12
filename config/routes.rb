@@ -12,4 +12,6 @@ Rails.application.routes.draw do
   end
 
   root "subjects#show"
+
+  mount SolidErrors::Engine, at: "/solid_errors"
 end

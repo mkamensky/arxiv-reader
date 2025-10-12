@@ -88,4 +88,13 @@ Rails.application.configure do
 
   # Do not dump schema after migrations.
   config.active_record.dump_schema_after_migration = false
+
+  # Configure Solid Errors
+  config.solid_errors.connects_to = { database: { writing: :errors } }
+  config.solid_errors.send_emails = true
+  config.solid_errors.email_from = "errors@dibbler.verymad.net"
+  config.solid_errors.email_to = "moshe.kamensky@gmail.com"
+  config.solid_errors.username = Rails.application.credentials.dig(:admin, :username)
+  config.solid_errors.password = Rails.application.credentials.dig(:admin, :password)
+  config.solid_errors.destroy_after = 2.months
 end

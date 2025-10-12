@@ -49,5 +49,9 @@ class ApplicationPolicy
     protected
 
     attr_reader :user, :scope
+
+    def admin?
+      user.email == Rails.application.credentials.admin.username
+    end
   end
 end
