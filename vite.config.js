@@ -1,7 +1,8 @@
 import { defineConfig } from 'vite'
-import RubyPlugin from 'vite-plugin-ruby'
-import FullReload from 'vite-plugin-full-reload'
+//import RubyPlugin from 'vite-plugin-ruby'
+//import FullReload from 'vite-plugin-full-reload'
 import vue from '@vitejs/plugin-vue'
+import ViteRails from 'vite-plugin-rails'
 import { quasar, transformAssetUrls } from '@quasar/vite-plugin'
 
 // https://vitejs.dev/config/
@@ -36,18 +37,23 @@ export default defineConfig({
     include: ['@inertiajs/vue3'],
   },
   plugins: [
-    RubyPlugin(),
+    //RubyPlugin(),
     vue({
       template: {
         transformAssetUrls,
         compilerOptions: {
-          isCustomElement: (tag) => false,
+          isCustomElement: () => false,
         },
       }
+    }),
+    ViteRails({
+      fullReload: {
+        additionalPaths: ['config/routes.rb', 'app/views/**/*'],
+      },
     }),
     quasar({
       autoImportComponentCase: 'combined',
     }),
-    FullReload(['config/routes.rb', 'app/views/**/*']),
+    //FullReload(['config/routes.rb', 'app/views/**/*']),
   ],
 })
