@@ -45,7 +45,7 @@ namespace :deploy do
 end
 
 # Default value for linked_dirs is []
-append :linked_dirs, "log", "tmp/pids", "tmp/cache", "tmp/sockets", "public", "vendor", "storage"
+append :linked_dirs, "tmp/pids", "tmp/cache", "tmp/sockets", "public", "vendor", "storage"
 
 append :assets_manifests, "public/vite/.vite/manifest*.*"
 
@@ -56,7 +56,7 @@ append :assets_manifests, "public/vite/.vite/manifest*.*"
 # set :local_user, -> { `git config user.name`.chomp }
 
 # Default value for keep_releases is 5
-# set :keep_releases, 5
+set :keep_releases, 3
 
 set :migration_role, :app
 

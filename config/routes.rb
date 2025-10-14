@@ -13,5 +13,5 @@ Rails.application.routes.draw do
 
   root "subjects#show"
 
-  mount SolidErrors::Engine, at: "/solid_errors"
+  mount SolidErrors::Engine, at: "/solid_errors" unless Rails.env.local?
 end
