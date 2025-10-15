@@ -108,4 +108,5 @@ group :production do
   gem 'solid_errors'
 end
 
+gem 'meta_request'
 gem "pundit"
