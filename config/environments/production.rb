@@ -80,7 +80,7 @@ Rails.application.configure do
   # require "syslog/logger"
   # config.logger = ActiveSupport::TaggedLogging.new(Syslog::Logger.new "app-name")
 
-  unless ENV["RAILS_LOG_TO_FILE"].present?
+  if ENV["RAILS_LOG_TO_FILE"].blank?
     logger           = ActiveSupport::Logger.new($stdout)
     logger.formatter = config.log_formatter
     config.logger    = ActiveSupport::TaggedLogging.new(logger)
@@ -91,9 +91,10 @@ Rails.application.configure do
 
   # Configure Solid Errors
   config.solid_errors.connects_to = { database: { writing: :errors } }
-  config.solid_errors.send_emails = true
-  config.solid_errors.email_from = "errors@dibbler.verymad.net"
-  config.solid_errors.email_to = "moshe.kamensky@gmail.com"
+  #config.solid_errors.send_emails = true
+  config.solid_errors.send_emails = false
+  #config.solid_errors.email_from = "errors@dibbler.verymad.net"
+  #config.solid_errors.email_to = "moshe.kamensky@gmail.com"
   config.solid_errors.username = Rails.application.credentials.dig(:admin, :username)
   config.solid_errors.password = Rails.application.credentials.dig(:admin, :password)
   config.solid_errors.destroy_after = 2.months
