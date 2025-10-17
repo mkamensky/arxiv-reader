@@ -57,7 +57,7 @@
       <q-toolbar class="bg-secondary">
         <q-btn-group>
           <q-btn
-            color="amber"
+            color="warning"
             text-color="black"
             glossy
             icon="$menuLeft"
@@ -65,7 +65,7 @@
             @click="prevDate"
           />
           <q-btn
-            color="amber"
+            color="warning"
             text-color="black"
             glossy
             ripple
@@ -88,9 +88,10 @@
             </q-popup-proxy>
           </q-btn>
           <q-btn
-            color="amber"
+            color="warning"
             text-color="black"
             glossy
+            ripple
             icon="$menuRight"
             :disabled="date >= last"
             @click="nextDate"
@@ -99,6 +100,8 @@
 
         <q-toolbar-title>
           <q-tabs
+            v-if="$q.screen.gt.sm"
+            dense
             align="justify"
             outside-arrows
             indicator-color="red"
@@ -128,8 +131,10 @@
 
         <q-btn
           dense
-          flat
-          rounded
+          glossy
+          ripple
+          color="warning"
+          text-color="black"
           :class="drawerOpen ? 'hidden' : ''"
           icon="$show"
           @click="drawerOpen = true"

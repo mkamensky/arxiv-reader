@@ -12,7 +12,7 @@
   <q-layout view="hHh LpR lFr">
     <q-header elevated class="bg-primary text-white" height-hint="98">
       <q-toolbar
-        class="glossy q-pl-xs q-pr-lg justify-between q-gutter-y-xs"
+        class="glossy q-px-xs justify-between q-gutter-y-xs"
         style="flex-wrap: wrap"
       >
         <div class="col-12 col-md row justify-between">
