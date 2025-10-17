@@ -12,8 +12,8 @@ class SubjectsController < ApplicationController
       subjects: -> { policy_scope(Subject).as_json(Subject.inertia_params) },
       papers: -> { papers },
       date: -> { date },
-      last: date == subject&.last_update,
-      first: date == subject&.first_update,
+      last: subject&.last_update,
+      first: subject&.first_update,
     }
   end
 

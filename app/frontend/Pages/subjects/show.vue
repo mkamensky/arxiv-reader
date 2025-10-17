@@ -61,7 +61,7 @@
             text-color="black"
             glossy
             icon="$menuLeft"
-            :disabled="first"
+            :disabled="date <= first"
             @click="prevDate"
           />
           <q-btn
@@ -73,15 +73,16 @@
             :label="date"
           >
             <q-popup-proxy
+              ref="dateComp"
               cover
               transition-show="scale"
               transition-hide="scale"
             >
               <q-date
-                v-close-popup
                 :model-value="date"
                 today-btn
                 mask="YYYY-MM-DD"
+                :options="dateOptions"
                 @update:model-value="saveDate"
               />
             </q-popup-proxy>
@@ -91,7 +92,7 @@
             text-color="black"
             glossy
             icon="$menuRight"
-            :disabled="last"
+            :disabled="date >= last"
             @click="nextDate"
           />
         </q-btn-group>
@@ -153,8 +154,8 @@ export default {
     date: String,
     papers: Object,
     subjects: Array,
-    last: Boolean,
-    first: Boolean,
+    last: String,
+    first: String,
   },
   data() {
     return {
@@ -175,6 +176,12 @@ export default {
     catMap() {
       return this.allCategories
         .reduce((res, cur) => ({...res, [cur.value]: cur}), {})
+    },
+    fst() {
+      return this.first.replaceAll('-', '/')
+    },
+    lst() {
+      return this.last.replaceAll('-', '/')
     },
   },
   watch: {
@@ -202,12 +209,13 @@ export default {
       return (this.curCat === cat) ? 'q-tab--active' : ''
     },
     saveDate(value) {
+      this.$refs.dateComp.hide()
       this.$inertia.reload({
         preserveScroll: false,
         data: {
           date: value,
         },
-        only: ['papers', 'date', 'first', 'last'],
+        only: ['papers', 'date'],
       })
     },
     prevDate() {
@@ -216,7 +224,9 @@ export default {
     nextDate() {
       this.saveDate(`${this.date}+`)
     },
-
+    dateOptions(date) {
+      return date >= this.fst && date <= this.lst
+    },
   },
 
 }
