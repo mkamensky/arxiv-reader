@@ -10,37 +10,44 @@
   </Head>
 
   <q-layout view="hHh LpR lFr">
-    <q-header
-      elevated
-      class="bg-primary text-white"
-      height-hint="98"
-    >
-      <q-toolbar glossy>
-        <q-btn
-          flat
-          class="bg-accent"
-          :icon="icon"
-          @click="drawerOpen = !drawerOpen"
-        />
-        <q-btn icon="$home" href="/" class="q-mx-md bg-accent" />
-        <q-toolbar-title>{{ $page.props.head.title }}</q-toolbar-title>
-        <q-input
-          v-for="what in ['authors', 'papers']"
-          :key="what"
-          v-model="query[what]"
-          outlined
-          dense
-          class="bg-info q-ma-xs"
-          :label="`Search ${what}`"
-          type="search"
-          stack-label
-          clearable
-          @keyup.enter="search(what)"
-        >
-          <template #append>
-            <q-icon name="$search" @click="search(what)" />
-          </template>
-        </q-input>
+    <q-header elevated class="bg-primary text-white" height-hint="98">
+      <q-toolbar
+        class="glossy q-pl-xs q-pr-lg justify-between q-gutter-y-xs"
+        style="flex-wrap: wrap"
+      >
+        <div class="col-12 col-md row justify-between">
+          <div class="col q-gutter-x-sm">
+            <q-btn
+              flat
+              class="bg-accent"
+              :icon="icon"
+              @click="drawerOpen = !drawerOpen"
+            />
+            <q-btn icon="$home" href="/" class="bg-accent" />
+          </div>
+          <q-toolbar-title class="col row inline">
+            {{ $page.props.head.title }}
+          </q-toolbar-title>
+        </div>
+        <div class="col-12 col-md-auto row">
+          <q-input
+            v-for="what in ['authors', 'papers']"
+            :key="what"
+            v-model="query[what]"
+            outlined
+            dense
+            class="bg-info col-6"
+            :label="`Search ${what}`"
+            type="search"
+            stack-label
+            clearable
+            @keyup.enter="search(what)"
+          >
+            <template #append>
+              <q-icon name="$search" @click="search(what)" />
+            </template>
+          </q-input>
+        </div>
       </q-toolbar>
     </q-header>
 
