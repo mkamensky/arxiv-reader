@@ -9,7 +9,7 @@ class Subject < ApplicationRecord
   public_constant :ARXIV_EPOCH
 
   has_many :categories, dependent: :destroy
-  has_many :users
+  has_many :users, dependent: :nullify
 
   def papers
     Paper.with_subject(arxiv)
@@ -25,6 +25,10 @@ class Subject < ApplicationRecord
 
   def last_update
     last_before || ARXIV_EPOCH
+  end
+
+  def first_update
+    (first_after || (1.day + ARXIV_EPOCH)) - 1.day
   end
 
   def refresh_from_arxiv(**opts)

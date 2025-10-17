@@ -61,6 +61,7 @@
             text-color="black"
             glossy
             icon="$menuLeft"
+            :disabled="first"
             @click="prevDate"
           />
           <q-btn
@@ -90,6 +91,7 @@
             text-color="black"
             glossy
             icon="$menuRight"
+            :disabled="last"
             @click="nextDate"
           />
         </q-btn-group>
@@ -151,6 +153,8 @@ export default {
     date: String,
     papers: Object,
     subjects: Array,
+    last: Boolean,
+    first: Boolean,
   },
   data() {
     return {
@@ -203,7 +207,7 @@ export default {
         data: {
           date: value,
         },
-        only: ['papers', 'date'],
+        only: ['papers', 'date', 'first', 'last'],
       })
     },
     prevDate() {

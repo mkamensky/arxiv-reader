@@ -12,6 +12,8 @@ class SubjectsController < ApplicationController
       subjects: -> { policy_scope(Subject).as_json(Subject.inertia_params) },
       papers: -> { papers },
       date: -> { date },
+      last: date == subject&.last_update,
+      first: date == subject&.first_update,
     }
   end
 
@@ -33,6 +35,7 @@ class SubjectsController < ApplicationController
     @date = Date.parse(params[:date])
     @date = subject&.last_before(@date) if prv
     @date = subject&.first_after(@date) if nxt
+    @date
   rescue TypeError, NoMethodError
     @date = subject&.last_update || (Time.zone.today - 1.day)
   end
