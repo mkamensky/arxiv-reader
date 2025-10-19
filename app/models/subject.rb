@@ -16,11 +16,11 @@ class Subject < ApplicationRecord
   end
 
   def first_after(date = ARXIV_EPOCH)
-    papers.where(submitted: (date + 1.day)...).minimum(:submitted)
+    papers.where(submitted: (date + 1.day)...).order(submitted: :asc).pick(:submitted)
   end
 
   def last_before(date = Time.zone.today + 1.day)
-    papers.where(submitted: ...date).maximum(:submitted)
+    papers.where(submitted: ...date).order(submitted: :desc).pick(:submitted)
   end
 
   def last_update
