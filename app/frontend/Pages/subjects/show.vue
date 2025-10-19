@@ -53,8 +53,13 @@
         />
       </div>
     </q-drawer>
-    <q-page-sticky expand position="top" class="q-pt-xs">
-      <q-toolbar class="bg-secondary">
+    <q-page-sticky
+      expand
+      position="top"
+      class="q-pt-xs"
+      style="max-width: 100vw"
+    >
+      <q-toolbar class="bg-secondary justify-around">
         <q-btn-group>
           <q-btn
             color="warning"
@@ -98,9 +103,8 @@
           />
         </q-btn-group>
 
-        <q-toolbar-title>
+        <q-toolbar-title v-if="$q.screen.gt.xs">
           <q-tabs
-            v-if="$q.screen.gt.sm"
             dense
             align="justify"
             outside-arrows

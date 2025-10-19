@@ -77,7 +77,7 @@
         </q-card-section>
       </q-slide-transition>
       <q-card-section class="text-white bg-grey-9 q-pa-sm">
-        <q-list dense dark class="row justify-between items-center">
+        <q-list dense dark class="row justify-between items-center no-wrap">
           <q-item :href="object.abs" class="bg-secondary">
             <q-item-section avatar style="min-width: 0px">
               <q-icon name="svguse:/icons.svg#arxiv" />
@@ -89,79 +89,157 @@
               <q-item-label>{{ object.value }}</q-item-label>
             </q-item-section>
           </q-item>
-          <q-item>
-            <q-item-section>
-              <q-item-label overline>
-                Version
-              </q-item-label>
-              <q-item-label>{{ object.version }}</q-item-label>
-            </q-item-section>
-          </q-item>
-          <q-item>
-            <q-item-section>
-              <q-item-label overline>
-                Submitted
-              </q-item-label>
-              <q-item-label>{{ submitted }}</q-item-label>
-            </q-item-section>
-          </q-item>
-          <q-item>
-            <q-item-section v-if="revised">
-              <q-item-label overline>
-                Revised
-              </q-item-label>
-              <q-item-label>{{ revised }}</q-item-label>
-            </q-item-section>
-          </q-item>
-          <q-item v-if="object.journal_ref">
-            <q-item-section>
-              <q-item-label overline>
-                Journal Ref
-              </q-item-label>
-              <q-item-label>{{ object.journal_ref }}</q-item-label>
-            </q-item-section>
-          </q-item>
-          <q-item v-if="object.primary.length" style="max-width: 30%">
-            <q-item-section>
-              <q-item-label overline>
-                MSC classes
-              </q-item-label>
-              <q-item-label>
-                <q-chip
-                  v-for="tag in object.primary"
+          <template v-if="$q.screen.gt.xs">
+            <q-item>
+              <q-item-section>
+                <q-item-label overline>
+                  Version
+                </q-item-label>
+                <q-item-label>{{ object.version }}</q-item-label>
+              </q-item-section>
+            </q-item>
+            <q-item>
+              <q-item-section>
+                <q-item-label overline>
+                  Submitted
+                </q-item-label>
+                <q-item-label>{{ submitted }}</q-item-label>
+              </q-item-section>
+            </q-item>
+            <q-item v-if="revised">
+              <q-item-section>
+                <q-item-label overline>
+                  Revised
+                </q-item-label>
+                <q-item-label>{{ revised }}</q-item-label>
+              </q-item-section>
+            </q-item>
+            <q-item v-if="object.journal_ref">
+              <q-item-section>
+                <q-item-label overline>
+                  Journal Ref
+                </q-item-label>
+                <q-item-label>{{ object.journal_ref }}</q-item-label>
+              </q-item-section>
+            </q-item>
+            <q-item v-if="object.primary.length" style="max-width: 30%">
+              <q-item-section>
+                <q-item-label overline>
+                  MSC classes
+                </q-item-label>
+                <q-item-label>
+                  <q-chip
+                    v-for="tag in object.primary"
+                    :key="tag"
+                    dense
+                    size="sm"
+                  >
+                    {{ tag }}<q-tooltip>{{ $options.msc[tag] }}</q-tooltip>
+                  </q-chip>
+                </q-item-label>
+              </q-item-section>
+            </q-item>
+            <q-item v-if="object.secondary.length" style="max-width: 30%">
+              <q-item-section>
+                <q-item-label overline>
+                  Secondary MSC classes
+                </q-item-label>
+                <q-item-label>
+                  <q-chip
+                    v-for="tag in object.primary"
+                    :key="tag"
+                    dense
+                    size="sm"
+                  >
+                    {{ tag }}<q-tooltip>{{ $options.msc[tag] }}</q-tooltip>
+                  </q-chip>
+                  v-for="tag in object.secondary"
                   :key="tag"
-                  dense
-                  size="sm"
-                >
-                  {{ tag }}<q-tooltip>{{ $options.msc[tag] }}</q-tooltip>
-                </q-chip>
-              </q-item-label>
-            </q-item-section>
-          </q-item>
-          <q-item v-if="object.secondary.length" style="max-width: 30%">
-            <q-item-section>
-              <q-item-label overline>
-                Secondary MSC classes
-              </q-item-label>
-              <q-item-label>
-                <q-chip
-                  v-for="tag in object.primary"
-                  :key="tag"
-                  dense
-                  size="sm"
-                >
-                  {{ tag }}<q-tooltip>{{ $options.msc[tag] }}</q-tooltip>
-                </q-chip>
-                v-for="tag in object.secondary"
-                :key="tag"
-              </q-item-label>
-            </q-item-section>
-          </q-item>
-          <q-item v-if="object.comment">
+                </q-item-label>
+              </q-item-section>
+            </q-item>
+          </template>
+          <q-item v-if="object.comment || $q.screen.lt.sm">
             <q-item-section avatar class="content-center">
               <q-icon name="$comment">
                 <q-tooltip max-width="30rem">
-                  <div v-html="$md(object.comment)" />
+                  <q-list>
+                    <template v-if="$q.screen.lt.sm">
+                      <q-item>
+                        <q-item-section>
+                          <q-item-label overline>
+                            Version
+                          </q-item-label>
+                          <q-item-label>{{ object.version }}</q-item-label>
+                        </q-item-section>
+                      </q-item>
+                      <q-item>
+                        <q-item-section>
+                          <q-item-label overline>
+                            Submitted
+                          </q-item-label>
+                          <q-item-label>{{ submitted }}</q-item-label>
+                        </q-item-section>
+                      </q-item>
+                      <q-item v-if="revised">
+                        <q-item-section>
+                          <q-item-label overline>
+                            Revised
+                          </q-item-label>
+                          <q-item-label>{{ revised }}</q-item-label>
+                        </q-item-section>
+                      </q-item>
+                      <q-item v-if="object.journal_ref">
+                        <q-item-section>
+                          <q-item-label overline>
+                            Journal Ref
+                          </q-item-label>
+                          <q-item-label>{{ object.journal_ref }}</q-item-label>
+                        </q-item-section>
+                      </q-item>
+                      <q-item v-if="object.primary.length" style="max-width: 30%">
+                        <q-item-section>
+                          <q-item-label overline>
+                            MSC classes
+                          </q-item-label>
+                          <q-item-label>
+                            <q-chip
+                              v-for="tag in object.primary"
+                              :key="tag"
+                              dense
+                              size="sm"
+                            >
+                              {{ tag }}<q-tooltip>{{ $options.msc[tag] }}</q-tooltip>
+                            </q-chip>
+                          </q-item-label>
+                        </q-item-section>
+                      </q-item>
+                      <q-item v-if="object.secondary.length" style="max-width: 30%">
+                        <q-item-section>
+                          <q-item-label overline>
+                            Secondary MSC classes
+                          </q-item-label>
+                          <q-item-label>
+                            <q-chip
+                              v-for="tag in object.primary"
+                              :key="tag"
+                              dense
+                              size="sm"
+                            >
+                              {{ tag }}<q-tooltip>{{ $options.msc[tag] }}</q-tooltip>
+                            </q-chip>
+                            v-for="tag in object.secondary"
+                            :key="tag"
+                          </q-item-label>
+                        </q-item-section>
+                      </q-item>
+                    </template>
+                    <q-item>
+                      <q-item-section>
+                        <q-item-label v-html="$md(object.comment)" />
+                      </q-item-section>
+                    </q-item>
+                  </q-list>
                 </q-tooltip>
               </q-icon>
             </q-item-section>

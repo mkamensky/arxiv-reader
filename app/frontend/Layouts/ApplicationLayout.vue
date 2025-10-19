@@ -13,7 +13,7 @@
     <q-header elevated class="bg-primary text-white" height-hint="98">
       <q-toolbar
         class="glossy q-px-xs justify-between q-gutter-y-xs"
-        style="flex-wrap: wrap"
+        style="flex-wrap: wrap;max-width: 100vw"
       >
         <div class="col-12 col-md row justify-between">
           <div class="col q-gutter-x-sm">
@@ -36,7 +36,7 @@
             v-model="query[what]"
             outlined
             dense
-            class="bg-info col-6"
+            class="bg-info col-12 col-sm-6"
             :label="`Search ${what}`"
             type="search"
             stack-label
