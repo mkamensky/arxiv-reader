@@ -251,7 +251,7 @@
               dense
               round
               class="bg-red-2 text-black"
-              name="Toggle abstract"
+              title="Toggle abstract"
               role="none"
               @click="show = !show"
             />

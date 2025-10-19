@@ -21,13 +21,13 @@
               flat
               class="bg-accent"
               :icon="icon"
-              name="Toggle sidebar"
+              title="Toggle sidebar"
               @click="drawerOpen = !drawerOpen"
             />
             <q-btn
               icon="$home"
               href="/"
-              name="Home"
+              title="Home"
               class="bg-accent"
             />
           </div>
