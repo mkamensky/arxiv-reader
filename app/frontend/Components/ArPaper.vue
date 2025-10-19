@@ -252,7 +252,6 @@
               round
               class="bg-red-2 text-black"
               title="Toggle abstract"
-              role="none"
               @click="show = !show"
             />
           </q-item>

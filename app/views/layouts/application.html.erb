@@ -11,6 +11,10 @@
     <%= vite_client_tag %>
     <%= vite_javascript_tag 'application' %>
 
+  </head>
+
+  <body>
+    <%= yield %>
   <% if Rails.env.production? %>
   <!-- Google tag (gtag.js) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-XK69D9D212"></script>
@@ -22,9 +26,5 @@
   gtag('config', 'G-XK69D9D212');
 </script>
 <% end %>
-  </head>
-
-  <body>
-    <%= yield %>
   </body>
 </html>

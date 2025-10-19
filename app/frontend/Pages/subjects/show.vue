@@ -142,6 +142,7 @@
           ripple
           color="warning"
           text-color="black"
+          title="Toggle categories sidebar"
           :class="drawerOpen ? 'hidden' : ''"
           icon="$show"
           @click="drawerOpen = true"
