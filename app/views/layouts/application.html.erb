@@ -10,7 +10,6 @@
     <%#= stylesheet_link_tag "application" %>
     <%= vite_client_tag %>
     <%= vite_javascript_tag 'application' %>
-  </head>
 
   <% if Rails.env.production? %>
   <!-- Google tag (gtag.js) -->
@@ -23,6 +22,7 @@
   gtag('config', 'G-XK69D9D212');
 </script>
 <% end %>
+  </head>
 
   <body>
     <%= yield %>
