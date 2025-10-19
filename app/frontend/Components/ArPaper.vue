@@ -78,7 +78,7 @@
       </q-slide-transition>
       <q-card-section class="text-white bg-grey-9 q-pa-sm">
         <q-list dense dark class="row justify-between items-center no-wrap">
-          <q-item :href="object.abs" class="bg-secondary">
+          <q-item :href="object.abs" class="bg-teal-9">
             <q-item-section avatar style="min-width: 0px">
               <q-icon name="svguse:/icons.svg#arxiv" />
             </q-item-section>
@@ -251,6 +251,8 @@
               dense
               round
               class="bg-red-2 text-black"
+              name="Toggle abstract"
+              role="none"
               @click="show = !show"
             />
           </q-item>

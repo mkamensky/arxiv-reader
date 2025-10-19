@@ -67,6 +67,7 @@
             glossy
             icon="$menuLeft"
             :disabled="date <= first"
+            name="Previous day"
             @click="prevDate"
           />
           <q-btn
@@ -74,6 +75,7 @@
             text-color="black"
             glossy
             ripple
+            name="Choose date"
             icon="$event"
             :label="date"
           >
@@ -97,6 +99,7 @@
             text-color="black"
             glossy
             ripple
+            name="Next day"
             icon="$menuRight"
             :disabled="date >= last"
             @click="nextDate"

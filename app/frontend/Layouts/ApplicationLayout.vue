@@ -1,6 +1,6 @@
 <template>
   <Head :title="`ArxivReader - ${$page.props.head.title}`">
-    <meta name="description">
+    <meta name="description" content="A frontend to the ArXiv, allowing bookmarking articles and authors, and filtering by categories">
     <meta name="keywords">
     <link
       rel="stylesheet"
@@ -21,9 +21,15 @@
               flat
               class="bg-accent"
               :icon="icon"
+              name="Toggle sidebar"
               @click="drawerOpen = !drawerOpen"
             />
-            <q-btn icon="$home" href="/" class="bg-accent" />
+            <q-btn
+              icon="$home"
+              href="/"
+              name="Home"
+              class="bg-accent"
+            />
           </div>
           <q-toolbar-title class="col row inline">
             {{ $page.props.head.title }}
