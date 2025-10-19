@@ -35,7 +35,7 @@ import { createInertiaApp, Link } from '@inertiajs/vue3'
 import { Quasar, Notify, LocalStorage, Loading } from 'quasar'
 
 import MarkdownIt from 'markdown-it'
-import mk from '@traptitech/markdown-it-katex'
+import mk from '@vscode/markdown-it-katex'
 const markdown = new MarkdownIt().set({ linkify: true }).use(mk)
 
 import quasarIconSet from 'quasar/icon-set/mdi-v7'

@@ -45,11 +45,12 @@
           />
         </q-toolbar>
         <q-option-group
-          v-model="cats"
+          :model-value="cats"
           :options="allCategories"
           type="toggle"
           class="scroll overflow-auto"
           style="max-height: 80vh"
+          @update:model-value="updateCats"
         />
       </div>
     </q-drawer>
@@ -180,6 +181,12 @@ export default {
     }
   },
   computed: {
+    prevDisabled() {
+      return this.date <= this.first
+    },
+    nextDisabled() {
+      return this.date >= this.last
+    },
     allCategories() {
       return this.subject.categories
     },
@@ -197,21 +204,17 @@ export default {
       return this.last.replaceAll('-', '/')
     },
   },
-  watch: {
-    cats: {
-      handler(val) {
-        if (this.current_user) {
-          this.current_user.categories =
-            this.cats.map(cat => this.catMap[cat])
-          this.updateList('categories', 'category_ids')
-        } else {
-          this.$q.localStorage.set('cats', val)
-        }
-      },
-      immediate: true,
-    },
-  },
   methods: {
+    updateCats(val) {
+      this.cats = val
+      if (this.current_user) {
+        this.current_user.categories =
+          this.cats.map(cat => this.catMap[cat])
+        this.updateList('categories', 'category_ids')
+      } else {
+        this.$q.localStorage.set('cats', val)
+      }
+    },
     setCur(entry) {
       if (entry.isIntersecting) {
         this.curCat = entry.target.id
@@ -220,6 +223,12 @@ export default {
     },
     tabClass(cat) {
       return (this.curCat === cat) ? 'q-tab--active' : ''
+    },
+    prevDate() {
+      this.saveDate(`${this.date}-`)
+    },
+    nextDate() {
+      this.saveDate(`${this.date}+`)
     },
     saveDate(value) {
       this.$refs.dateComp.hide()
@@ -230,12 +239,6 @@ export default {
         },
         only: ['papers', 'date'],
       })
-    },
-    prevDate() {
-      this.saveDate(`${this.date}-`)
-    },
-    nextDate() {
-      this.saveDate(`${this.date}+`)
     },
     dateOptions(date) {
       return date >= this.fst && date <= this.lst

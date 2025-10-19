@@ -1,5 +1,3 @@
-import { router } from '@inertiajs/vue3'
-
 export default {
   computed: {
     current_user() {
@@ -32,7 +30,7 @@ export default {
     },
     updateList(list, ids = null) {
       ids ??= list.replace(/s$/, '_ids')
-      router.patch(this.$update_path('users', this.current_user.id), {
+      this.$inertia.patch(this.$update_path('users', this.current_user.id), {
         user: { [ids]: Array.from(this[list]), },
       }, {
         only: [list],

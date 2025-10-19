@@ -160,7 +160,7 @@
             </q-item>
           </template>
           <q-item v-if="object.comment || $q.screen.lt.sm">
-            <q-item-section avatar class="content-center">
+            <q-item-section avatar class="content-center q-pr-none">
               <q-icon name="$comment">
                 <q-tooltip max-width="30rem">
                   <q-list>
