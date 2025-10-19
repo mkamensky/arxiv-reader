@@ -4,7 +4,7 @@ import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
 import ViteRails from 'vite-plugin-rails'
 import { quasar, transformAssetUrls } from '@quasar/vite-plugin'
-import { compression } from 'vite-plugin-compression2'
+//import { compression } from 'vite-plugin-compression2'
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -38,7 +38,6 @@ export default defineConfig({
     include: ['@inertiajs/vue3'],
   },
   plugins: [
-    compression(),
     //RubyPlugin(),
     vue({
       template: {
@@ -52,6 +51,7 @@ export default defineConfig({
       fullReload: {
         additionalPaths: ['config/routes.rb', 'app/views/**/*'],
       },
+      stimulis: false,
     }),
     quasar({
       autoImportComponentCase: 'combined',
