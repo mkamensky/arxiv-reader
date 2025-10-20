@@ -101,6 +101,7 @@ gem 'libxml-ruby', require: false
 gem 'omniauth', '>=2.1.4'
 gem "omniauth-rails_csrf_protection"
 gem 'omniauth-github'
+gem 'omniauth-orcid'
 gem 'omniauth-google-oauth2'
 
 group :production do

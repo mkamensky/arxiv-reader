@@ -493,7 +493,8 @@ CREATE TABLE public.users (
     password_digest character varying,
     subject_id bigint,
     avatar character varying,
-    github character varying
+    github character varying,
+    orcid character varying
 );
 
 
@@ -1002,6 +1003,13 @@ CREATE INDEX index_users_on_github ON public.users USING btree (github) NULLS NO
 
 
 --
+-- Name: index_users_on_orcid; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_users_on_orcid ON public.users USING btree (orcid) NULLS NOT DISTINCT;
+
+
+--
 -- Name: index_users_on_subject_id; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -1151,6 +1159,7 @@ ALTER TABLE ONLY public.recommendations
 SET search_path TO "$user", public;
 
 INSERT INTO "schema_migrations" (version) VALUES
+('20251020073002'),
 ('20251008081904'),
 ('20251008070307'),
 ('20251007154657'),

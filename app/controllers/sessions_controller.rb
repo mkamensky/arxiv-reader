@@ -11,6 +11,7 @@ class SessionsController < ApplicationController
     user.name ||= userinfo[:name]
     user.avatar ||= userinfo[:image]
     user.github ||= userinfo[:nickname] if provider == 'github'
+    user.orcid ||= authinfo[:uid] if provider == 'orcid'
     user.save!
     login(user)
     redir_back

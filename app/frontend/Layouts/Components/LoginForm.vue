@@ -138,7 +138,7 @@
 
       <q-separator dark inset />
 
-      <q-card-actions class="row justify-evenly q-my-md">
+      <q-card-section class="row wrap justify-evenly q-my-md">
         <q-form
           v-for="service in $options.services"
           :key="service"
@@ -152,13 +152,13 @@
             type="submit"
             :label="service"
             :icon="`$${service}`"
-            class="absolute-center fit"
+            class="absolute-center full-width"
           >
             <q-tooltip>Login with {{ service }}</q-tooltip>
           </q-btn>
           <q-separator vertical inset dark />
         </q-form>
-      </q-card-actions>
+      </q-card-section>
     </q-card>
   </div>
 </template>
@@ -168,7 +168,7 @@
 export default {
   components: {
   },
-  services: ['github', 'google'],
+  services: ['github', 'google', 'orcid'],
   data() {
     return {
       tab: 'sessions',
