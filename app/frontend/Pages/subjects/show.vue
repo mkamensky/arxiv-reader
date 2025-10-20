@@ -175,7 +175,8 @@ export default {
     return {
       curCat: null,
       drawerOpen: false,
-      cats: this.current_user?.categories?.map(cat => cat.value) ||
+      // The 'current_user' computed value is not yet available
+      cats: this.$page.props.auth?.user?.categories?.map(cat => cat.value) ||
             this.$q.localStorage.getItem('cats') ||
             this.subject.categories.map((cat) => cat.value)
     }
