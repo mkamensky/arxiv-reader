@@ -46,8 +46,9 @@ class SubjectsController < ApplicationController
     @papers ||= subject&.categories&.to_h do
       [
         it.arxiv,
-        it.papers.
+        policy_scope(it.papers).
           where(submitted: date).
+          not_hidden_by(current_user).
           as_json(
             Paper.inertia_params(include: { authors: Author.inertia_params }),
           ),

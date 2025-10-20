@@ -32,7 +32,7 @@ class UsersController < ApplicationController
     params.expect(
       user: [
         :email, :password, :name,
-        { bpaper_ids: [], fauthor_ids: [], category_ids: [] }
+        { bpaper_ids: [], fauthor_ids: [], category_ids: [], hidden_ids: [] }
       ],
     )
   end

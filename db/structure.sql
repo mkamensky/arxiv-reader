@@ -262,6 +262,38 @@ ALTER SEQUENCE public.friendly_id_slugs_id_seq OWNED BY public.friendly_id_slugs
 
 
 --
+-- Name: hidden_papers; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.hidden_papers (
+    id bigint NOT NULL,
+    user_id bigint NOT NULL,
+    paper_id bigint NOT NULL,
+    created_at timestamp(6) without time zone NOT NULL,
+    updated_at timestamp(6) without time zone NOT NULL
+);
+
+
+--
+-- Name: hidden_papers_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE public.hidden_papers_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: hidden_papers_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE public.hidden_papers_id_seq OWNED BY public.hidden_papers.id;
+
+
+--
 -- Name: papers; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -567,6 +599,13 @@ ALTER TABLE ONLY public.friendly_id_slugs ALTER COLUMN id SET DEFAULT nextval('p
 
 
 --
+-- Name: hidden_papers id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.hidden_papers ALTER COLUMN id SET DEFAULT nextval('public.hidden_papers_id_seq'::regclass);
+
+
+--
 -- Name: papers id; Type: DEFAULT; Schema: public; Owner: -
 --
 
@@ -677,6 +716,14 @@ ALTER TABLE ONLY public.followships
 
 ALTER TABLE ONLY public.friendly_id_slugs
     ADD CONSTRAINT friendly_id_slugs_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: hidden_papers hidden_papers_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.hidden_papers
+    ADD CONSTRAINT hidden_papers_pkey PRIMARY KEY (id);
 
 
 --
@@ -877,6 +924,27 @@ CREATE INDEX index_friendly_id_slugs_on_sluggable_type_and_sluggable_id ON publi
 
 
 --
+-- Name: index_hidden_papers_on_paper_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_hidden_papers_on_paper_id ON public.hidden_papers USING btree (paper_id);
+
+
+--
+-- Name: index_hidden_papers_on_paper_id_and_user_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE UNIQUE INDEX index_hidden_papers_on_paper_id_and_user_id ON public.hidden_papers USING btree (paper_id, user_id);
+
+
+--
+-- Name: index_hidden_papers_on_user_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_hidden_papers_on_user_id ON public.hidden_papers USING btree (user_id);
+
+
+--
 -- Name: index_papers_on_arxiv; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -1057,11 +1125,27 @@ ALTER TABLE ONLY public.followships
 
 
 --
+-- Name: hidden_papers fk_rails_58a0eb1987; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.hidden_papers
+    ADD CONSTRAINT fk_rails_58a0eb1987 FOREIGN KEY (user_id) REFERENCES public.users(id);
+
+
+--
 -- Name: usercats fk_rails_60fe6e2cf3; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.usercats
     ADD CONSTRAINT fk_rails_60fe6e2cf3 FOREIGN KEY (category_id) REFERENCES public.categories(id);
+
+
+--
+-- Name: hidden_papers fk_rails_6eaeaff8f8; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.hidden_papers
+    ADD CONSTRAINT fk_rails_6eaeaff8f8 FOREIGN KEY (paper_id) REFERENCES public.papers(id);
 
 
 --
@@ -1159,6 +1243,7 @@ ALTER TABLE ONLY public.recommendations
 SET search_path TO "$user", public;
 
 INSERT INTO "schema_migrations" (version) VALUES
+('20251020085925'),
 ('20251020073002'),
 ('20251008081904'),
 ('20251008070307'),

@@ -9,6 +9,9 @@ export default {
     fauthors() {
       return new Set(this.current_user?.fauthors?.map(it => it.id) || [])
     },
+    hidden_ids() {
+      return new Set(this.current_user?.hidden_ids || [])
+    },
   },
   methods: {
     hasItem(list, item) {
@@ -68,6 +71,16 @@ export default {
     },
     toggleFollow(author) {
       return this.toggleListItem('fauthors', author)
+    },
+    isHidden(paper) {
+      return this.hasItem('hidden_ids', paper)
+    },
+    hidePaper(paper) {
+      if (!this.hasItem('hidden_ids', paper)) {
+        this.current_user.hidden_ids ??= []
+        this.current_user.hidden_ids.push(paper.id)
+        return this.updateList('hidden_ids', 'hidden_ids')
+      }
     },
   },
 }

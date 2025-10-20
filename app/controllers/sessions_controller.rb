@@ -8,6 +8,7 @@ class SessionsController < ApplicationController
     user = User.find_or_initialize_by(email: userinfo[:email]) do
       it.password = it.password_confirmation = SecureRandom.base64(24)
     end
+    Rails.logger.debug { "Info from #{provider}: #{userinfo}" }
     user.name ||= userinfo[:name]
     user.avatar ||= userinfo[:image]
     user.github ||= userinfo[:nickname] if provider == 'github'

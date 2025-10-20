@@ -29,7 +29,7 @@ class PapersController < ApplicationController
   def spapers
     return if q.blank?
 
-    @spapers ||= policy_scope(Paper.search_all(q))
+    @spapers ||= policy_scope(Paper.search_all(q)).not_hidden_by(current_user)
   end
 
   def paper_json(ppr = paper)

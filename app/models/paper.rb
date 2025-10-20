@@ -16,6 +16,8 @@ class Paper < ApplicationRecord
 
   friendly_id :arxiv
 
+  scope :not_hidden_by, -> { where.not(id: it&.hidden_ids) }
+
   belongs_to :category
 
   has_many_through :categories, :categorisations
@@ -23,6 +25,8 @@ class Paper < ApplicationRecord
   has_many_through :users, :bookmarks
 
   has_many_through :recommendees, :recommendations, source: :user
+
+  has_many_through :haters, :hidden_papers, source: :user
 
   validates :submitted, presence: true
   validates :abs, presence: true
@@ -39,6 +43,8 @@ class Paper < ApplicationRecord
   end
 
   class << self
+    # rubocop: disable Metrics/PerceivedComplexity
+    # rubocop: disable Metrics/CyclomaticComplexity
     def attrs_from_arxiv(apaper, **opts)
       {
         category: Category.arxiv(apaper.primary),
@@ -69,6 +75,8 @@ class Paper < ApplicationRecord
         secondary: apaper.msc_class&.second || [],
       }
     end
+    # rubocop: enable Metrics/PerceivedComplexity
+    # rubocop: enable Metrics/CyclomaticComplexity
 
     def init_from_arxiv(apaper, **)
       new(attrs_from_arxiv(apaper, **))
@@ -86,9 +94,9 @@ class Paper < ApplicationRecord
       debugger if [
         'Validation failed: Version has already been taken',
         'Validation failed: Category must exist',
-      ].exclude?(e.message)
+      ].exclude?(e.message) && Rails.env.local?
     rescue StandardError => e
-      debugger
+      debugger if Rails.env.local?
     end
     # rubocop: enable Lint/Debugger, Lint/UselessAssignment
 

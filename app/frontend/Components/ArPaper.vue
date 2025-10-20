@@ -1,5 +1,5 @@
 <template>
-  <article>
+  <article :class="isHidden(object) ? 'hidden' : ''">
     <q-card>
       <q-card-actions :class="`${bookmarked(object) ? 'bg-teal-2' : 'bg-secondary'} text-white`">
         <div>
@@ -67,6 +67,14 @@
           </div>
         </div>
         <q-space />
+        <q-btn
+          v-if="current_user"
+          icon="$invisible"
+          rounded
+          color="orange-8"
+          class="q-ma-sm absolute-top-right"
+          @click="hidePaper(object)"
+        />
       </q-card-actions>
       <q-slide-transition>
         <q-card-section
@@ -275,6 +283,7 @@ export default {
   msc: mscDesc,
   data() {
     return {
+      // whether to show the abstract
       show: true,
     }
   },

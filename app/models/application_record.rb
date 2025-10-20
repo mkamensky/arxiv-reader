@@ -35,8 +35,7 @@ class ApplicationRecord < ActiveRecord::Base
       {
         only: %i[id],
         methods: %i[label value],
-        **opts,
-      }
+      }.vdeep_merge(opts)
     end
   end
 

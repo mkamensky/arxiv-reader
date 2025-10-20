@@ -13,6 +13,9 @@ class User < ApplicationRecord
   has_many_through :recommended, :recommendations, source: :paper
   has_many_through :fauthors, :followships, -> { order(:name) }, source: :author
 
+  # papers the user doesn't want to see
+  has_many_through :hidden, :hidden_papers, source: :paper
+
   belongs_to :subject, optional: true # default subject
   has_many_through :categories, :usercats
 

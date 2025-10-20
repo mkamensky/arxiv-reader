@@ -24,7 +24,9 @@ class CategoriesController < ApplicationController
   def papers
     return unless category
 
-    @records = category.papers.where(submitted: date)
+    @records = policy_scope(category.papers).
+               not_hidden_by(current_user).
+               where(submitted: date)
     #if @records.blank?
     #  category.refresh_from_arxiv(from: date, until: date, verbose: true)
     #  @records = category.papers.where(submitted: date)
