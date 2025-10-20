@@ -9,7 +9,7 @@ class SessionsController < ApplicationController
       it.password = it.password_confirmation = SecureRandom.base64(24)
     end
     Rails.logger.debug { "Info from #{provider}: #{userinfo}" }
-    user.name ||= userinfo[:name]
+    user.name = userinfo[:name] if user.name.blank?
     user.avatar ||= userinfo[:image]
     user.github ||= userinfo[:nickname] if provider == 'github'
     user.orcid ||= authinfo[:uid] if provider == 'orcid'
