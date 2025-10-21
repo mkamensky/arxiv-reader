@@ -966,10 +966,24 @@ CREATE INDEX index_papers_on_category_id ON public.papers USING btree (category_
 
 
 --
+-- Name: index_papers_on_primary; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_papers_on_primary ON public.papers USING gin ("primary");
+
+
+--
 -- Name: index_papers_on_searchable; Type: INDEX; Schema: public; Owner: -
 --
 
 CREATE INDEX index_papers_on_searchable ON public.papers USING gin (searchable);
+
+
+--
+-- Name: index_papers_on_secondary; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_papers_on_secondary ON public.papers USING gin (secondary);
 
 
 --
@@ -1243,6 +1257,7 @@ ALTER TABLE ONLY public.recommendations
 SET search_path TO "$user", public;
 
 INSERT INTO "schema_migrations" (version) VALUES
+('20251021065800'),
 ('20251020085925'),
 ('20251020073002'),
 ('20251008081904'),

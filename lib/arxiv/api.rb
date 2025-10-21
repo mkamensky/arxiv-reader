@@ -76,13 +76,15 @@ module Arxiv
 
     def parse_msc(value)
       @prim = @sec = nil
-      if value =~ /^(.*) \(Primary\) *(.*) \(Secondary\)$/
+      if value =~ /^(.*) \(Primary\) *(.*) \(Secondary\)$/ ||
+         value =~ /^Primary:? *(.*?)\.? *Secondary:? *(.*?)[. ]*$/
+
         @prim = $1
         @sec = $2
       else
         @prim = value
       end
-      [@prim.split(', '), @sec&.split(', ')]
+      [ @prim.scan(/\d\d[A-Z-]\d\d/), @sec&.scan(/\d\d[A-Z-]\d\d/) ]
     end
 
     # rubocop:disable Rails/TimeZone, Metrics/PerceivedComplexity

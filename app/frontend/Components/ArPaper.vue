@@ -154,15 +154,13 @@
                 </q-item-label>
                 <q-item-label>
                   <q-chip
-                    v-for="tag in object.primary"
+                    v-for="tag in object.secondary"
                     :key="tag"
                     dense
                     size="sm"
                   >
                     {{ tag }}<q-tooltip>{{ $options.msc[tag] }}</q-tooltip>
                   </q-chip>
-                  v-for="tag in object.secondary"
-                  :key="tag"
                 </q-item-label>
               </q-item-section>
             </q-item>
