@@ -142,7 +142,7 @@
                     dense
                     size="sm"
                   >
-                    {{ tag }}<q-tooltip>{{ $options.msc[tag] }}</q-tooltip>
+                    {{ tag }}<q-tooltip>{{ $mdi($options.msc[tag]) }}</q-tooltip>
                   </q-chip>
                 </q-item-label>
               </q-item-section>
@@ -159,7 +159,7 @@
                     dense
                     size="sm"
                   >
-                    {{ tag }}<q-tooltip>{{ $options.msc[tag] }}</q-tooltip>
+                    {{ tag }}<q-tooltip>{{ $mdi($options.msc[tag]) }}</q-tooltip>
                   </q-chip>
                 </q-item-label>
               </q-item-section>
