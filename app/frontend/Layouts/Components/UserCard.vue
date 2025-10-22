@@ -1,18 +1,21 @@
 <template>
-  <div class="row no-wrap justify-between q-pa-md">
-    <div class="column">
-      <div class="text-h6 q-mb-md">
-        Settings
-      </div>
-    </div>
-    <q-separator vertical inset class="q-mx-lg" />
-    <div class="column items-center">
-      <q-avatar v-if="current_user?.avatar" size="72px">
-        <img :src="current_user.avatar">
-      </q-avatar>
-      <div class="text-subtitle1 q-mb-xs">
-        {{ current_user.label }}
-      </div>
+  <q-card class="q-mb-sm">
+    <q-card-section horizontal>
+      <q-card-section class="q-pt-xs">
+        <div class="text-overline">
+          {{ current_user.value }}
+        </div>
+        <div class="text-h5 q-mt-sm q-mb-xs">
+          {{ current_user.label }}
+        </div>
+      </q-card-section>
+      <q-card-section v-if="current_user?.avatar" class="col-5 flex flex-center">
+        <q-avatar size="72px">
+          <img :src="current_user.avatar">
+        </q-avatar>
+      </q-card-section>
+    </q-card-section>
+    <q-card-actions>
       <q-btn
         color="primary"
         label="Logout"
@@ -20,8 +23,8 @@
         size="sm"
         @click="logout"
       />
-    </div>
-  </div>
+    </q-card-actions>
+  </q-card>
 
   <q-splitter
     v-model="splitterModel"
