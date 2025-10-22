@@ -156,6 +156,9 @@
 <script>
 import ArCategory from '@/Components/ArCategory.vue'
 import userMixin from '@/mixins/userMixin'
+import { usePoll } from '@inertiajs/vue3'
+
+usePoll(3600000)
 
 export default {
   components: {

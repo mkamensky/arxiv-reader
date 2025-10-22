@@ -58,7 +58,8 @@ class Author < ApplicationRecord
   end
 
   # merge other authors that are variants of this
-  def merge_variants(*others)
+  def merge_variants(*others, **)
+    others = Author.find_by(**) if others.blank?
     others.each do
       self.papers |= it.papers
       self.users |= it.users
