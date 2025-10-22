@@ -67,14 +67,17 @@
           </div>
         </div>
         <q-space />
-        <q-btn
-          v-if="current_user"
-          icon="$invisible"
-          rounded
-          color="orange-8"
-          class="q-ma-sm absolute-top-right"
-          @click="hidePaper(object)"
-        />
+        <q-btn-group rounded class="q-ma-sm absolute-top-right">
+          <share-paper :paper="object" rounded color="orange-8" />
+          <q-separator v-if="current_user" vertical />
+          <q-btn
+            v-if="current_user"
+            icon="$invisible"
+            rounded
+            color="orange-8"
+            @click="hidePaper(object)"
+          />
+        </q-btn-group>
       </q-card-actions>
       <q-slide-transition>
         <q-card-section
@@ -270,8 +273,12 @@
 <script>
 import userMixin from '@/mixins/userMixin'
 import { mscDesc } from './mscDesc.js'
+import SharePaper from '@/Components/SharePaper.vue'
 
 export default {
+  components: {
+    SharePaper,
+  },
   mixins: [userMixin],
   props: {
     object: {

@@ -32,7 +32,7 @@ console.log(
 
 import { createApp, h } from 'vue'
 import { createInertiaApp, Link } from '@inertiajs/vue3'
-import { Quasar, Notify, LocalStorage, Loading } from 'quasar'
+import { Quasar, Notify, Dark, LocalStorage, Loading } from 'quasar'
 
 import MarkdownIt from 'markdown-it'
 import mk from '@vscode/markdown-it-katex'
@@ -57,8 +57,20 @@ const myIcons = {
   orcid: { cls: 'ai ai-orcid' },
   mathscinet: { cls: 'ai ai-mathscinet' },
   pure: { cls: 'ai ai-bgupure' }, // TODO
+  telegram: { cls: 'fab fah fa-lg fa-telegram-plane' },
   email: 'mdi-email',
+  evernote: 'mdi-evernote',
+  facebook: 'mdi-facebook',
+  linkedin: 'mdi-linkedin',
+  pocket: 'mdi-pocket',
+  quora: 'mdi-quora',
+  reddit: 'mdi-reddit',
+  threads: 'mdi-threads',
+  x: 'mdi-twitter',
+  whatsapp: 'mdi-whatsapp',
+  wordpress: 'mdi-wordpress',
   fax: 'mdi-fax',
+  share: 'mdi-share',
   building: 'mdi-warehouse',
   phone: 'mdi-phone-classic',
   office: 'mdi-door-closed',
@@ -134,6 +146,7 @@ createInertiaApp({
       .use(Quasar, {
         config: {
           notify: {},
+          dark: true,
           brand: {
             primary: '#027be3',
             secondary: '#26a69a',
@@ -149,6 +162,7 @@ createInertiaApp({
           Notify,
           LocalStorage,
           Loading,
+          Dark,
         },
         iconSet: quasarIconSet,
       })
