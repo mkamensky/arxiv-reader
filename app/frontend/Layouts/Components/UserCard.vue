@@ -1,7 +1,7 @@
 <template>
   <q-card class="q-mb-sm">
     <q-card-section horizontal>
-      <q-card-section class="q-pt-xs">
+      <q-card-section class="col q-pt-xs">
         <div class="text-overline">
           {{ current_user.value }}
         </div>
@@ -9,13 +9,13 @@
           {{ current_user.label }}
         </div>
       </q-card-section>
-      <q-card-section v-if="current_user?.avatar" class="col-5 flex flex-center">
+      <q-card-section v-if="current_user?.avatar" class="col-auto flex flex-center">
         <q-avatar size="72px">
           <img :src="current_user.avatar">
         </q-avatar>
       </q-card-section>
     </q-card-section>
-    <q-card-actions>
+    <q-card-actions class="justify-around">
       <q-btn
         color="primary"
         label="Logout"
