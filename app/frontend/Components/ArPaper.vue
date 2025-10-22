@@ -4,7 +4,7 @@
       <q-card-actions
         :class="`bg-${bkmkd ? 'teal-2' : 'secondary'} text-white justify-between items-start no-wrap`"
       >
-        <div class="col-11" style="width: 95%">
+        <div class="col-11" style="width: 85%">
           <q-btn-group
             push
             class="q-mb-sm"
@@ -69,11 +69,18 @@
           </div>
         </div>
         <div class="col-auto">
-          <q-btn-group class="column" square>
-            <share-paper :paper="object" color="orange-8" />
+          <q-btn-group class="column" glossy>
+            <share-paper
+              :paper="object"
+              color="orange-8"
+              fab-mini
+              dense
+            />
             <q-separator v-if="current_user" />
             <q-btn
               v-if="current_user"
+              fab-mini
+              dense
               icon="$invisible"
               color="orange-8"
               @click="hidePaper(object)"
@@ -91,7 +98,7 @@
       </q-slide-transition>
       <q-card-section class="text-white bg-grey-9 q-pa-sm">
         <q-list dense dark class="row justify-between items-center no-wrap">
-          <q-item :href="object.abs" class="bg-teal-9">
+          <q-item :href="object.abs" class="bg-teal-9" style="padding-left: 4px;padding-right: 4px">
             <q-item-section avatar style="min-width: 0px">
               <q-icon name="svguse:/icons.svg#arxiv" />
             </q-item-section>
