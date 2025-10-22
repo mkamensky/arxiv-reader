@@ -1,8 +1,10 @@
 <template>
-  <article :class="isHidden(object) ? 'hidden' : ''">
+  <article :class="hidden ? 'hidden' : ''">
     <q-card>
-      <q-card-actions :class="`${bookmarked(object) ? 'bg-teal-2' : 'bg-secondary'} text-white`">
-        <div>
+      <q-card-actions
+        :class="`bg-${bkmkd ? 'teal-2' : 'secondary'} text-white justify-between items-start no-wrap`"
+      >
+        <div class="col-11" style="width: 95%">
           <q-btn-group
             push
             class="q-mb-sm"
@@ -34,7 +36,7 @@
             -->
             <q-btn
               v-if="current_user"
-              :icon="bookmarked(object) ? '$bookmarkOn' : '$bookmark'"
+              :icon="bkmkd ? '$bookmarkOn' : '$bookmark'"
               color="orange-5"
               text-color="black"
               @click="toggleBookmark(object)"
@@ -66,18 +68,18 @@
             </q-btn-group>
           </div>
         </div>
-        <q-space />
-        <q-btn-group rounded class="q-ma-sm absolute-top-right">
-          <share-paper :paper="object" rounded color="orange-8" />
-          <q-separator v-if="current_user" vertical />
-          <q-btn
-            v-if="current_user"
-            icon="$invisible"
-            rounded
-            color="orange-8"
-            @click="hidePaper(object)"
-          />
-        </q-btn-group>
+        <div class="col-auto">
+          <q-btn-group class="column" square>
+            <share-paper :paper="object" color="orange-8" />
+            <q-separator v-if="current_user" />
+            <q-btn
+              v-if="current_user"
+              icon="$invisible"
+              color="orange-8"
+              @click="hidePaper(object)"
+            />
+          </q-btn-group>
+        </div>
       </q-card-actions>
       <q-slide-transition>
         <q-card-section
@@ -301,6 +303,12 @@ export default {
         this.object.revised != this.object.submitted &&
         this.dateStr(this.object.revised)
       )
+    },
+    bkmkd() {
+      return this.bookmarked(this.object)
+    },
+    hidden() {
+      return this.isHidden(this.object)
     },
   },
   methods: {

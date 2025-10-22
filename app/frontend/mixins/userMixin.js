@@ -4,13 +4,23 @@ export default {
       return this.$page.props.auth.user
     },
     bpapers() {
-      return new Set(this.current_user?.bpapers?.map(it => it.id) || [])
+      return new Set(
+        this.current_user?.bpapers?.map(it => it.id) ||
+        this.$q.localStorage.getItem('bpapers') ||
+        []
+      )
     },
     fauthors() {
-      return new Set(this.current_user?.fauthors?.map(it => it.id) || [])
+      return new Set(this.current_user?.fauthors?.map(it => it.id) ||
+        this.$q.localStorage.getItem('fauthors') ||
+        []
+      )
     },
     hidden_ids() {
-      return new Set(this.current_user?.hidden_ids || [])
+      return new Set(this.current_user?.hidden_ids ||
+        this.$q.localStorage.getItem('hidden_ids') ||
+        []
+      )
     },
   },
   methods: {
@@ -19,16 +29,27 @@ export default {
     },
     addToList(list, item) {
       if (!this.hasItem(list, item)) {
-        this.current_user[list].push(item)
-        this.updateList(list)
+        if (this.current_user) {
+          this.current_user[list].push(item)
+          this.updateList(list)
+        } else {
+          const val = this.$q.localStorage.getItem(list) || []
+          val.push(item.id)
+          this.$q.localStorage.set(list, val)
+        }
       }
     },
     removeItem(list, item) {
       if (this.hasItem(list, item)) {
-        this.current_user[list] =
-          this.current_user[list]
-          .filter(it => it.id != item.id)
-        this.updateList(list)
+        if (this.current_user) {
+          this.current_user[list] =
+            this.current_user[list]
+            .filter(it => it.id != item.id)
+          this.updateList(list)
+        } else {
+          const val = this.$q.localStorage.getItem(list) || []
+          this.$q.localStorage.set(list, val.filter(it => it != item.id))
+        }
       }
     },
     updateList(list, ids = null) {
@@ -77,9 +98,13 @@ export default {
     },
     hidePaper(paper) {
       if (!this.hasItem('hidden_ids', paper)) {
-        this.current_user.hidden_ids ??= []
-        this.current_user.hidden_ids.push(paper.id)
-        return this.updateList('hidden_ids', 'hidden_ids')
+        if (this.current_user) {
+          this.current_user.hidden_ids ??= []
+          this.current_user.hidden_ids.push(paper.id)
+          return this.updateList('hidden_ids', 'hidden_ids')
+        } else {
+          this.addToList('hidden_ids', paper)
+        }
       }
     },
   },
