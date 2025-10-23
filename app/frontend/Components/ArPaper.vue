@@ -335,3 +335,12 @@ export default {
   },
 }
 </script>
+
+<style lang="scss">
+.arxiv-link {
+  background-color: $amber-4;
+  border-radius: 6px;
+  padding: 3px;
+  text-decoration: none;
+}
+</style>
