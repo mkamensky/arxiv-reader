@@ -11,6 +11,7 @@ export default defineConfig({
   build: {
     manifest: true,
     minify: true,
+    cssCodeSplit: false,
     sourcemap: true,
     rollupOptions: {
       maxParallelFileOps: 1,
