@@ -36,7 +36,10 @@ import { Quasar, Notify, Dark, LocalStorage, Loading } from 'quasar'
 
 import MarkdownIt from 'markdown-it'
 import mk from '@vscode/markdown-it-katex'
-const markdown = new MarkdownIt().set({ linkify: true }).use(mk)
+import markdownItAttrs from 'markdown-it-attrs'
+const markdown = new MarkdownIt().set({ linkify: true }).
+  use(mk).
+  use(markdownItAttrs)
 
 import quasarIconSet from 'quasar/icon-set/mdi-v7'
 import routes from '@/api'

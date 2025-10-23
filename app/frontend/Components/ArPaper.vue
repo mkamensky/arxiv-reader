@@ -321,7 +321,7 @@ export default {
       return this.$md(
         this.object.abstract.replaceAll(
           /arxiv:(([0-9]+\.[0-9]*|[a-z-]+\/[0-9]*)[0-9])/gi,
-          (m, id) => `[${m}](${this.$show_path('papers', id)}){: .arxiv-link}`
+          (m, id) => `[${m}](${this.$show_path('papers', id)}){.arxiv-link}`
         )
       )
     },
