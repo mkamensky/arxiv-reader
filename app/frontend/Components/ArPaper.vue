@@ -93,7 +93,7 @@
           v-show="show"
           class="text-yellow bg-black"
         >
-          <div v-html="$md(object.abstract)" />
+          <div v-html="abstract" />
         </q-card-section>
       </q-slide-transition>
       <q-card-section class="text-white bg-grey-9 q-pa-sm">
@@ -316,6 +316,14 @@ export default {
     },
     hidden() {
       return this.isHidden(this.object)
+    },
+    abstract() {
+      return this.$md(
+        this.object.abstract.replaceAll(
+          /arxiv:(([0-9]+\.[0-9]*|[a-z-]+\/[0-9]*)[0-9])/gi,
+          (m, id) => `[${m}](${this.$show_path('papers', id)})`
+        )
+      )
     },
   },
   methods: {

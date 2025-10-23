@@ -17,7 +17,8 @@ class ApplicationController < ActionController::Base
   after_action :verify_policy_scoped, only: %i[index]
   rescue_from ActionController::InvalidAuthenticityToken,
               with: :inertia_page_expired_error
-  rescue_from StandardError, with: :inertia_error_page
+  # Following is too general, find some subclass to rescue TODO
+  #rescue_from StandardError, with: :inertia_error_page
 
   def index
   end
