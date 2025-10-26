@@ -26,7 +26,9 @@ export default {
     other_papers() {
       return this.current_user.bpapers.
         filter(paper =>
-          this.bpapers.intersection(new Set(paper.authors.map(it => it.id))).size == 0)
+          this.fauthors.intersection(
+            new Set(paper.authors.map(it => it.id))
+          ).size == 0)
     },
   },
   methods: {
