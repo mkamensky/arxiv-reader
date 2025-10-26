@@ -22,6 +22,12 @@ export default {
         []
       )
     },
+    // bookmarked papers not authored by any followed author
+    other_papers() {
+      return this.current_user.bpapers.
+        filter(paper =>
+          this.bpapers.intersection(new Set(paper.authors.map(it => it.id))).size == 0)
+    },
   },
   methods: {
     hasItem(list, item) {
@@ -106,6 +112,10 @@ export default {
           this.addToList('hidden_ids', paper)
         }
       }
+    },
+    author_papers(author) {
+      return this.current_user.bpapers.
+        filter(paper => paper.authors.findIndex(it => it.id === author.id) >= 0)
     },
   },
 }
