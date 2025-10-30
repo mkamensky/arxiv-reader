@@ -135,6 +135,9 @@ module Arxiv
       @oai.list_records(metadata_prefix: 'arXivRaw', set: 'math', **)
     rescue OAI::NoMatchException
       nil
+    rescue Regexp::TimeoutError => e
+      Rails.logger.debug { "Regexp timeout in xml parsing: #{e.detailed_message}" }
+      nil
     end
 
     # rubocop: disable Metrics/ClassLength

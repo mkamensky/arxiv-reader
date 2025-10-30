@@ -8,6 +8,7 @@
           <q-btn-group
             push
             class="q-mb-sm"
+            role="heading"
           >
             <q-btn
               :href="$show_path('papers', object.value)"
