@@ -10,13 +10,7 @@
         class="q-ma-md"
       />
     </div>
-    <q-drawer
-      v-model="drawerOpen"
-      side="right"
-      bordered
-      column
-      class="text-black"
-    >
+    <q-drawer v-model="drawerOpen" side="right" column>
       <div class="q-pa-xs relative-position">
         <q-toolbar glossy class="bg-accent rounded-borders">
           <q-toolbar-title>
@@ -49,6 +43,7 @@
           :options="allCategories"
           type="toggle"
           class="scroll overflow-auto"
+          color="primary"
           style="max-height: 80vh"
           @update:model-value="updateCats"
         />

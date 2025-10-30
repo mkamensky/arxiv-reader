@@ -12,7 +12,7 @@ gem 'pg'
 
 gem 'pg_search'
 
-gem 'active_record_extended'
+#gem 'active_record_extended'
 
 gem 'latex-decode'
 
