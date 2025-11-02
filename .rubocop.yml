@@ -50,6 +50,9 @@ Metrics/MethodLength:
 
 ### Style
 
+Style/AsciiComments:
+  Enabled: false
+
 Style/BlockComments:
   Exclude:
     - 'spec/spec_helper.rb'
