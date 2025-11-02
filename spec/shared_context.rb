@@ -92,18 +92,22 @@ RSpec.shared_context 'authorship context' do
   let(:update_params) { {} }
 end
 
+RSpec.shared_context 'hidden_paper context' do
+  let(:update_params) { {} }
+end
+
 RSpec.shared_context 'subject context' do
   let(:update_params) { {} }
 end
 
 RSpec.shared_context 'user context' do
-  let(:build_params) {
+  let(:build_params) do
     res = attributes_for(type)
     res.delete(:encrypted_password)
     res[:password] = 'foobar'
     res[:password_confirmation] = 'foobar'
     res
-  }
+  end
   let(:update_params) { {} }
 end
 

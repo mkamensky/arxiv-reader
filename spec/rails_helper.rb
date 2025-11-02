@@ -93,6 +93,7 @@ def model_names
     category
     categorisation
     paper
+    hidden_paper
   ].freeze
 end
 

@@ -7,6 +7,16 @@
 
     overmind s
 
+# TEST
+
+Backend:
+
+    rake spec
+
+Frontend:
+
+    npm test
+
 # UPDATE PAPERS FROM ARXIV
 
     rake db:seed:from_arxiv
