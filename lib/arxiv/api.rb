@@ -137,6 +137,10 @@ module Arxiv
       nil
     rescue Regexp::TimeoutError => e
       Rails.logger.debug { "Regexp timeout in xml parsing: #{e.detailed_message}" }
+      if Regexp.timeout < 40
+        Regexp.timeout *= 2
+        retry
+      end
       nil
     end
 

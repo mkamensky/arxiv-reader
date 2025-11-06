@@ -6,6 +6,7 @@ import paperFactory from './factories/paper'
 const paper = paperFactory.build()
 
 it('renders the paper title', async () => {
+  ArPaper.$page = { props: {foo: 'bar'}}
   const { getByRole } = render(ArPaper, {
     props: {
       object: paper,

@@ -1,24 +1,24 @@
 export default {
   computed: {
     current_user() {
-      return this.$page.props.auth.user
+      return this.$page?.props?.auth?.user
     },
     bpapers() {
       return new Set(
         this.current_user?.bpapers?.map(it => it.id) ||
-        this.$q.localStorage.getItem('bpapers') ||
+        this.$q?.localStorage?.getItem('bpapers') ||
         []
       )
     },
     fauthors() {
       return new Set(this.current_user?.fauthors?.map(it => it.id) ||
-        this.$q.localStorage.getItem('fauthors') ||
+        this.$q?.localStorage?.getItem('fauthors') ||
         []
       )
     },
     hidden_ids() {
       return new Set(this.current_user?.hidden_ids ||
-        this.$q.localStorage.getItem('hidden_ids') ||
+        this.$q?.localStorage?.getItem('hidden_ids') ||
         []
       )
     },
