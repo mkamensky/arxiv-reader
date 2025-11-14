@@ -93,5 +93,6 @@ class Author < ApplicationRecord
       self.arxiv = "#{arxiv_base}_#{nn}_X"
       break unless self.class.find_by(arxiv:)
     end
+    Rails.logger.warn { "Possibly duplicate author '#{arxiv}'" } if nn > 1
   end
 end
