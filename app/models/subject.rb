@@ -1,9 +1,7 @@
 # frozen_string_literal: true
 
 class Subject < ApplicationRecord
-  include FriendlyId
-
-  friendly_id :arxiv
+  include Arxived
 
   ARXIV_EPOCH = Date.parse('2005-09-16').freeze
   public_constant :ARXIV_EPOCH

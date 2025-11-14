@@ -1,9 +1,7 @@
 # frozen_string_literal: true
 
 class Author < ApplicationRecord
-  include FriendlyId
-
-  friendly_id :arxiv
+  include Arxived
 
   include PgSearch::Model
 
@@ -24,7 +22,6 @@ class Author < ApplicationRecord
   has_many_through :users, :followships
 
   validates :name, presence: true
-  validates :arxiv, uniqueness: true
   validates :name_variants, presence: true
 
   def label

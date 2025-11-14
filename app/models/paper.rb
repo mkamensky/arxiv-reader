@@ -12,9 +12,7 @@ class Paper < ApplicationRecord
                     },
                   }
 
-  include FriendlyId
-
-  friendly_id :arxiv
+  include Arxived
 
   scope :not_hidden_by, -> { where.not(id: it&.hidden_ids) }
 

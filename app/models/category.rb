@@ -1,9 +1,7 @@
 # frozen_string_literal: true
 
 class Category < ApplicationRecord
-  include FriendlyId
-
-  friendly_id :arxiv
+  include Arxived
 
   has_many :papers, dependent: :destroy
   belongs_to :subject
@@ -11,8 +9,6 @@ class Category < ApplicationRecord
   has_many_through :users, :usercats
 
   delegate :refresh_from_arxiv, to: :subject
-
-  validates :arxiv, uniqueness: true
 
   scope :with_papers, -> { joins(:papers).distinct }
 
