@@ -12,6 +12,10 @@ gem 'pg'
 
 gem 'pg_search'
 
+gem 'migration_data'
+
+gem 'paper_trail'
+
 #gem 'active_record_extended'
 
 gem 'latex-decode'

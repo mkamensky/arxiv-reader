@@ -1,6 +1,13 @@
-# frozen_string_literal: true
-
 class Paper < ApplicationRecord
+  has_paper_trail version: :revision, versions: {
+    class_name: 'PaperVersion',
+    name: :revisions,
+  }, only: %i[version], on: %i[create update]
+
+  # we use non polymorphic 'item' field in PaperVersion
+  has_many :revisions, class_name: 'PaperVersion', dependent: :destroy,
+    inverse_of: :item
+
   include PgSearch::Model
 
   pg_search_scope :search_all,

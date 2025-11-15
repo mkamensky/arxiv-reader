@@ -294,6 +294,40 @@ ALTER SEQUENCE public.hidden_papers_id_seq OWNED BY public.hidden_papers.id;
 
 
 --
+-- Name: paper_versions; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.paper_versions (
+    id bigint NOT NULL,
+    whodunnit bigint,
+    created_at timestamp(6) without time zone,
+    item_id bigint NOT NULL,
+    event character varying NOT NULL,
+    object jsonb,
+    object_changes jsonb
+);
+
+
+--
+-- Name: paper_versions_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE public.paper_versions_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: paper_versions_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE public.paper_versions_id_seq OWNED BY public.paper_versions.id;
+
+
+--
 -- Name: papers; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -606,6 +640,13 @@ ALTER TABLE ONLY public.hidden_papers ALTER COLUMN id SET DEFAULT nextval('publi
 
 
 --
+-- Name: paper_versions id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.paper_versions ALTER COLUMN id SET DEFAULT nextval('public.paper_versions_id_seq'::regclass);
+
+
+--
 -- Name: papers id; Type: DEFAULT; Schema: public; Owner: -
 --
 
@@ -724,6 +765,14 @@ ALTER TABLE ONLY public.friendly_id_slugs
 
 ALTER TABLE ONLY public.hidden_papers
     ADD CONSTRAINT hidden_papers_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: paper_versions paper_versions_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.paper_versions
+    ADD CONSTRAINT paper_versions_pkey PRIMARY KEY (id);
 
 
 --
@@ -945,17 +994,17 @@ CREATE INDEX index_hidden_papers_on_user_id ON public.hidden_papers USING btree 
 
 
 --
+-- Name: index_paper_versions_on_item_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_paper_versions_on_item_id ON public.paper_versions USING btree (item_id);
+
+
+--
 -- Name: index_papers_on_arxiv; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX index_papers_on_arxiv ON public.papers USING btree (arxiv);
-
-
---
--- Name: index_papers_on_arxiv_and_version; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE UNIQUE INDEX index_papers_on_arxiv_and_version ON public.papers USING btree (arxiv, version);
+CREATE UNIQUE INDEX index_papers_on_arxiv ON public.papers USING btree (arxiv);
 
 
 --
@@ -1219,6 +1268,14 @@ ALTER TABLE ONLY public.users
 
 
 --
+-- Name: paper_versions fk_rails_d0bb7a6fde; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.paper_versions
+    ADD CONSTRAINT fk_rails_d0bb7a6fde FOREIGN KEY (item_id) REFERENCES public.papers(id);
+
+
+--
 -- Name: categories fk_rails_e056845821; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -1257,6 +1314,8 @@ ALTER TABLE ONLY public.recommendations
 SET search_path TO "$user", public;
 
 INSERT INTO "schema_migrations" (version) VALUES
+('20251115200359'),
+('20251114092535'),
 ('20251021065800'),
 ('20251020085925'),
 ('20251020073002'),

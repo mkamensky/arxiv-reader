@@ -129,7 +129,7 @@ GEM
     drb (2.2.3)
     dry-cli (1.3.0)
     ed25519 (1.4.0)
-    erb (5.1.3)
+    erb (6.0.0)
     erubi (1.13.1)
     factory_bot (6.5.6)
       activesupport (>= 6.1.0)
@@ -144,8 +144,8 @@ GEM
       logger
     faraday-follow_redirects (0.4.0)
       faraday (>= 1, < 3)
-    faraday-net_http (3.4.1)
-      net-http (>= 0.5.0)
+    faraday-net_http (3.4.2)
+      net-http (~> 0.5)
     faraday-retry (2.3.2)
       faraday (~> 2.0)
     feedjira (4.0.1)
@@ -159,7 +159,7 @@ GEM
     hashie (5.0.0)
     i18n (1.14.7)
       concurrent-ruby (~> 1.0)
-    inertia_rails (3.11.0)
+    inertia_rails (3.12.1)
       railties (>= 6)
     io-console (0.8.1)
     irb (1.15.3)
@@ -168,7 +168,7 @@ GEM
       reline (>= 0.4.2)
     js_from_routes (4.0.2)
       railties (>= 5.1, < 9)
-    json (2.15.2)
+    json (2.16.0)
     jwt (3.1.2)
       base64
     language_server-protocol (3.17.0.5)
@@ -190,14 +190,15 @@ GEM
     meta_request (0.8.5)
       rack-contrib (>= 1.1, < 3)
       railties (>= 3.0.0, < 9)
+    migration_data (0.6.0)
     mini_mime (1.1.5)
-    minitest (5.26.0)
+    minitest (5.26.1)
     msgpack (1.8.0)
     multi_xml (0.7.2)
       bigdecimal (~> 3.1)
     mutex_m (0.3.0)
-    net-http (0.7.0)
-      uri
+    net-http (0.8.0)
+      uri (>= 0.11.1)
     net-imap (0.5.12)
       date
       net-protocol
@@ -220,7 +221,7 @@ GEM
       faraday (< 3)
       faraday-follow_redirects (>= 0.3.0, < 2)
       rexml
-    oauth2 (2.0.17)
+    oauth2 (2.0.18)
       faraday (>= 0.17.3, < 4.0)
       jwt (>= 1.0, < 4.0)
       logger (~> 1.2)
@@ -254,6 +255,9 @@ GEM
       actionpack (>= 4.2)
       omniauth (~> 2.0)
     ostruct (0.6.3)
+    paper_trail (17.0.0)
+      activerecord (>= 7.1)
+      request_store (~> 1.4)
     parallel (1.27.0)
     parser (3.3.10.0)
       ast (~> 2.4.1)
@@ -275,7 +279,7 @@ GEM
     pundit (2.5.2)
       activesupport (>= 3.0.0)
     racc (1.8.1)
-    rack (3.2.3)
+    rack (3.2.4)
     rack-contrib (2.5.0)
       rack (< 4)
     rack-mini-profiler (4.0.1)
@@ -330,8 +334,10 @@ GEM
       psych (>= 4.0.0)
       tsort
     regexp_parser (2.11.3)
-    reline (0.6.2)
+    reline (0.6.3)
       io-console (~> 0.5)
+    request_store (1.7.0)
+      rack (>= 1.4)
     rexml (3.4.4)
     rspec-core (3.13.6)
       rspec-support (~> 3.13.0)
@@ -361,7 +367,7 @@ GEM
       rubocop-ast (>= 1.47.1, < 2.0)
       ruby-progressbar (~> 1.7)
       unicode-display_width (>= 2.4.0, < 4.0)
-    rubocop-ast (1.47.1)
+    rubocop-ast (1.48.0)
       parser (>= 3.3.7.2)
       prism (~> 1.4)
     rubocop-faker (1.3.0)
@@ -380,7 +386,7 @@ GEM
       rubocop-ast (>= 1.44.0, < 2.0)
     ruby-progressbar (1.13.0)
     ruby_dig (0.0.2)
-    rubyzip (3.2.1)
+    rubyzip (3.2.2)
     sax-machine (1.3.2)
     sd_notify (0.1.1)
     securerandom (0.4.1)
@@ -407,7 +413,7 @@ GEM
       net-sftp (>= 2.1.2)
       net-ssh (>= 2.8.0)
       ostruct
-    stringio (3.1.7)
+    stringio (3.1.8)
     thor (1.4.0)
     timeout (0.4.4)
     tsort (0.2.0)
@@ -416,7 +422,7 @@ GEM
     unicode-display_width (3.2.0)
       unicode-emoji (~> 4.1)
     unicode-emoji (4.1.0)
-    uri (1.1.0)
+    uri (1.1.1)
     useragent (0.16.11)
     version_gem (1.1.9)
     vite_rails (3.0.19)
@@ -471,6 +477,7 @@ DEPENDENCIES
   latex-decode
   libxml-ruby
   meta_request
+  migration_data
   oai
   oj
   omniauth (>= 2.1.4)
@@ -478,6 +485,7 @@ DEPENDENCIES
   omniauth-google-oauth2
   omniauth-orcid
   omniauth-rails_csrf_protection
+  paper_trail
   pg
   pg_search
   puma (>= 6.0)
