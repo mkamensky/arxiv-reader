@@ -17,6 +17,7 @@ class ChangePapersArxivUnique < ActiveRecord::Migration[8.1]
       attrs = []
       al.each do
         attrs.push(it.attributes.except(*%w[id created_at updated_at]))
+        warn "Found extra version #{it.version} of paper #{orig.arxiv}"
         it.destroy!
       end
       attrs.each { orig.update!(it) }
