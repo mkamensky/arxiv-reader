@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2025_10_21_065800) do
+ActiveRecord::Schema[8.1].define(version: 2025_11_15_200359) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -96,6 +96,16 @@ ActiveRecord::Schema[8.1].define(version: 2025_10_21_065800) do
     t.index ["user_id"], name: "index_hidden_papers_on_user_id"
   end
 
+  create_table "paper_versions", force: :cascade do |t|
+    t.datetime "created_at"
+    t.string "event", null: false
+    t.bigint "item_id", null: false
+    t.jsonb "object"
+    t.jsonb "object_changes"
+    t.bigint "whodunnit"
+    t.index ["item_id"], name: "index_paper_versions_on_item_id"
+  end
+
   create_table "papers", force: :cascade do |t|
     t.string "abs", null: false
     t.text "abstract"
@@ -114,8 +124,7 @@ ActiveRecord::Schema[8.1].define(version: 2025_10_21_065800) do
     t.string "title"
     t.datetime "updated_at", null: false
     t.string "version"
-    t.index ["arxiv", "version"], name: "index_papers_on_arxiv_and_version", unique: true
-    t.index ["arxiv"], name: "index_papers_on_arxiv"
+    t.index ["arxiv"], name: "index_papers_on_arxiv", unique: true
     t.index ["category_id"], name: "index_papers_on_category_id"
     t.index ["primary"], name: "index_papers_on_primary", using: :gin
     t.index ["searchable"], name: "index_papers_on_searchable", using: :gin
@@ -201,6 +210,7 @@ ActiveRecord::Schema[8.1].define(version: 2025_10_21_065800) do
   add_foreign_key "followships", "users"
   add_foreign_key "hidden_papers", "papers"
   add_foreign_key "hidden_papers", "users"
+  add_foreign_key "paper_versions", "papers", column: "item_id"
   add_foreign_key "papers", "categories"
   add_foreign_key "recommendations", "papers"
   add_foreign_key "recommendations", "users"

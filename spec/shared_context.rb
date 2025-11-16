@@ -11,7 +11,6 @@ RSpec.shared_context 'general context' do |typ = find_model_type|
   let(:relationships) { model.reflect_on_all_associations(:belongs_to) }
   let(:build_params) { attributes_for(type) }
   let(:types) { type.pluralize }
-  let(:resource_class) { "#{type.classify}Resource".constantize }
   let(:objects) { create_list(type, 2) }
   let(:object) { create(type) }
   include_context "#{typ} context"
@@ -39,9 +38,6 @@ RSpec.shared_context 'create context' do
       },
     }
   end
-  let(:instance) do
-    resource_class.build(payload)
-  end
 end
 
 RSpec.shared_context 'update context' do
@@ -54,9 +50,6 @@ RSpec.shared_context 'update context' do
       },
     }
   end
-  let(:instance) do
-    resource_class.find(payload)
-  end
   let(:update_object) do
     return change { object.reload.updated_at }.by(0) if update_params.blank?
 
@@ -64,10 +57,6 @@ RSpec.shared_context 'update context' do
       res.and(change { object.public_send(k) }.to(v))
     end
   end
-end
-
-RSpec.shared_context 'destroy context' do
-  let!(:instance) { resource_class.find(id: object.id) }
 end
 
 ######## Resource specific

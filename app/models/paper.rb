@@ -35,7 +35,7 @@ class Paper < ApplicationRecord
 
   validates :submitted, presence: true
   validates :abs, presence: true
-  validates :version, uniqueness: { scope: :arxiv }
+  validates :arxiv, uniqueness: true
 
   scope :with_subject, -> {
     joins(category: :subject).distinct.where(
@@ -89,15 +89,14 @@ class Paper < ApplicationRecord
 
     # rubocop: disable Lint/Debugger, Lint/UselessAssignment
     def create_from_arxiv(apaper, **)
-      create!(
-        attrs_from_arxiv(apaper, **) do
-          Author.find_by("? = ANY (name_variants)", it) ||
-            Author.create!(name: it)
-        end,
-      )
+      attrs = attrs_from_arxiv(apaper, **) do
+        Author.find_by("? = ANY (name_variants)", it) || Author.create!(name: it)
+      end
+      rec = create_with(attrs).find_or_create_by!(arxiv: attrs[:arxiv])
+      rec.update!(attrs)
+      rec
     rescue ActiveRecord::RecordInvalid => e
       debugger if [
-        'Validation failed: Version has already been taken',
         'Validation failed: Category must exist',
       ].exclude?(e.message) && Rails.env.local?
     rescue StandardError => e
