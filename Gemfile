@@ -76,6 +76,7 @@ group :development do
   gem 'capistrano-rbenv-install', require: false
   gem 'ed25519', require: false
   gem 'bcrypt_pbkdf', require: false
+  gem 'database_consistency', require: false
 end
 
 group :test do

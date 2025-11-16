@@ -17,7 +17,7 @@ class Author < ApplicationRecord
                   }
 
   has_many_through :papers, :authorships
-  has_many :categories, through: :papers
+  has_many :categories, through: :papers, source: :category
   has_many :subjects, through: :categories
   has_many_through :users, :followships
 

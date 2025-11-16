@@ -40,10 +40,10 @@ CREATE TABLE public.ar_internal_metadata (
 CREATE TABLE public.authors (
     id bigint NOT NULL,
     name character varying NOT NULL,
-    arxiv character varying,
+    arxiv character varying NOT NULL,
     created_at timestamp(6) without time zone NOT NULL,
     updated_at timestamp(6) without time zone NOT NULL,
-    name_variants character varying[] DEFAULT '{}'::character varying[],
+    name_variants character varying[] DEFAULT '{}'::character varying[] NOT NULL,
     searchable tsvector GENERATED ALWAYS AS ((setweight(to_tsvector('english'::regconfig, (COALESCE(name, ''::character varying))::text), 'A'::"char") || setweight(array_to_tsvector((name_variants)::text[]), 'B'::"char"))) STORED
 );
 
@@ -137,7 +137,7 @@ ALTER SEQUENCE public.bookmarks_id_seq OWNED BY public.bookmarks.id;
 
 CREATE TABLE public.categories (
     id bigint NOT NULL,
-    arxiv character varying,
+    arxiv character varying NOT NULL,
     title character varying,
     created_at timestamp(6) without time zone NOT NULL,
     updated_at timestamp(6) without time zone NOT NULL,
@@ -333,7 +333,7 @@ ALTER SEQUENCE public.paper_versions_id_seq OWNED BY public.paper_versions.id;
 
 CREATE TABLE public.papers (
     id bigint NOT NULL,
-    arxiv character varying,
+    arxiv character varying NOT NULL,
     title character varying,
     abstract text,
     version character varying,
@@ -868,17 +868,10 @@ CREATE INDEX index_authorships_on_author_id ON public.authorships USING btree (a
 
 
 --
--- Name: index_authorships_on_paper_id; Type: INDEX; Schema: public; Owner: -
+-- Name: index_authorships_on_paper_id_and_author_id; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX index_authorships_on_paper_id ON public.authorships USING btree (paper_id);
-
-
---
--- Name: index_bookmarks_on_paper_id; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE INDEX index_bookmarks_on_paper_id ON public.bookmarks USING btree (paper_id);
+CREATE UNIQUE INDEX index_authorships_on_paper_id_and_author_id ON public.authorships USING btree (paper_id, author_id);
 
 
 --
@@ -917,24 +910,10 @@ CREATE INDEX index_categorisations_on_category_id ON public.categorisations USIN
 
 
 --
--- Name: index_categorisations_on_paper_id; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE INDEX index_categorisations_on_paper_id ON public.categorisations USING btree (paper_id);
-
-
---
 -- Name: index_categorisations_on_paper_id_and_category_id; Type: INDEX; Schema: public; Owner: -
 --
 
 CREATE UNIQUE INDEX index_categorisations_on_paper_id_and_category_id ON public.categorisations USING btree (paper_id, category_id);
-
-
---
--- Name: index_followships_on_author_id; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE INDEX index_followships_on_author_id ON public.followships USING btree (author_id);
 
 
 --
@@ -970,13 +949,6 @@ CREATE UNIQUE INDEX index_friendly_id_slugs_on_slug_and_sluggable_type_and_scope
 --
 
 CREATE INDEX index_friendly_id_slugs_on_sluggable_type_and_sluggable_id ON public.friendly_id_slugs USING btree (sluggable_type, sluggable_id);
-
-
---
--- Name: index_hidden_papers_on_paper_id; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE INDEX index_hidden_papers_on_paper_id ON public.hidden_papers USING btree (paper_id);
 
 
 --
@@ -1057,13 +1029,6 @@ CREATE INDEX index_pg_search_documents_on_searchable ON public.pg_search_documen
 
 
 --
--- Name: index_recommendations_on_paper_id; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE INDEX index_recommendations_on_paper_id ON public.recommendations USING btree (paper_id);
-
-
---
 -- Name: index_recommendations_on_paper_id_and_user_id; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -1089,13 +1054,6 @@ CREATE INDEX index_sessions_on_user_id ON public.sessions USING btree (user_id);
 --
 
 CREATE UNIQUE INDEX index_subjects_on_arxiv ON public.subjects USING btree (arxiv);
-
-
---
--- Name: index_usercats_on_category_id; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE INDEX index_usercats_on_category_id ON public.usercats USING btree (category_id);
 
 
 --
@@ -1264,7 +1222,7 @@ ALTER TABLE ONLY public.bookmarks
 --
 
 ALTER TABLE ONLY public.users
-    ADD CONSTRAINT fk_rails_c46a29f432 FOREIGN KEY (subject_id) REFERENCES public.subjects(id);
+    ADD CONSTRAINT fk_rails_c46a29f432 FOREIGN KEY (subject_id) REFERENCES public.subjects(id) ON DELETE SET NULL;
 
 
 --
@@ -1314,6 +1272,7 @@ ALTER TABLE ONLY public.recommendations
 SET search_path TO "$user", public;
 
 INSERT INTO "schema_migrations" (version) VALUES
+('20251116080619'),
 ('20251115200359'),
 ('20251114092535'),
 ('20251021065800'),
