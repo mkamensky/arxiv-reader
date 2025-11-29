@@ -34,12 +34,14 @@ import { createApp, h } from 'vue'
 import { createInertiaApp, Link } from '@inertiajs/vue3'
 import { Quasar, Notify, Dark, LocalStorage, Loading } from 'quasar'
 
-import MarkdownIt from 'markdown-it'
-import mk from '@vscode/markdown-it-katex'
-import markdownItAttrs from 'markdown-it-attrs'
-const markdown = new MarkdownIt().set({ linkify: true }).
-  use(mk).
-  use(markdownItAttrs)
+//import katex from 'katex'
+import renderMathInElement from 'katex/contrib/auto-render'
+//import MarkdownIt from 'markdown-it'
+//import mk from '@vscode/markdown-it-katex'
+//import markdownItAttrs from 'markdown-it-attrs'
+//const markdown = new MarkdownIt().set({ linkify: true }).
+ // use(mk).
+ // use(markdownItAttrs)
 
 import quasarIconSet from 'quasar/icon-set/mdi-v7'
 import routes from '@/api'
@@ -194,9 +196,25 @@ createInertiaApp({
       return routes[what].index.path()
     }
     const premkdn = (it) => (it || '').toString().replace(/--/g, '\u2013')
-    app.config.globalProperties.$md = (mkdn) => markdown.render(premkdn(mkdn))
-    app.config.globalProperties.$mdi = (mkdn) =>
-      markdown.renderInline(premkdn(mkdn))
+    const macros = {}
+    const katexOpts = {
+      delimiters: [
+        {left: "$$", right: "$$", display: true},
+        {left: "\\[", right: "\\]", display: true},
+        {left: "$", right: "$", display: false},
+        {left: "\\(", right: "\\)", display: false},
+      ],
+      throwOnError: false,
+      macros,
+    }
+    app.config.globalProperties.$md =
+      function (text) {
+        const span = document.createElement("span")
+        span.append(premkdn(text))
+        renderMathInElement(span, katexOpts)
+        return span.innerHTML
+      }
+    app.config.globalProperties.$mdi = app.config.globalProperties.$md
     app.config.globalProperties.$q.iconMapFn = (iname) => {
       if (iname.startsWith('$')) {
         const res = myIcons[iname.substring(1)]
