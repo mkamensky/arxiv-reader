@@ -36,6 +36,8 @@ import { Quasar, Notify, Dark, LocalStorage, Loading } from 'quasar'
 
 //import katex from 'katex'
 import renderMathInElement from 'katex/contrib/auto-render'
+import 'katex/dist/katex.css'
+
 //import MarkdownIt from 'markdown-it'
 //import mk from '@vscode/markdown-it-katex'
 //import markdownItAttrs from 'markdown-it-attrs'
