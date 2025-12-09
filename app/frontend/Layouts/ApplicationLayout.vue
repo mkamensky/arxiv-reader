@@ -16,7 +16,7 @@
         style="flex-wrap: wrap;max-width: 100vw"
       >
         <div class="col-12 col-md row justify-between">
-          <div class="col q-gutter-x-sm">
+          <div class="col-auto q-gutter-x-sm">
             <q-btn
               flat
               class="bg-accent"
@@ -35,7 +35,7 @@
             {{ $page.props.head.title }}
           </q-toolbar-title>
         </div>
-        <div class="col-12 col-md-auto row">
+        <div class="col-12 col-md-auto row q-py-xs">
           <q-input
             v-for="what in ['authors', 'papers']"
             :key="what"

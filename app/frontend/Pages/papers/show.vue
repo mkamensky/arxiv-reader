@@ -1,7 +1,7 @@
 <template>
   <q-page padding class="q-pt-xl">
     <article>
-      <q-responsive ratio="1.6">
+      <q-responsive ratio="1.6" class="absolute-full">
         <object
           :data="paper.pdf"
           type="application/pdf"
@@ -12,7 +12,7 @@
     </article>
   </q-page>
 
-  <q-page-sticky position="top-right" :offset="[18, 10]">
+  <q-page-sticky position="top-right" :offset="[8, 32]">
     <q-btn icon="$plus" fab-mini color="accent">
       <q-popup-proxy fit transition-show="scale" transition-hide="scale">
         <div class="q-ma-md">
