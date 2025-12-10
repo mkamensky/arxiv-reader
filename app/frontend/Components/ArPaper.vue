@@ -69,8 +69,8 @@
             </q-btn-group>
           </div>
         </div>
-        <div class="col-auto">
-          <q-btn-group class="column" glossy>
+        <div class="col-auto self-end">
+          <q-btn-group class="column" glossy square>
             <share-paper
               :paper="object"
               color="orange-8"
