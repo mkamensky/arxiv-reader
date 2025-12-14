@@ -61,6 +61,5 @@ export default defineConfig({
     quasar({
       autoImportComponentCase: 'combined',
     }),
-    //FullReload(['config/routes.rb', 'app/views/**/*']),
   ],
 })
