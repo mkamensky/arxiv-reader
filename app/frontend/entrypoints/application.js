@@ -54,6 +54,9 @@ import '@quasar/extras/mdi-v7/mdi-v7.css'
 // Import Quasar css
 import 'quasar/src/css/index.sass'
 
+import '@/css/app.css'
+import '@/fonts/OHYaelLeibushor2.0-Regular.woff'
+
 import ApplicationLayout from '@/Layouts/ApplicationLayout.vue'
 
 const myIcons = {

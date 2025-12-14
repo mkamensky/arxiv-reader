@@ -31,7 +31,7 @@
               class="bg-accent"
             />
           </div>
-          <q-toolbar-title class="col row inline">
+          <q-toolbar-title class="col row inline yaelfont">
             {{ $page.props.head.title }}
           </q-toolbar-title>
         </div>

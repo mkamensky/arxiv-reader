@@ -1,0 +1,18 @@
+/* Application styles */
+.arxiv-link {
+  background-color: #ffc107;
+  border-radius: 6px;
+  padding: 3px;
+  text-decoration: none;
+}
+
+@font-face {
+  font-family: "OHYaelLeibushor 2.0";
+  src: local("OHYaelLeibushor 2.0"), url("../fonts/OHYaelLeibushor2.0-Regular.woff");
+}
+
+.yaelfont {
+  font-family: "OHYaelLeibushor 2.0";
+  font-size: 33px;
+}
+
