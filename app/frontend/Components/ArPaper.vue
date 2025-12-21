@@ -110,7 +110,7 @@
               <q-item-label>{{ object.value }}</q-item-label>
             </q-item-section>
           </q-item>
-          <template v-if="$q.screen.gt.xs">
+          <template v-if="$q.screen.gt.sm">
             <q-item>
               <q-item-section>
                 <q-item-label overline>
@@ -119,6 +119,7 @@
                 <q-item-label>{{ object.version }}</q-item-label>
               </q-item-section>
             </q-item>
+
             <q-item>
               <q-item-section>
                 <q-item-label overline>
@@ -127,6 +128,7 @@
                 <q-item-label>{{ submitted }}</q-item-label>
               </q-item-section>
             </q-item>
+
             <q-item v-if="revised">
               <q-item-section>
                 <q-item-label overline>
@@ -135,90 +137,77 @@
                 <q-item-label>{{ revised }}</q-item-label>
               </q-item-section>
             </q-item>
-            <q-item v-if="object.journal_ref">
-              <q-item-section>
-                <q-item-label overline>
-                  Journal Ref
-                </q-item-label>
-                <q-item-label>{{ object.journal_ref }}</q-item-label>
-              </q-item-section>
-            </q-item>
-            <q-item v-if="object.primary.length" style="max-width: 30%">
-              <q-item-section>
-                <q-item-label overline>
-                  MSC classes
-                </q-item-label>
-                <q-item-label>
-                  <q-chip
-                    v-for="tag in object.primary"
-                    :key="tag"
-                    dense
-                    size="sm"
-                  >
-                    {{ tag }}<q-tooltip v-html="$mdi($options.msc[tag])" />
-                  </q-chip>
-                </q-item-label>
-              </q-item-section>
-            </q-item>
-            <q-item v-if="object.secondary.length" style="max-width: 30%">
-              <q-item-section>
-                <q-item-label overline>
-                  Secondary MSC classes
-                </q-item-label>
-                <q-item-label>
-                  <q-chip
-                    v-for="tag in object.secondary"
-                    :key="tag"
-                    dense
-                    size="sm"
-                  >
-                    {{ tag }}<q-tooltip v-html="$mdi($options.msc[tag])" />
-                  </q-chip>
-                </q-item-label>
-              </q-item-section>
-            </q-item>
           </template>
-          <q-item v-if="object.comment || $q.screen.lt.sm">
+          <q-item v-if="extras || $q.screen.lt.md">
             <q-item-section avatar class="content-center q-pr-none">
-              <q-icon name="$comment">
-                <q-tooltip max-width="30rem">
-                  <q-list>
-                    <template v-if="$q.screen.lt.sm">
-                      <q-item>
-                        <q-item-section>
-                          <q-item-label overline>
-                            Version
-                          </q-item-label>
-                          <q-item-label>{{ object.version }}</q-item-label>
-                        </q-item-section>
-                      </q-item>
-                      <q-item>
-                        <q-item-section>
-                          <q-item-label overline>
-                            Submitted
-                          </q-item-label>
-                          <q-item-label>{{ submitted }}</q-item-label>
-                        </q-item-section>
-                      </q-item>
-                      <q-item v-if="revised">
-                        <q-item-section>
-                          <q-item-label overline>
-                            Revised
-                          </q-item-label>
-                          <q-item-label>{{ revised }}</q-item-label>
-                        </q-item-section>
-                      </q-item>
+              <q-btn
+                icon="$comment"
+                flat
+                dense
+                round
+                :title="$md(object.comment) || 'Show extra info'"
+                class="bg-red-2 text-black"
+                @click="extra = !extra"
+              />
+              <q-dialog v-model="extra" seamless position="bottom">
+                <q-card style="width: 700px; max-width: 80vw">
+                  <q-card-section class="row items-center bg-info" style="color: brown">
+                    <div class="text-h6">
+                      Extra information
+                    </div>
+                    <q-space />
+                    <q-btn
+                      v-close-popup
+                      icon="$close"
+                      flat
+                      round
+                      dense
+                    />
+                  </q-card-section>
+                  <q-separator />
+                  <q-card-section style="max-height: 70vh" class="scroll bg-secondary">
+                    <q-list>
+                      <template v-if="$q.screen.lt.md">
+                        <q-item>
+                          <q-item-section>
+                            <q-item-label class="text-warning" overline>
+                              Version
+                            </q-item-label>
+                            <q-item-label>{{ object.version }}</q-item-label>
+                          </q-item-section>
+                        </q-item>
+
+                        <q-item>
+                          <q-item-section>
+                            <q-item-label class="text-warning" overline>
+                              Submitted
+                            </q-item-label>
+                            <q-item-label>{{ submitted }}</q-item-label>
+                          </q-item-section>
+                        </q-item>
+
+                        <q-item v-if="revised">
+                          <q-item-section>
+                            <q-item-label class="text-warning" overline>
+                              Revised
+                            </q-item-label>
+                            <q-item-label>{{ revised }}</q-item-label>
+                          </q-item-section>
+                        </q-item>
+                      </template>
+
                       <q-item v-if="object.journal_ref">
                         <q-item-section>
-                          <q-item-label overline>
+                          <q-item-label class="text-warning" overline>
                             Journal Ref
                           </q-item-label>
                           <q-item-label>{{ object.journal_ref }}</q-item-label>
                         </q-item-section>
                       </q-item>
+
                       <q-item v-if="object.primary.length" style="max-width: 30%">
                         <q-item-section>
-                          <q-item-label overline>
+                          <q-item-label class="text-warning" overline>
                             MSC classes
                           </q-item-label>
                           <q-item-label>
@@ -233,9 +222,10 @@
                           </q-item-label>
                         </q-item-section>
                       </q-item>
+
                       <q-item v-if="object.secondary.length" style="max-width: 30%">
                         <q-item-section>
-                          <q-item-label overline>
+                          <q-item-label class="text-warning" overline>
                             Secondary MSC classes
                           </q-item-label>
                           <q-item-label>
@@ -252,17 +242,19 @@
                           </q-item-label>
                         </q-item-section>
                       </q-item>
-                    </template>
-                    <q-item>
-                      <q-item-section>
-                        <q-item-label v-html="$md(object.comment)" />
-                      </q-item-section>
-                    </q-item>
-                  </q-list>
-                </q-tooltip>
-              </q-icon>
+
+                      <q-item>
+                        <q-item-section>
+                          <q-item-label v-html="$md(object.comment)" />
+                        </q-item-section>
+                      </q-item>
+                    </q-list>
+                  </q-card-section>
+                </q-card>
+              </q-dialog>
             </q-item-section>
           </q-item>
+
           <q-item>
             <q-btn
               :icon="show ? '$hide' : '$show'"
@@ -299,7 +291,8 @@ export default {
   data() {
     return {
       // whether to show the abstract
-      show: true,
+      show: this.$q.screen.gt.sm,
+      extra: false,
     }
   },
   computed: {
@@ -311,6 +304,10 @@ export default {
         this.object.revised != this.object.submitted &&
         this.dateStr(this.object.revised)
       )
+    },
+    extras() {
+      return this.object.journal_ref || this.object.primary.length ||
+        this.object.secondary.length || this.object.comment
     },
     bkmkd() {
       return this.bookmarked(this.object)
