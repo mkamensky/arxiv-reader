@@ -1,5 +1,5 @@
 <template>
-  <q-btn icon="$share">
+  <q-btn icon="$share" title="Share">
     <q-popup-proxy
       transition-show="scale"
       transition-hide="scale"

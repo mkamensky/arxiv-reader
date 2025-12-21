@@ -40,6 +40,7 @@
               :icon="bkmkd ? '$bookmarkOn' : '$bookmark'"
               color="orange-5"
               text-color="black"
+              :title="bkmkd ? 'Un-bookmark' : 'Bookmark'"
               @click="toggleBookmark(object)"
             />
           </q-btn-group>

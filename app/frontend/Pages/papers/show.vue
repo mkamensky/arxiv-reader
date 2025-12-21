@@ -90,14 +90,29 @@
             <div v-html="$md(paper.comment)" />
           </div>
 
-          <q-btn
-            icon="svguse:/icons.svg#arxiv"
-            :href="paper.abs"
-            color="orange-8"
-            text-color="black"
-          >
-            View on the ArXiv
-          </q-btn>
+          <q-btn-group>
+            <q-btn
+              icon="svguse:/icons.svg#arxiv"
+              :href="paper.abs"
+              color="orange-8"
+              text-color="black"
+              title="View on the arXiv"
+            />
+            <share-paper
+              :paper="paper"
+              color="orange-6"
+              fab-mini
+              dense
+            />
+            <q-btn
+              v-if="current_user"
+              :icon="bkmkd ? '$bookmarkOn' : '$bookmark'"
+              color="orange-4"
+              text-color="black"
+              :title="bkmkd ? 'Un-bookmark' : 'Bookmark'"
+              @click="toggleBookmark(paper)"
+            />
+          </q-btn-group>
         </div>
       </q-popup-proxy>
     </q-btn>
@@ -105,9 +120,14 @@
 </template>
 
 <script>
+import userMixin from '@/mixins/userMixin'
+import SharePaper from '@/Components/SharePaper.vue'
+
 export default {
   components: {
+    SharePaper,
   },
+  mixins: [userMixin],
   props: {
     paper: Object,
   },
@@ -124,6 +144,9 @@ export default {
         this.paper.revised != this.paper.submitted &&
         this.dateStr(this.paper.revised)
       )
+    },
+    bkmkd() {
+      return this.bookmarked(this.paper)
     },
   },
   methods: {
