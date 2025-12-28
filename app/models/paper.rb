@@ -33,6 +33,8 @@ class Paper < ApplicationRecord
 
   has_many_through :haters, :hidden_papers, source: :user
 
+  has_many_through :tags, :paper_tags
+
   validates :submitted, presence: true
   validates :abs, presence: true
   validates :arxiv, uniqueness: true
@@ -74,7 +76,6 @@ class Paper < ApplicationRecord
         comment: apaper.comment,
         abs: apaper.abs,
         pdf: apaper.pdf,
-        #tags: apaper.aux_tags,
         journal_ref: apaper.journal_ref,
         primary: apaper.msc_class&.first || [],
         secondary: apaper.msc_class&.second || [],
@@ -114,7 +115,7 @@ class Paper < ApplicationRecord
       super.vdeep_merge(
         only: %i[
           abs abstract comment category_id id journal_ref pdf
-          submitted revised tags version primary secondary
+          submitted revised version primary secondary
         ],
       )
     end

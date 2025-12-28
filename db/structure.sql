@@ -294,6 +294,38 @@ ALTER SEQUENCE public.hidden_papers_id_seq OWNED BY public.hidden_papers.id;
 
 
 --
+-- Name: paper_tags; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.paper_tags (
+    id bigint NOT NULL,
+    paper_id bigint NOT NULL,
+    tag_id bigint NOT NULL,
+    created_at timestamp(6) without time zone NOT NULL,
+    updated_at timestamp(6) without time zone NOT NULL
+);
+
+
+--
+-- Name: paper_tags_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE public.paper_tags_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: paper_tags_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE public.paper_tags_id_seq OWNED BY public.paper_tags.id;
+
+
+--
 -- Name: paper_versions; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -343,7 +375,7 @@ CREATE TABLE public.papers (
     comment text,
     abs character varying NOT NULL,
     pdf character varying,
-    tags character varying[] DEFAULT '{}'::character varying[],
+    arxiv_tags character varying[] DEFAULT '{}'::character varying[],
     journal_ref character varying,
     created_at timestamp(6) without time zone NOT NULL,
     updated_at timestamp(6) without time zone NOT NULL,
@@ -513,6 +545,40 @@ ALTER SEQUENCE public.subjects_id_seq OWNED BY public.subjects.id;
 
 
 --
+-- Name: tags; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.tags (
+    id bigint NOT NULL,
+    user_id bigint NOT NULL,
+    val character varying NOT NULL,
+    title character varying,
+    color character varying DEFAULT '#2468ace0'::character varying NOT NULL,
+    created_at timestamp(6) without time zone NOT NULL,
+    updated_at timestamp(6) without time zone NOT NULL
+);
+
+
+--
+-- Name: tags_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE public.tags_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: tags_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE public.tags_id_seq OWNED BY public.tags.id;
+
+
+--
 -- Name: usercats; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -640,6 +706,13 @@ ALTER TABLE ONLY public.hidden_papers ALTER COLUMN id SET DEFAULT nextval('publi
 
 
 --
+-- Name: paper_tags id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.paper_tags ALTER COLUMN id SET DEFAULT nextval('public.paper_tags_id_seq'::regclass);
+
+
+--
 -- Name: paper_versions id; Type: DEFAULT; Schema: public; Owner: -
 --
 
@@ -679,6 +752,13 @@ ALTER TABLE ONLY public.sessions ALTER COLUMN id SET DEFAULT nextval('public.ses
 --
 
 ALTER TABLE ONLY public.subjects ALTER COLUMN id SET DEFAULT nextval('public.subjects_id_seq'::regclass);
+
+
+--
+-- Name: tags id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.tags ALTER COLUMN id SET DEFAULT nextval('public.tags_id_seq'::regclass);
 
 
 --
@@ -768,6 +848,14 @@ ALTER TABLE ONLY public.hidden_papers
 
 
 --
+-- Name: paper_tags paper_tags_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.paper_tags
+    ADD CONSTRAINT paper_tags_pkey PRIMARY KEY (id);
+
+
+--
 -- Name: paper_versions paper_versions_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -821,6 +909,14 @@ ALTER TABLE ONLY public.sessions
 
 ALTER TABLE ONLY public.subjects
     ADD CONSTRAINT subjects_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: tags tags_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.tags
+    ADD CONSTRAINT tags_pkey PRIMARY KEY (id);
 
 
 --
@@ -966,6 +1062,20 @@ CREATE INDEX index_hidden_papers_on_user_id ON public.hidden_papers USING btree 
 
 
 --
+-- Name: index_paper_tags_on_paper_id_and_tag_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE UNIQUE INDEX index_paper_tags_on_paper_id_and_tag_id ON public.paper_tags USING btree (paper_id, tag_id);
+
+
+--
+-- Name: index_paper_tags_on_tag_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_paper_tags_on_tag_id ON public.paper_tags USING btree (tag_id);
+
+
+--
 -- Name: index_paper_versions_on_item_id; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -977,6 +1087,13 @@ CREATE INDEX index_paper_versions_on_item_id ON public.paper_versions USING btre
 --
 
 CREATE UNIQUE INDEX index_papers_on_arxiv ON public.papers USING btree (arxiv);
+
+
+--
+-- Name: index_papers_on_arxiv_tags; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_papers_on_arxiv_tags ON public.papers USING btree (arxiv_tags);
 
 
 --
@@ -1015,13 +1132,6 @@ CREATE INDEX index_papers_on_submitted ON public.papers USING btree (submitted);
 
 
 --
--- Name: index_papers_on_tags; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE INDEX index_papers_on_tags ON public.papers USING btree (tags);
-
-
---
 -- Name: index_pg_search_documents_on_searchable; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -1057,6 +1167,13 @@ CREATE UNIQUE INDEX index_subjects_on_arxiv ON public.subjects USING btree (arxi
 
 
 --
+-- Name: index_tags_on_user_id_and_val; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE UNIQUE INDEX index_tags_on_user_id_and_val ON public.tags USING btree (user_id, val);
+
+
+--
 -- Name: index_usercats_on_category_id_and_user_id; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -1074,7 +1191,7 @@ CREATE INDEX index_usercats_on_user_id ON public.usercats USING btree (user_id);
 -- Name: index_users_on_author_id; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX index_users_on_author_id ON public.users USING btree (author_id);
+CREATE INDEX index_users_on_author_id ON public.users USING btree (author_id) NULLS NOT DISTINCT;
 
 
 --
@@ -1138,6 +1255,14 @@ ALTER TABLE ONLY public.categorisations
 
 
 --
+-- Name: paper_tags fk_rails_3997f01071; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.paper_tags
+    ADD CONSTRAINT fk_rails_3997f01071 FOREIGN KEY (tag_id) REFERENCES public.tags(id);
+
+
+--
 -- Name: followships fk_rails_458330adae; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -1178,6 +1303,14 @@ ALTER TABLE ONLY public.sessions
 
 
 --
+-- Name: paper_tags fk_rails_849fc03262; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.paper_tags
+    ADD CONSTRAINT fk_rails_849fc03262 FOREIGN KEY (paper_id) REFERENCES public.papers(id);
+
+
+--
 -- Name: authorships fk_rails_925f77f584; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -1198,7 +1331,7 @@ ALTER TABLE ONLY public.followships
 --
 
 ALTER TABLE ONLY public.users
-    ADD CONSTRAINT fk_rails_9ac60fc016 FOREIGN KEY (author_id) REFERENCES public.authors(id);
+    ADD CONSTRAINT fk_rails_9ac60fc016 FOREIGN KEY (author_id) REFERENCES public.authors(id) ON DELETE SET NULL;
 
 
 --
@@ -1242,6 +1375,14 @@ ALTER TABLE ONLY public.categories
 
 
 --
+-- Name: tags fk_rails_e689f6d0cc; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.tags
+    ADD CONSTRAINT fk_rails_e689f6d0cc FOREIGN KEY (user_id) REFERENCES public.users(id);
+
+
+--
 -- Name: recommendations fk_rails_e696723f80; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -1272,6 +1413,10 @@ ALTER TABLE ONLY public.recommendations
 SET search_path TO "$user", public;
 
 INSERT INTO "schema_migrations" (version) VALUES
+('20251228090434'),
+('20251228081739'),
+('20251228075540'),
+('20251228074312'),
 ('20251116080619'),
 ('20251115200359'),
 ('20251114092535'),

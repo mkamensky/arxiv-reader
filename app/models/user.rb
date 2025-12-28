@@ -19,6 +19,8 @@ class User < ApplicationRecord
   belongs_to :subject, optional: true # default subject
   has_many_through :categories, :usercats
 
+  has_many :tags, dependent: :destroy
+
   validates :email, presence: true, uniqueness: true
   normalizes :email, with: -> { it.strip.downcase }
 

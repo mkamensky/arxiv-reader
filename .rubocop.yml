@@ -3,7 +3,7 @@ require:
   - rubocop-rails
 
 AllCops:
-  TargetRubyVersion: 3.4
+  TargetRubyVersion: 4.0
   Exclude:
     - bin/**/*
     - coverage/**/*
@@ -19,6 +19,9 @@ AllCops:
 
 Rails/FilePath:
   EnforcedStyle: arguments
+
+Rails/Env:
+  Enabled: false
 
 Rails/SkipsModelValidations:
   Enabled: false

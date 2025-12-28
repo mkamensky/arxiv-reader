@@ -72,15 +72,38 @@
                 <q-item-label>{{ paper.journal_ref }}</q-item-label>
               </q-item-section>
             </q-item>
-            <q-item
-              v-for="tag in paper.tags"
-              :key="tag"
-            >
+            <q-item v-if="paper.primary.length" style="max-width: 30%">
               <q-item-section>
-                <q-item-label overline>
+                <q-item-label class="text-warning" overline>
                   MSC classes
                 </q-item-label>
-                <q-item-label>{{ tag }}</q-item-label>
+                <q-item-label>
+                  <q-chip
+                    v-for="tag in paper.primary"
+                    :key="tag"
+                    dense
+                    size="sm"
+                  >
+                    {{ tag }}<q-tooltip>{{ $options.msc[tag] }}</q-tooltip>
+                  </q-chip>
+                </q-item-label>
+              </q-item-section>
+            </q-item>
+            <q-item v-if="paper.secondary.length" style="max-width: 30%">
+              <q-item-section>
+                <q-item-label class="text-warning" overline>
+                  Secondary MSC classes
+                </q-item-label>
+                <q-item-label>
+                  <q-chip
+                    v-for="tag in paper.secondary"
+                    :key="tag"
+                    dense
+                    size="sm"
+                  >
+                    {{ tag }}<q-tooltip>{{ $options.msc[tag] }}</q-tooltip>
+                  </q-chip>
+                </q-item-label>
               </q-item-section>
             </q-item>
           </q-list>
@@ -121,6 +144,7 @@
 
 <script>
 import userMixin from '@/mixins/userMixin'
+import { mscDesc } from './mscDesc.js'
 import SharePaper from '@/Components/SharePaper.vue'
 
 export default {
@@ -131,6 +155,7 @@ export default {
   props: {
     paper: Object,
   },
+  msc: mscDesc,
   data() {
     return {
     }

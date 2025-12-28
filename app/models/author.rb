@@ -20,6 +20,7 @@ class Author < ApplicationRecord
   has_many :categories, through: :papers, source: :category
   has_many :subjects, through: :categories
   has_many_through :users, :followships
+  has_one :user, dependent: :nullify
 
   validates :name, presence: true
   validates :name_variants, presence: true
