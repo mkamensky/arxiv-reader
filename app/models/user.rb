@@ -20,6 +20,7 @@ class User < ApplicationRecord
   has_many_through :categories, :usercats
 
   has_many :tags, dependent: :destroy
+  accepts_nested_attributes_for :tags
 
   validates :email, presence: true, uniqueness: true
   normalizes :email, with: -> { it.strip.downcase }

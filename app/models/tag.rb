@@ -5,9 +5,12 @@ class Tag < ApplicationRecord
 
   validates :val, presence: true, uniqueness: { scope: :user }
 
-  alias_method :val, :value
-
   def self.inertia_params(**)
     super.vdeep_merge(only: %i[color])
   end
+
+  def value
+    val
+  end
+
 end

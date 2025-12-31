@@ -83,7 +83,13 @@ class ApplicationController < ActionController::Base
           include: { authors: Author.inertia_params },
         ),
         fauthors: Author.inertia_params,
-        tags: Tag.inertia_params,
+        tags: Tag.inertia_params(
+          include: {
+            papers: Paper.inertia_params(
+              include: { authors: Author.inertia_params },
+            ),
+          },
+        ),
       },
     }
   end

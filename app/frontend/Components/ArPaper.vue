@@ -36,12 +36,13 @@
             />
             -->
             <q-btn
-              v-if="current_user"
-              :icon="bkmkd ? '$bookmarkOn' : '$bookmark'"
-              color="orange-5"
+              v-for="tag in tags"
+              :key="`K${tag.value}`"
+              :icon="tag.icon"
+              :color="tag.color"
               text-color="black"
-              :title="bkmkd ? 'Un-bookmark' : 'Bookmark'"
-              @click="toggleBookmark(object)"
+              :title="tag.tip"
+              @click="toggleBookmark(object, tag.value)"
             />
           </q-btn-group>
           <div class="text-subtitle2 q-gutter-md">
@@ -312,6 +313,23 @@ export default {
     },
     bkmkd() {
       return this.bookmarked(this.object)
+    },
+    tags() {
+      return this.current_user ?
+      this.current_user.tags.map((it) => {
+        const marked = this.bookmarked(this.object, it.value)
+        return {
+          ...it,
+          icon: marked ? '$bookmarkOn' : '$bookmark',
+          tip: `${marked ? 'Unt' : 'T'}ag as ${it.value}`,
+        }
+      }).concat(
+        [{icon: this.bkmkd ? '$bookmarkOn' : '$bookmark',
+          tip: this.bkmkd ? 'Un-bookmark' : 'Bookmark',
+          color: 'orange-5',
+          value: null,
+        }]
+        ) : []
     },
     hidden() {
       return this.isHidden(this.object)

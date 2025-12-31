@@ -144,7 +144,7 @@
 
 <script>
 import userMixin from '@/mixins/userMixin'
-import { mscDesc } from './mscDesc.js'
+import { mscDesc } from '/Components/mscDesc.js'
 import SharePaper from '@/Components/SharePaper.vue'
 
 export default {
