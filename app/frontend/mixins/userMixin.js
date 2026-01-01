@@ -176,6 +176,23 @@ export default {
       return this.current_user.bpapers.
         filter(paper => paper.authors.findIndex(it => it.id === author.id) >= 0)
     },
+    tagsOf(paper) {
+      const bkmkd = this.bookmarked(paper)
+      return this.user ?  this.user.tags.map((it) => {
+        const marked = this.bookmarked(paper, it.value)
+        return {
+          ...it,
+          icon: marked ? '$bookmarkOn' : '$bookmark',
+          tip: `${marked ? 'Unt' : 'T'}ag as ${it.value}`,
+        }
+      }).concat(
+        [{icon: bkmkd ? '$bookmarkOn' : '$bookmark',
+          tip: bkmkd ? 'Un-bookmark' : 'Bookmark',
+          color: '#ffa726', // orange-5
+          value: null,
+        }]
+        ) : []
+    },
   },
 }
 

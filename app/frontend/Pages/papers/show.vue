@@ -128,12 +128,13 @@
               dense
             />
             <q-btn
-              v-if="current_user"
-              :icon="bkmkd ? '$bookmarkOn' : '$bookmark'"
-              color="orange-4"
+              v-for="tag in tags"
+              :key="`K${tag.value}`"
+              :icon="tag.icon"
+              :style="{backgroundColor: tag.color}"
               text-color="black"
-              :title="bkmkd ? 'Un-bookmark' : 'Bookmark'"
-              @click="toggleBookmark(paper)"
+              :title="tag.tip"
+              @click="toggleBookmark(object, tag.value)"
             />
           </q-btn-group>
         </div>
@@ -170,8 +171,8 @@ export default {
         this.dateStr(this.paper.revised)
       )
     },
-    bkmkd() {
-      return this.bookmarked(this.paper)
+    tags() {
+      return this.tagsOf(this.paper)
     },
   },
   methods: {

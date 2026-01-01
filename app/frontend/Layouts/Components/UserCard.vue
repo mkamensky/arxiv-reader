@@ -120,6 +120,15 @@
             Submit
           </q-btn>
           <q-space />
+          <q-btn
+            v-if="newTag.id"
+            v-close-popup
+            color="warning"
+            @click="deleteTag"
+          >
+            Delete
+          </q-btn>
+          <q-space />
           <q-btn color="secondary" type="reset">
             Reset
           </q-btn>
@@ -173,6 +182,7 @@ export default {
       this.form.submit(this.newTag.id ? 'patch': 'post', this.submitPath, {
         preserveScroll: true,
         preserveState: true,
+        onSuccess() { this.form.reset(); this.tagDialog = false },
       })
     },
     editTag(item) {
@@ -181,17 +191,16 @@ export default {
       this.newTag.val = item.value
       this.newTag.id = item.id
       this.tagDialog = true
-      //this.$inertia.delete(this.$delete_path('tags', item.id), {
-      //  preserveScroll: true,
-      //  preserveState: true,
-      //})
     },
-
+    deleteTag() {
+      this.$inertia.delete(this.$destroy_path('tags', this.newTag.id), {
+        preserveScroll: true,
+        preserveState: true,
+        onSuccess() { this.form.reset(); this.tagDialog = false },
+      })
+    },
     resetForm() {
-      this.newTag.color = ''
-      this.newTag.title = ''
-      this.newTag.val = ''
-      this.newTag.id = null
+      this.form.reset()
     },
     logout(evt) {
       if (evt) evt.preventDefault()

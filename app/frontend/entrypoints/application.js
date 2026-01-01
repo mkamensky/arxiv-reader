@@ -195,8 +195,8 @@ createInertiaApp({
     app.config.globalProperties.$create_path = function (what) {
       return routes[what].create.path()
     }
-    app.config.globalProperties.$delete_path = function (what, id) {
-      return routes[what].delete.path({ id: id })
+    app.config.globalProperties.$destroy_path = function (what, id) {
+      return routes[what].destroy.path({ id: id })
     }
     app.config.globalProperties.$index_path = function (what) {
       return routes[what].index.path()

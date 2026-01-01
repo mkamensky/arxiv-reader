@@ -2,7 +2,7 @@
   <article :class="hidden ? 'hidden' : ''">
     <q-card>
       <q-card-actions
-        :class="`bg-${bkmkd ? 'teal-2' : 'secondary'} text-white justify-between items-start no-wrap`"
+        :class="`bg-${bookmarked(object) ? 'teal-2' : 'secondary'} text-white justify-between items-start no-wrap`"
       >
         <div class="col-11" style="width: 85%">
           <q-btn-group
@@ -311,25 +311,8 @@ export default {
       return this.object.journal_ref || this.object.primary.length ||
         this.object.secondary.length || this.object.comment
     },
-    bkmkd() {
-      return this.bookmarked(this.object)
-    },
     tags() {
-      return this.current_user ?
-      this.current_user.tags.map((it) => {
-        const marked = this.bookmarked(this.object, it.value)
-        return {
-          ...it,
-          icon: marked ? '$bookmarkOn' : '$bookmark',
-          tip: `${marked ? 'Unt' : 'T'}ag as ${it.value}`,
-        }
-      }).concat(
-        [{icon: this.bkmkd ? '$bookmarkOn' : '$bookmark',
-          tip: this.bkmkd ? 'Un-bookmark' : 'Bookmark',
-          color: '#ffa726', // orange-5
-          value: null,
-        }]
-        ) : []
+      return this.tagsOf(this.object)
     },
     hidden() {
       return this.isHidden(this.object)
