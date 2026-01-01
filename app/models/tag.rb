@@ -12,5 +12,4 @@ class Tag < ApplicationRecord
   def value
     val
   end
-
 end

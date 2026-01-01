@@ -85,8 +85,7 @@ export default {
 
       const tt = this.findTag(tag)
       if (tt) {
-        tt.papers ??= []
-        tt.papers = tt.papers.filter(it => it.id != item.id)
+        tt.papers = (tt ?? []).papers.filter(it => it.id != item.id)
         this.updateTags()
       }
     },
@@ -155,6 +154,9 @@ export default {
     },
     toggleFollow(author) {
       return this.toggleListItem('fauthors', author)
+    },
+    removeTag(tag) {
+      return tag
     },
     isHidden(paper) {
       return this.hasItem('hidden_ids', paper)

@@ -6,6 +6,7 @@ Rails.application.routes.draw do
   resources :subjects, export: true, only: %i[show], defaults: { id: :math }
   constraints(id: %r{[a-zA-Z0-9._/-]+}) do
     resources :users, export: true, only: %i[create update]
+    resources :tags, export: true, only: %i[show create update destroy]
     resource :session, export: true, only: %i[create destroy]
     resources :authors, export: true, only: %i[index show]
     resources :papers, export: true, only: %i[index show]

@@ -26,103 +26,35 @@
     </q-card-actions>
   </q-card>
 
-  <q-toolbar class="bg-info text-black">
-    <q-toolbar-title>
-      Followed authors
-    </q-toolbar-title>
-  </q-toolbar>
-  <q-list style="max-height: 80%" dense class="scroll overflow-auto">
-    <q-expansion-item
-      v-for="author in current_user.fauthors || []"
-      :key="author.value"
-      expand-icon-toggle
-      expand-separator
-      :hide-expand-icon="author_papers(author).length == 0"
-    >
-      <template #header>
-        <q-item-section avatar>
-          <q-btn
-            round
-            size="xs"
-            icon="$close"
-            class="bg-secondary text-white"
-            @click="removeAuthor(author)"
-          />
-        </q-item-section>
-        <q-item-section>
-          <q-btn
-            ripple
-            flat
-            align="left"
-            color="warning"
-            no-caps
-            class="q-px-none"
-            :href="$show_path('authors', author.value)"
-          >
-            <q-item-label>{{ author.label }}</q-item-label>
-          </q-btn>
-        </q-item-section>
-      </template>
-      <q-item
-        v-for="paper in author_papers(author)"
-        :key="paper.id"
-      >
-        <q-item-section>
-          <q-btn no-caps flat :href="$show_path('papers', paper.value)">
-            <q-item-label>{{ paper.label }}</q-item-label>
-            <q-item-label caption>
-              {{ paper.authors.map(it => it.label).join(', ') }}
-            </q-item-label>
-          </q-btn>
-        </q-item-section>
-        <q-item-section side>
-          <q-btn
-            round
-            size="sm"
-            icon="$close"
-            class="bg-secondary text-white"
-            @click="removeBookmark(paper)"
-          />
-        </q-item-section>
-      </q-item>
-    </q-expansion-item>
-    <q-expansion-item
-      v-if="other_papers.length > 0"
-      expand-separator
-      label="Other Bookmarked Papers"
-      icon="$menu"
-      header-class="text-warning"
-    >
-      <q-item
-        v-for="paper in other_papers"
-        :key="paper.id"
-      >
-        <q-item-section>
-          <q-btn no-caps flat :href="$show_path('papers', paper.value)">
-            <q-item-label>{{ paper.label }}</q-item-label>
-            <q-item-label caption>
-              {{ paper.authors.map(it => it.label).join(', ') }}
-            </q-item-label>
-          </q-btn>
-        </q-item-section>
-        <q-item-section side>
-          <q-btn
-            round
-            size="sm"
-            icon="$close"
-            class="bg-secondary text-white"
-            @click="removeBookmark(paper)"
-          />
-        </q-item-section>
-      </q-item>
-    </q-expansion-item>
-  </q-list>
+  <!-- Paper lists -->
+  <sidebar-list
+    label="Followed authors"
+    type="authors"
+    :list="user.fauthors || []"
+    :item-papers="author_papers"
+    :other-papers="other_papers"
+    other-label="Other Bookmarked Papers"
+    @remove-item="removeAuthor"
+  />
+
+  <q-separator class="q-my-sm" />
+
+  <sidebar-list
+    label="User Tags"
+    type="tags"
+    :list="user.tags || []"
+    @remove-item="deleteTag"
+  />
 </template>
 
 <script>
 import userMixin from '@/mixins/userMixin'
+import SidebarList from '@/Layouts/Components/SidebarList.vue'
 
 export default {
+  components: {
+    SidebarList,
+  },
   mixins: [userMixin],
   data() {
     return {
