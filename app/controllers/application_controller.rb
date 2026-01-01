@@ -40,11 +40,19 @@ class ApplicationController < ActionController::Base
   end
 
   def object
-    @object ||= model.find(params[:id]) if params[:id]
+    @object ||= scope.find(params[:id]) if params[:id]
   end
 
   def model
     @model ||= controller_name.classify.constantize
+  end
+
+  def model_name
+    model&.name
+  end
+
+  def scope
+    model
   end
 
   def current_user

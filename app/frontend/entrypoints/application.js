@@ -140,6 +140,7 @@ const myIcons = {
   google: 'mdi-google',
   developer: 'mdi-code-braces',
   mathoverflow: 'mdi-stack-overflow',
+  colorize: 'mdi-eyedropper',
 }
 
 const pages = import.meta.glob('../Pages/**/*.vue', { eager: true })

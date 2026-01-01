@@ -1,6 +1,7 @@
 <template>
   <q-toolbar class="bg-info text-black">
     <q-toolbar-title v-html="label" />
+    <slot />
   </q-toolbar>
   <q-list style="max-height: 80%" dense class="scroll overflow-auto">
     <q-expansion-item
@@ -15,9 +16,9 @@
           <q-btn
             round
             size="xs"
-            icon="$close"
+            :icon="icon"
             class="bg-secondary text-white"
-            @click="$emit('remove-item', item)"
+            @click="$emit('modify-item', item)"
           />
         </q-item-section>
         <q-item-section>
@@ -25,7 +26,7 @@
             ripple
             flat
             align="left"
-            :color="item.color || 'warning'"
+            :style="{color: item.color}"
             no-caps
             class="q-px-none"
             :href="$show_path(type, item.value)"
@@ -60,6 +61,10 @@ export default {
     label: String,
     type: String,
     list: Array,
+    icon: {
+      type: String,
+      default: '$close',
+    },
     itemPapers: {
       type: Function,
       default: item => item.papers,
@@ -70,7 +75,7 @@ export default {
     },
     otherLabel: String,
   },
-  emits: ['remove-item'],
+  emits: ['modify-item'],
   data() {
     return {
     }

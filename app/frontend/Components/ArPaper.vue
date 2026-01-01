@@ -39,7 +39,7 @@
               v-for="tag in tags"
               :key="`K${tag.value}`"
               :icon="tag.icon"
-              :color="tag.color"
+              :style="{backgroundColor: tag.color}"
               text-color="black"
               :title="tag.tip"
               @click="toggleBookmark(object, tag.value)"
@@ -326,7 +326,7 @@ export default {
       }).concat(
         [{icon: this.bkmkd ? '$bookmarkOn' : '$bookmark',
           tip: this.bkmkd ? 'Un-bookmark' : 'Bookmark',
-          color: 'orange-5',
+          color: '#ffa726', // orange-5
           value: null,
         }]
         ) : []
