@@ -3,7 +3,7 @@
 source 'https://rubygems.org'
 git_source(:github) { "https://github.com/#{it}.git" }
 
-ruby '>=3.4'
+ruby '>=4'
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails', branch: 'main'
 gem 'rails', '>=8'
