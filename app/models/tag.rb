@@ -1,4 +1,8 @@
 class Tag < ApplicationRecord
+  include FriendlyId
+
+  friendly_id :val
+
   belongs_to :user
 
   has_many_through :papers, :paper_tags

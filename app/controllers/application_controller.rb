@@ -48,7 +48,7 @@ class ApplicationController < ActionController::Base
   end
 
   def model_name
-    model&.name
+    model&.name&.downcase
   end
 
   def scope

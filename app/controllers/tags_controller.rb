@@ -5,6 +5,12 @@ class TagsController < ApplicationController
     redir_back
   }
 
+  def show
+    render inertia: {
+      model_name => -> { object&.inertia_json(**inertia_params) },
+    }
+  end
+
   def create
     obj = scope.create(valid_params)
     if obj.persisted?
@@ -42,4 +48,14 @@ class TagsController < ApplicationController
   end
 
   alias_method :tag, :object
+
+  def inertia_params
+    {
+      include: {
+        papers: Paper.inertia_params(
+          include: { authors: Author.inertia_params },
+        ),
+      },
+    }
+  end
 end
