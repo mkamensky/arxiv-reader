@@ -157,7 +157,7 @@ export default {
     return {
       tagDialog: false,
       showErrors: true,
-      splitter: Math.min(80, Math.floor(ff * 100 / (ff + uu.tags.length))),
+      splitter: Math.min(70, Math.floor(ff * 100 / (ff + uu.tags.length))),
       form: this.$inertia.form('tags', {
         tag: {
           color: '',
