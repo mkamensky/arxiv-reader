@@ -143,12 +143,15 @@ const myIcons = {
   colorize: 'mdi-eyedropper',
 }
 
-const pages = import.meta.glob('../Pages/**/*.vue', { eager: true })
-
 createInertiaApp({
   resolve: (name) => {
-    let page = pages[`../Pages/${name}.vue`]
-    page.default.layout = page.default.layout || ApplicationLayout
+    const pages = import.meta.glob('../Pages/**/*.vue', { eager: true })
+
+    const page = pages[`../Pages/${name}.vue`]
+    if (!page) {
+      console.error(`Missing Inertia page component: '${name}.vue'`)
+    }
+    page.default.layout ??= ApplicationLayout
     return page
   },
   setup({ el, App, props, plugin }) {
@@ -229,5 +232,10 @@ createInertiaApp({
     }
 
     app.mount(el)
+  },
+  defaults: {
+    future: {
+      useScriptElementForInitialPage: true,
+    },
   },
 })
