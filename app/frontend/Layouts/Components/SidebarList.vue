@@ -3,7 +3,7 @@
     <q-toolbar-title v-html="label" />
     <slot />
   </q-toolbar>
-  <q-list style="max-height: 80%" dense class="scroll overflow-auto">
+  <q-list style="max-height: 100%" dense class="scroll overflow-auto">
     <q-expansion-item
       v-for="item in list || []"
       :key="item.value"
