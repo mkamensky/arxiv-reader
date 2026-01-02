@@ -16,4 +16,8 @@ class Tag < ApplicationRecord
   def value
     val
   end
+
+  def label
+    super.presence || val&.camelcase
+  end
 end

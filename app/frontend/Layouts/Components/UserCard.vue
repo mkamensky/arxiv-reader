@@ -27,32 +27,36 @@
   </q-card>
 
   <!-- Paper lists -->
-  <sidebar-list
-    label="Followed authors"
-    type="authors"
-    :list="user.fauthors || []"
-    :item-papers="author_papers"
-    :other-papers="other_papers"
-    other-label="Other Bookmarked Papers"
-    @modify-item="removeAuthor"
-  />
+  <q-splitter v-model="splitter" horizontal>
+    <template #before>
+      <sidebar-list
+        label="Followed authors"
+        type="authors"
+        :list="user.fauthors || []"
+        :item-papers="author_papers"
+        :other-papers="other_papers"
+        other-label="Other Bookmarked Papers"
+        @modify-item="removeAuthor"
+      />
+    </template>
 
-  <q-separator class="q-my-sm" />
-
-  <sidebar-list
-    label="User Tags"
-    type="tags"
-    :list="user.tags || []"
-    icon="$edit"
-    @modify-item="editTag"
-  >
-    <q-btn
-      icon="$plus"
-      color="accent"
-      fab-mini
-      @click="tagDialog = true"
-    />
-  </sidebar-list>
+    <template #after>
+      <sidebar-list
+        label="User Tags"
+        type="tags"
+        :list="user.tags || []"
+        icon="$edit"
+        @modify-item="editTag"
+      >
+        <q-btn
+          icon="$plus"
+          color="accent"
+          fab-mini
+          @click="tagDialog = true"
+        />
+      </sidebar-list>
+    </template>
+  </q-splitter>
   <q-dialog v-model="tagDialog">
     <q-card>
       <q-form @submit.prevent="addTag" @reset="resetForm">
@@ -148,9 +152,12 @@ export default {
   },
   mixins: [userMixin],
   data() {
+    const uu = this.$page.props.auth.user
+    const ff= uu.fauthors.length + 1
     return {
       tagDialog: false,
       showErrors: true,
+      splitter: Math.floor(ff * 100 / (ff + uu.tags.length)),
       form: this.$inertia.form('tags', {
         tag: {
           color: '',
