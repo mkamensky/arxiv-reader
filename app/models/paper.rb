@@ -51,6 +51,7 @@ class Paper < ApplicationRecord
   validates :arxiv, uniqueness: true
 
   normalizes :title, with: -> { LaTeX.decode(it) }
+  normalizes :abstract, with: -> { LaTeX.decode(it) }
 
   scope :with_subject, -> {
     joins(category: :subject).distinct.where(
