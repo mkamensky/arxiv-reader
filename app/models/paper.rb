@@ -1,14 +1,3 @@
-# disable math conversion, as we use js
-module LaTeX
-  module Decode
-    class Maths < Decoder
-      def self.decode!(str)
-        str
-      end
-    end
-  end
-end
-
 class Paper < ApplicationRecord
   has_paper_trail version: :revision, versions: {
     class_name: 'PaperVersion',
@@ -50,8 +39,8 @@ class Paper < ApplicationRecord
   validates :abs, presence: true
   validates :arxiv, uniqueness: true
 
-  normalizes :title, with: -> { LaTeX.decode(it) }
-  normalizes :abstract, with: -> { LaTeX.decode(it) }
+  normalizes :title, with: :decode_accents
+  normalizes :abstract, with: :decode_accents
 
   scope :with_subject, -> {
     joins(category: :subject).distinct.where(

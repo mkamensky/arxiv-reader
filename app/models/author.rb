@@ -41,7 +41,7 @@ class Author < ApplicationRecord
     )
   }
 
-  normalizes :name, with: -> { LaTeX.decode(it) }
+  normalizes :name, with: :decode_accents
 
   before_validation :update_arxiv
   before_save :update_variants
