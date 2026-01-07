@@ -27,7 +27,7 @@
   </q-card>
 
   <!-- Paper lists -->
-  <q-splitter v-model="splitter" horizontal :style="{height: '100%'}">
+  <q-splitter v-model="splitter" horizontal :style="{height: '80%'}">
     <template #before>
       <sidebar-list
         label="Followed authors"
