@@ -39,8 +39,8 @@ class Paper < ApplicationRecord
   validates :abs, presence: true
   validates :arxiv, uniqueness: true
 
-  normalizes :title, with: :decode_accents
-  normalizes :abstract, with: :decode_accents
+  normalizes :title, with: -> { decode_accents(it) }
+  normalizes :abstract, with: -> { decode_accents(it) }
 
   scope :with_subject, -> {
     joins(category: :subject).distinct.where(
