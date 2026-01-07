@@ -52,7 +52,6 @@
     <q-page-sticky
       expand
       position="top"
-      class="q-pt-xs"
       style="max-width: 100vw"
     >
       <q-toolbar class="bg-secondary justify-around">
