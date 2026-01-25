@@ -9,7 +9,7 @@ class ApplicationController < ActionController::Base
   before_action do
     Rails.error.set_context(
       request_url: request.original_url,
-      params: params,
+      params:,
       session: session.inspect,
     )
   end
@@ -39,8 +39,12 @@ class ApplicationController < ActionController::Base
     { title: page_title }
   end
 
+  def id
+    params[:id]
+  end
+
   def object
-    @object ||= scope.find(params[:id]) if params[:id]
+    @object ||= scope.find(id) if id
   end
 
   def model

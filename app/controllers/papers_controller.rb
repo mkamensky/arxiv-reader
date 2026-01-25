@@ -26,6 +26,10 @@ class PapersController < ApplicationController
     params[:q]
   end
 
+  def id
+    super&.gsub(/v[0-9]+$/, '')
+  end
+
   def spapers
     return if q.blank?
 
