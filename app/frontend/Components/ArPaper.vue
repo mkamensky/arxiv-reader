@@ -147,7 +147,7 @@
                 flat
                 dense
                 round
-                :title="$md(object.comment) || 'Show extra info'"
+                :title="$mdi(object.comment) || 'Show extra info'"
                 class="bg-red-2 text-black"
                 @click="extra = !extra"
               />
@@ -247,7 +247,7 @@
 
                       <q-item>
                         <q-item-section>
-                          <q-item-label v-html="$md(object.comment)" />
+                          <q-item-label v-html="$mdi(object.comment)" />
                         </q-item-section>
                       </q-item>
                     </q-list>
@@ -318,7 +318,7 @@ export default {
       return this.isHidden(this.object)
     },
     abstract() {
-      return this.$mdi(
+      return this.$md(
         this.object.abstract.replaceAll(
           /arxiv:(([0-9]+\.[0-9]*|[a-z-]+\/[0-9]*)[0-9](v[0-9]+)?)/gi,
           (m, id) => `<a href="${this.$show_path('papers', id)}" class="arxiv-link">${m}</a>`

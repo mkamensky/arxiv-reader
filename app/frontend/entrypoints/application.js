@@ -217,13 +217,14 @@ createInertiaApp({
       macros,
     }
     app.config.globalProperties.$md =
-      function (text) {
-        const span = document.createElement("span")
-        span.append(text) //premkdn(text))
-        //renderMathInElement(span, katexOpts)
-        return span.innerHTML
+      function (text, type = 'div') {
+        const el = document.createElement(type)
+        el.innerHTML=text
+        renderMathInElement(el, katexOpts)
+        return el.innerHTML
       }
-    app.config.globalProperties.$mdi = app.config.globalProperties.$md
+    app.config.globalProperties.$mdi =
+      text => app.config.globalProperties.$md(text, 'span')
     app.config.globalProperties.$q.iconMapFn = (iname) => {
       if (iname.startsWith('$')) {
         const res = myIcons[iname.substring(1)]
