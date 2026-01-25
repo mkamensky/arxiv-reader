@@ -479,7 +479,7 @@ DEPENDENCIES
   friendly_id
   inertia_rails (>= 3.0)
   js_from_routes
-  latex-decode
+  latex-decode (>= 0.4.2)
   libxml-ruby
   meta_request
   migration_data
