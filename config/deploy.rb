@@ -7,7 +7,7 @@ set :repo_url, "git@github.com:mkamensky/arxiv-reader.git"
 set :rbenv_type, :user
 set :rbenv_ruby, `rbenv local`.chomp
 # https://github.com/capistrano-plugins/capistrano-rbenv-install/issues/12
-set :rbenv_path, '~/.rbenv'
+set :rbenv_path, '/home/deploy/.rbenv'
 #set :rbenv_prefix, "RBENV_ROOT=#{fetch(:rbenv_path)} RBENV_VERSION=#{fetch(:rbenv_ruby)} #{fetch(:rbenv_path)}/bin/rbenv exec"
 set :rbenv_map_bins, %w[rake gem bundle ruby rails puma pumactl]
 set :rbenv_roles, :all
