@@ -220,7 +220,7 @@ createInertiaApp({
       function (text) {
         const span = document.createElement("span")
         span.append(text) //premkdn(text))
-        renderMathInElement(span, katexOpts)
+        //renderMathInElement(span, katexOpts)
         return span.innerHTML
       }
     app.config.globalProperties.$mdi = app.config.globalProperties.$md
