@@ -204,7 +204,7 @@ createInertiaApp({
     app.config.globalProperties.$index_path = function (what) {
       return routes[what].index.path()
     }
-    const premkdn = (it) => (it || '').toString().replace(/--/g, '\u2013')
+    //const premkdn = (it) => (it || '').toString().replace(/--/g, '\u2013')
     const macros = {}
     const katexOpts = {
       delimiters: [
@@ -219,7 +219,7 @@ createInertiaApp({
     app.config.globalProperties.$md =
       function (text) {
         const span = document.createElement("span")
-        span.append(premkdn(text))
+        span.append(text) //premkdn(text))
         renderMathInElement(span, katexOpts)
         return span.innerHTML
       }
