@@ -318,12 +318,10 @@ export default {
       return this.isHidden(this.object)
     },
     abstract() {
-      return this.$md(
-        this.object.abstract.replaceAll(
+      return this.object.abstract.replaceAll(
           /arxiv:(([0-9]+\.[0-9]*|[a-z-]+\/[0-9]*)[0-9](v[0-9]+)?)/gi,
           (m, id) => `<a href="${this.$show_path('papers', id)}" class="arxiv-link">${m}</a>`
         )
-      )
     },
   },
   methods: {
