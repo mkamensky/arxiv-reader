@@ -45,6 +45,7 @@
     "@inertiajs/vue3": ">=2.2.4",
     "@js-from-routes/client": ">=1.0.4",
     "@quasar/extras": ">=1.17.0",
+    "dompurify": "^3.4.11",
     "eslint": ">=9.36.0",
     "katex": ">=0.16.22",
     "quasar": ">=2.18.2",

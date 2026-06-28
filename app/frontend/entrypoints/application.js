@@ -38,6 +38,7 @@ import { Quasar, Notify, Dark, LocalStorage, Loading } from 'quasar'
 import renderMathInElement from 'katex/contrib/auto-render'
 import 'katex/dist/katex.css'
 
+import DOMPurify from 'dompurify'
 //import MarkdownIt from 'markdown-it'
 //import mk from '@vscode/markdown-it-katex'
 //import markdownItAttrs from 'markdown-it-attrs'
@@ -219,7 +220,7 @@ createInertiaApp({
     app.config.globalProperties.$md =
       function (text, type = 'div') {
         const el = document.createElement(type)
-        el.innerHTML=text
+        el.innerHTML=DOMPurify.sanitize(text)
         renderMathInElement(el, katexOpts)
         return el.innerHTML
       }
