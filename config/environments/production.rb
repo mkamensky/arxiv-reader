@@ -95,6 +95,8 @@ Rails.application.configure do
   # Do not dump schema after migrations.
   config.active_record.dump_schema_after_migration = false
 
+  config.active_record.schema_format = :sql
+
   # Configure Solid Errors
   config.solid_errors.connects_to = { database: { writing: :errors } }
   #config.solid_errors.send_emails = true
