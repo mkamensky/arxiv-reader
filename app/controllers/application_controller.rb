@@ -3,7 +3,8 @@ class ApplicationController < ActionController::Base
   include Pundit::Authorization
   include InertiaCsrf
 
-  protect_from_forgery with: :null_session
+  #protect_from_forgery with: :null_session
+  protect_from_forgery with: :exception
 
   before_action :auth
   before_action do
