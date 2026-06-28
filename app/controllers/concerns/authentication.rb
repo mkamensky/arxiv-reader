@@ -20,8 +20,10 @@ module Authentication
   end
 
   def request_authentication
-    session[:return_to_after_authenticating] = request.url
-    redirect_to new_session_path
+    flash.alert 'Authentication required'
+    redir_back
+    #session[:return_to_after_authenticating] = request.url
+    #redirect_to new_session_path
   end
 
   def after_authentication_url
@@ -39,7 +41,7 @@ module Authentication
   end
 
   def terminate_session
-    Current.session&.destroy
+    Current.session&.destroy!
     cookies.delete(:session_id)
   end
 end
