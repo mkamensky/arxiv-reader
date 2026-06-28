@@ -134,7 +134,7 @@
               :style="{backgroundColor: tag.color}"
               text-color="black"
               :title="tag.tip"
-              @click="toggleBookmark(object, tag.value)"
+              @click="toggleBookmark(paper, tag.value)"
             />
           </q-btn-group>
         </div>

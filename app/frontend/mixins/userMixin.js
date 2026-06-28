@@ -79,7 +79,7 @@ export default {
       }
     },
     removeTagged(tag, item) {
-      if (!this.hasTag(tag, item)) {
+      if (!this.hasTagged(tag, item)) {
         return
       }
 
