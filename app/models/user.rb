@@ -30,7 +30,7 @@ class User < ApplicationRecord
   end
 
   def label
-    name || email
+    name.presence || email
   end
 
   def value
