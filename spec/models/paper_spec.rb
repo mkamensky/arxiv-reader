@@ -86,7 +86,6 @@ RSpec.describe Paper, type: :model do
         expect(paper).to have_a_version_with_changes version: 'v3'
         expect(paper).to have_a_version_with_changes version: 'v2'
       rescue NoMethodError => e
-        debugger
       end
     end
   end

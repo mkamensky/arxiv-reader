@@ -17,7 +17,7 @@ namespace :dbfixes do
           it.save!
         end
       rescue ActiveRecord::RecordInvalid => e
-        debugger if Rails.env.local?
+        #debugger if Rails.env.local?
       end
     end
   end
