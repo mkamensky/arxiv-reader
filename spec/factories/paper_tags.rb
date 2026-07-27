@@ -1,6 +1,6 @@
 FactoryBot.define do
   factory :paper_tag do
-    paper { nil }
-    tag { nil }
+    paper
+    tag
   end
 end

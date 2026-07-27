@@ -1,6 +1,6 @@
 FactoryBot.define do
   factory :category do
-    sequence(:arxiv, 'AB') { |cc| "math.#{cc}" }
+    sequence(:arxiv) { "factory-category-#{it}" }
     title { Faker::Dessert.flavor }
     subject
   end

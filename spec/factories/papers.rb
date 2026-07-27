@@ -1,6 +1,6 @@
 FactoryBot.define do
   factory :paper do
-    arxiv { sprintf("%04d.%06d", rand(10000), rand(100000)) }
+    sequence(:arxiv) { "factory-paper-#{it}" }
     title { Faker::ChuckNorris.fact }
     abstract { Faker::Movies::Lebowski.quote }
     abs { Faker::Internet.url }
@@ -11,9 +11,11 @@ FactoryBot.define do
     version { %w[v1 v2 v3].sample }
     submitted { Faker::Date.between(from: 3.years.ago, to: 1.day.ago) }
     revised do
-      version == 'v1' || submitted.blank? ? nil : Faker::Date.between(
-        from: submitted + 1.day, to: Time.zone.today,
-      )
+      if version == 'v1' || submitted.blank?
+        nil
+      else
+        Faker::Date.between(from: submitted + 1.day, to: Time.zone.today)
+      end
     end
     category
 

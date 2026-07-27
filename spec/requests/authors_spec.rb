@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe "Authors:", type: :request, inertia: true do
+RSpec.describe "Authors:", type: :request do
   let!(:author) { create(:author, :with_papers, name: 'The Dude') }
   describe "GET /authors" do
     let!(:author2) { create(:author, :with_papers, name: 'Jeff Lebowski') }
@@ -11,7 +11,7 @@ RSpec.describe "Authors:", type: :request, inertia: true do
     end
 
     it 'sends correct props' do
-      expect(inertia).to include_props(:authors)
+      expect(inertia.props).to have_key(:authors)
     end
 
     it 'finds the right authors' do
@@ -30,7 +30,7 @@ RSpec.describe "Authors:", type: :request, inertia: true do
     end
 
     it 'sends correct props' do
-      expect(inertia).to include_props(:author)
+      expect(inertia.props).to have_key(:author)
     end
 
     it 'sends the correct author' do

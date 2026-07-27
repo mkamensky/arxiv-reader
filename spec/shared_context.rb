@@ -85,6 +85,14 @@ RSpec.shared_context 'hidden_paper context' do
   let(:update_params) { {} }
 end
 
+RSpec.shared_context 'paper_tag context' do
+  let(:update_params) { {} }
+end
+
+RSpec.shared_context 'tag context' do
+  let(:update_params) { {} }
+end
+
 RSpec.shared_context 'subject context' do
   let(:update_params) { {} }
 end

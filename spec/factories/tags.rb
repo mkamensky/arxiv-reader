@@ -1,8 +1,8 @@
 FactoryBot.define do
   factory :tag do
-    user { nil }
-    id { "MyString" }
+    user
+    sequence(:val) { "tag-#{it}" }
     title { "MyString" }
-    color { "MyString" }
+    color { "#2468ace0" }
   end
 end

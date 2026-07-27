@@ -1,4 +1,5 @@
 require 'models/shared_examples'
+require 'securerandom'
 
 RSpec.describe Paper, type: :model do
   include_standard_examples
@@ -16,11 +17,11 @@ RSpec.describe Paper, type: :model do
   end
 
   describe '.with_subject' do
-    let(:subj1) { Subject.first }
-    let(:subj2) { Subject.last }
-    let(:cat1) { subj1.categories.first }
-    let(:cat2) { subj1.categories.last }
-    let(:cat3) { subj2.categories.take }
+    let(:subj1) { create(:subject, arxiv: "spec-#{SecureRandom.hex(4)}") }
+    let(:subj2) { create(:subject, arxiv: "spec-#{SecureRandom.hex(4)}") }
+    let(:cat1) { create(:category, arxiv: "#{subj1.arxiv}.AG", subject: subj1) }
+    let(:cat2) { create(:category, arxiv: "#{subj1.arxiv}.CA", subject: subj1) }
+    let(:cat3) { create(:category, arxiv: "#{subj2.arxiv}.OP", subject: subj2) }
 
     before do
       @paper1 = create(:paper, category: cat1)
@@ -35,9 +36,20 @@ RSpec.describe Paper, type: :model do
   end
 
   describe '.create_from_arxiv', versioning: true do
+    let(:subject_arxiv) { "spec-#{SecureRandom.hex(4)}" }
+    let(:arxiv_id) { "spec-#{SecureRandom.hex(6)}" }
+    let(:primary_arxiv) { "#{subject_arxiv}.AG" }
+    let(:secondary_arxiv) { "#{subject_arxiv}.CA" }
+
+    before do
+      subject = create(:subject, arxiv: subject_arxiv)
+      create(:category, arxiv: primary_arxiv, subject: subject)
+      create(:category, arxiv: secondary_arxiv, subject: subject)
+    end
+
     let(:apaper) do
       Arxiv::Api::Paper.new(
-        id: '0123.4567',
+        id: arxiv_id,
         title: 'Some stuff I thought about',
         version: {
           v1: {
@@ -53,16 +65,16 @@ RSpec.describe Paper, type: :model do
         comments: 'initial version',
         submitter: 'Mustrum Ridcully',
         authors: ['Mustrum Ridcully'],
-        url: 'https://arxiv.org/0123.4567',
-        category: 'math.AG',
-        categories: %w[math.AG math.CA],
+        url: "https://arxiv.org/#{arxiv_id}",
+        category: primary_arxiv,
+        categories: [primary_arxiv, secondary_arxiv],
         msc_class: [["03D20"], nil],
         abstract: 'We do some stuff',
       )
     end
 
     let(:apaper2) do
-      res = apaper
+      res = apaper.dup
       res.version[:v3] = { 'date' => Time.zone.today }
       res
     end
@@ -85,7 +97,6 @@ RSpec.describe Paper, type: :model do
           to_not(change { Paper.count })
         expect(paper).to have_a_version_with_changes version: 'v3'
         expect(paper).to have_a_version_with_changes version: 'v2'
-      rescue NoMethodError => e
       end
     end
   end
