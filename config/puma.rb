@@ -48,7 +48,7 @@ environment ENV.fetch("RAILS_ENV", "development")
 # Allow puma to be restarted by `bin/rails restart` command.
 plugin :tmp_restart
 
-bind "unix://#{ENV.fetch('PUMA_SOCKET', 'tmp/sockets/puma.sock')}" if ENV["RAILS_ENV"] == "production"
+bind ENV.fetch("PUMA_SOCKET", "unix://tmp/sockets/puma.sock") if ENV["RAILS_ENV"] == "production"
 
 # Run the Solid Queue supervisor inside of Puma for single-server deployments.
 plugin :solid_queue if ENV["SOLID_QUEUE_IN_PUMA"]
