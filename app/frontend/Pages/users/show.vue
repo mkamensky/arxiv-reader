@@ -6,19 +6,49 @@
           LLM connection
         </div>
         <p class="q-mt-md">
-          Processing sends papers in your followed categories, your bookmarks, and followed authors to the selected provider for ranking. Large categories can require many API requests. Your API keys stay on the server and are never shown after saving.
+          The LLM uses your bookmarked papers and followed authors as examples of your interests when ranking other papers from your followed categories. Bookmarks and followed authors are not automatically added to your recommendations. Large categories can require many API requests. Your API keys stay on the server and are never shown after saving.
         </p>
       </q-card-section>
       <q-card-section>
         <q-form class="q-gutter-md" @submit.prevent="save">
-          <q-option-group
-            v-model="form.user.llm_provider"
-            type="radio"
-            :options="[
-              { label: 'OpenAI', value: 'openai' },
-              { label: 'Gemini', value: 'gemini' },
-            ]"
-          />
+          <div>
+            <div class="text-subtitle2 q-mb-sm">
+              Provider
+            </div>
+            <div
+              v-for="provider in providers"
+              :key="provider.value"
+              class="row items-center q-gutter-sm q-pa-sm q-mb-sm rounded-borders"
+              :class="savedKeyFor(provider.value) ? 'bg-green-1' : 'bg-grey-2'"
+            >
+              <q-radio
+                v-model="form.user.llm_provider"
+                :val="provider.value"
+                :label="provider.label"
+              />
+              <q-chip
+                v-if="savedKeyFor(provider.value)"
+                color="positive"
+                text-color="white"
+                icon="mdi-key"
+                label="Personal key saved"
+              />
+              <q-chip
+                v-else
+                outline
+                color="grey-7"
+                icon="mdi-key-remove"
+                label="No personal key"
+              />
+              <q-chip
+                v-if="llmAvailable[provider.value]"
+                outline
+                color="info"
+                icon="mdi-cloud-check"
+                label="Site connection available"
+              />
+            </div>
+          </div>
           <q-option-group
             v-model="form.user.llm_mode"
             type="radio"
@@ -73,6 +103,10 @@ export default {
   props: { llmAvailable: Object },
   data() {
     return {
+      providers: [
+        { label: 'OpenAI', value: 'openai' },
+        { label: 'Gemini', value: 'gemini' },
+      ],
       form: this.$inertia.form({ user: {
         llm_mode: this.$page.props.auth.user.llm_mode,
         llm_provider: this.$page.props.auth.user.llm_provider,
@@ -86,7 +120,7 @@ export default {
       return this.form.user.llm_provider === 'gemini' ? 'Gemini' : 'OpenAI'
     },
     keyConfigured() {
-      return this.current_user.llm_connected_providers?.includes(this.form.user.llm_provider)
+      return this.savedKeyFor(this.form.user.llm_provider)
     },
   },
   watch: {
@@ -96,6 +130,9 @@ export default {
     },
   },
   methods: {
+    savedKeyFor(provider) {
+      return this.current_user.llm_connected_providers?.includes(provider) || false
+    },
     save() {
       this.form.patch(this.$update_path('users', this.current_user.id), {
         preserveScroll: true,

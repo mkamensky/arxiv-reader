@@ -6,7 +6,7 @@
       </div>
       <q-btn
         color="primary"
-        label="Consider pending papers"
+        label="Find recommendations"
         :loading="refreshing"
         :disable="running || !canRefresh || !hasFollowedCategories || pendingCount === 0"
         @click="start"
@@ -26,10 +26,31 @@
       Follow at least one category on the recent papers page to get recommendations.
     </p>
     <p v-else>
-      {{ pendingCount }} papers remain to be considered in your followed categories.
-      Processing sends papers in batches to {{ providerName(current_user.llm_provider) }} and can be paused and resumed.
-      Your bookmarks and followed authors guide the ranking.
+      {{ pendingCount }} unreviewed papers in your followed categories are eligible.
+      This sends them to {{ providerName(current_user.llm_provider) }} in batches. The model selects up to 10 recommendations per batch, each with a relevance score and reason.
+      Your bookmarks and followed authors guide its choices; they are not automatically recommended. Completed batches are remembered, so you can pause and resume later.
     </p>
+    <div
+      v-if="runStartCount !== null"
+      class="q-mb-lg"
+      role="status"
+      aria-live="polite"
+    >
+      <div class="row justify-between q-mb-xs">
+        <span>{{ runStatus }}</span>
+        <span>{{ runProcessedCount }} of {{ runStartCount }} papers reviewed this run</span>
+      </div>
+      <q-linear-progress
+        :value="runProgress"
+        color="positive"
+        track-color="grey-4"
+        size="10px"
+        aria-label="Paper review progress"
+      />
+      <div class="text-caption q-mt-xs">
+        {{ runRemainingCount }} papers still waiting to be reviewed.
+      </div>
+    </div>
     <p v-if="!recommendations.length">
       No recommendations yet.
     </p>
@@ -76,10 +97,31 @@ export default {
     page: Number,
     total: Number,
   },
-  data() { return { refreshing: false, running: false, opinionProcessing: null } },
+  data() {
+    return {
+      refreshing: false,
+      running: false,
+      opinionProcessing: null,
+      runStartCount: null,
+      runRemainingCount: null,
+      runStoppedWithError: false,
+    }
+  },
   computed: {
     canRefresh() {
       return this.availableProviders.includes(this.current_user.llm_provider)
+    },
+    runProcessedCount() {
+      return Math.max(0, this.runStartCount - this.runRemainingCount)
+    },
+    runProgress() {
+      return this.runStartCount > 0 ? Math.min(1, this.runProcessedCount / this.runStartCount) : 0
+    },
+    runStatus() {
+      if (this.runStoppedWithError) return 'Review stopped after an error. You can retry the remaining papers.'
+      if (this.refreshing) return this.running ? 'Reviewing a batch...' : 'Finishing the current batch...'
+      if (this.runRemainingCount === 0) return 'Review complete.'
+      return this.running ? 'Preparing the next batch...' : 'Paused. Resume to review the remaining papers.'
     },
   },
   beforeUnmount() { this.running = false },
@@ -99,6 +141,9 @@ export default {
       })
     },
     start() {
+      this.runStartCount = this.pendingCount
+      this.runRemainingCount = this.pendingCount
+      this.runStoppedWithError = false
       this.running = true
       this.processNext()
     },
@@ -109,13 +154,21 @@ export default {
         onStart: () => { this.refreshing = true },
         onFinish: () => { this.refreshing = false },
         onSuccess: (page) => {
-          if (page.props.flash?.alert || !Number.isFinite(page.props.pendingCount) || page.props.pendingCount === 0) {
+          const remaining = page.props.pendingCount
+          if (Number.isFinite(remaining)) this.runRemainingCount = remaining
+          if (page.props.flash?.alert || !Number.isFinite(remaining)) {
+            this.runStoppedWithError = true
+            this.running = false
+          } else if (remaining === 0) {
             this.running = false
           } else if (this.running) {
             this.$nextTick(() => this.processNext())
           }
         },
-        onError: () => { this.running = false },
+        onError: () => {
+          this.runStoppedWithError = true
+          this.running = false
+        },
       })
     },
     goToPage(page) {

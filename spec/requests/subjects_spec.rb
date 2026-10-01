@@ -24,6 +24,10 @@ RSpec.describe "Subjects", type: :request do
       expect(Date.parse(inertia.props[:date].to_s)).to eq(date)
     end
 
+    it 'includes the bundled widget stylesheet without a Vite dev server' do
+      expect(response.body).to match(%r{<link[^>]+href="/vite-test/assets/style-[^"]+\.css"})
+    end
+
     it 'groups papers by category for the requested date' do
       papers = inertia.props[:papers][category.arxiv].map(&:deep_symbolize_keys)
 

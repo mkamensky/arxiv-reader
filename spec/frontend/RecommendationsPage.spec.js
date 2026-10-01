@@ -6,6 +6,9 @@ it('continues processing batches until no papers remain', () => {
   const context = {
     running: true,
     refreshing: false,
+    runStartCount: 82,
+    runRemainingCount: 82,
+    runStoppedWithError: false,
     $create_path: () => '/recommendations',
     $nextTick: callback => callback(),
     $inertia: {
@@ -23,6 +26,11 @@ it('continues processing batches until no papers remain', () => {
   expect(context.$inertia.post).toHaveBeenCalledTimes(2)
   expect(context.running).toBe(false)
   expect(context.refreshing).toBe(false)
+  expect(context.runRemainingCount).toBe(0)
+  expect(RecommendationsPage.computed.runProcessedCount.call(context)).toBe(82)
+  context.runProcessedCount = 82
+  expect(RecommendationsPage.computed.runProgress.call(context)).toBe(1)
+  expect(RecommendationsPage.computed.runStatus.call(context)).toBe('Review complete.')
 })
 
 it('stops processing when a batch returns an error', () => {
@@ -41,6 +49,45 @@ it('stops processing when a batch returns an error', () => {
 
   expect(context.$inertia.post).toHaveBeenCalledTimes(1)
   expect(context.running).toBe(false)
+  expect(context.runStoppedWithError).toBe(true)
+})
+
+it('starts a new run from the current pending count', () => {
+  const context = { pendingCount: 120, running: false, runStoppedWithError: true, processNext: vi.fn() }
+
+  RecommendationsPage.methods.start.call(context)
+
+  expect(context.runStartCount).toBe(120)
+  expect(context.runRemainingCount).toBe(120)
+  expect(context.runStoppedWithError).toBe(false)
+  expect(context.running).toBe(true)
+  expect(context.processNext).toHaveBeenCalledOnce()
+})
+
+it('reports partial progress when paused after a batch', () => {
+  const context = {
+    running: true,
+    refreshing: false,
+    runStartCount: 100,
+    runRemainingCount: 100,
+    runStoppedWithError: false,
+    $create_path: () => '/recommendations',
+    $inertia: {
+      post: vi.fn((_path, _data, options) => {
+        options.onStart()
+        context.running = false
+        options.onSuccess({ props: { flash: {}, pendingCount: 20 } })
+        options.onFinish()
+      }),
+    },
+  }
+
+  RecommendationsPage.methods.processNext.call(context)
+
+  expect(context.$inertia.post).toHaveBeenCalledOnce()
+  expect(context.runRemainingCount).toBe(20)
+  expect(RecommendationsPage.computed.runProcessedCount.call(context)).toBe(80)
+  expect(RecommendationsPage.computed.runStatus.call(context)).toContain('Paused')
 })
 
 it('offers a second opinion only from another available provider', () => {
