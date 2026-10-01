@@ -294,6 +294,39 @@ ALTER SEQUENCE public.hidden_papers_id_seq OWNED BY public.hidden_papers.id;
 
 
 --
+-- Name: llm_connections; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.llm_connections (
+    id bigint NOT NULL,
+    user_id bigint NOT NULL,
+    provider character varying NOT NULL,
+    api_key_ciphertext text NOT NULL,
+    created_at timestamp(6) without time zone NOT NULL,
+    updated_at timestamp(6) without time zone NOT NULL
+);
+
+
+--
+-- Name: llm_connections_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE public.llm_connections_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: llm_connections_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE public.llm_connections_id_seq OWNED BY public.llm_connections.id;
+
+
+--
 -- Name: paper_tags; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -438,6 +471,38 @@ ALTER SEQUENCE public.pg_search_documents_id_seq OWNED BY public.pg_search_docum
 
 
 --
+-- Name: recommendation_considerations; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.recommendation_considerations (
+    id bigint NOT NULL,
+    user_id bigint NOT NULL,
+    paper_id bigint NOT NULL,
+    created_at timestamp(6) without time zone NOT NULL,
+    updated_at timestamp(6) without time zone NOT NULL
+);
+
+
+--
+-- Name: recommendation_considerations_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE public.recommendation_considerations_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: recommendation_considerations_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE public.recommendation_considerations_id_seq OWNED BY public.recommendation_considerations.id;
+
+
+--
 -- Name: recommendations; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -447,7 +512,10 @@ CREATE TABLE public.recommendations (
     user_id bigint NOT NULL,
     score double precision DEFAULT 1.0 NOT NULL,
     created_at timestamp(6) without time zone NOT NULL,
-    updated_at timestamp(6) without time zone NOT NULL
+    updated_at timestamp(6) without time zone NOT NULL,
+    reason text,
+    provider character varying DEFAULT 'openai'::character varying NOT NULL,
+    model character varying
 );
 
 
@@ -477,6 +545,41 @@ ALTER SEQUENCE public.recommendations_id_seq OWNED BY public.recommendations.id;
 CREATE TABLE public.schema_migrations (
     version character varying NOT NULL
 );
+
+
+--
+-- Name: second_opinions; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.second_opinions (
+    id bigint NOT NULL,
+    recommendation_id bigint NOT NULL,
+    provider character varying NOT NULL,
+    model character varying NOT NULL,
+    score numeric NOT NULL,
+    reason text NOT NULL,
+    created_at timestamp(6) without time zone NOT NULL,
+    updated_at timestamp(6) without time zone NOT NULL
+);
+
+
+--
+-- Name: second_opinions_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE public.second_opinions_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: second_opinions_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE public.second_opinions_id_seq OWNED BY public.second_opinions.id;
 
 
 --
@@ -626,7 +729,11 @@ CREATE TABLE public.users (
     subject_id bigint,
     avatar character varying,
     github character varying,
-    orcid character varying
+    orcid character varying,
+    llm_mode character varying DEFAULT 'anonymous'::character varying NOT NULL,
+    llm_api_key_ciphertext text,
+    recommendation_processing_started_at timestamp(6) without time zone,
+    llm_provider character varying DEFAULT 'openai'::character varying NOT NULL
 );
 
 
@@ -706,6 +813,13 @@ ALTER TABLE ONLY public.hidden_papers ALTER COLUMN id SET DEFAULT nextval('publi
 
 
 --
+-- Name: llm_connections id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.llm_connections ALTER COLUMN id SET DEFAULT nextval('public.llm_connections_id_seq'::regclass);
+
+
+--
 -- Name: paper_tags id; Type: DEFAULT; Schema: public; Owner: -
 --
 
@@ -734,10 +848,24 @@ ALTER TABLE ONLY public.pg_search_documents ALTER COLUMN id SET DEFAULT nextval(
 
 
 --
+-- Name: recommendation_considerations id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.recommendation_considerations ALTER COLUMN id SET DEFAULT nextval('public.recommendation_considerations_id_seq'::regclass);
+
+
+--
 -- Name: recommendations id; Type: DEFAULT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.recommendations ALTER COLUMN id SET DEFAULT nextval('public.recommendations_id_seq'::regclass);
+
+
+--
+-- Name: second_opinions id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.second_opinions ALTER COLUMN id SET DEFAULT nextval('public.second_opinions_id_seq'::regclass);
 
 
 --
@@ -848,6 +976,14 @@ ALTER TABLE ONLY public.hidden_papers
 
 
 --
+-- Name: llm_connections llm_connections_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.llm_connections
+    ADD CONSTRAINT llm_connections_pkey PRIMARY KEY (id);
+
+
+--
 -- Name: paper_tags paper_tags_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -880,6 +1016,14 @@ ALTER TABLE ONLY public.pg_search_documents
 
 
 --
+-- Name: recommendation_considerations recommendation_considerations_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.recommendation_considerations
+    ADD CONSTRAINT recommendation_considerations_pkey PRIMARY KEY (id);
+
+
+--
 -- Name: recommendations recommendations_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -893,6 +1037,14 @@ ALTER TABLE ONLY public.recommendations
 
 ALTER TABLE ONLY public.schema_migrations
     ADD CONSTRAINT schema_migrations_pkey PRIMARY KEY (version);
+
+
+--
+-- Name: second_opinions second_opinions_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.second_opinions
+    ADD CONSTRAINT second_opinions_pkey PRIMARY KEY (id);
 
 
 --
@@ -1062,6 +1214,20 @@ CREATE INDEX index_hidden_papers_on_user_id ON public.hidden_papers USING btree 
 
 
 --
+-- Name: index_llm_connections_on_user_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_llm_connections_on_user_id ON public.llm_connections USING btree (user_id);
+
+
+--
+-- Name: index_llm_connections_on_user_id_and_provider; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE UNIQUE INDEX index_llm_connections_on_user_id_and_provider ON public.llm_connections USING btree (user_id, provider);
+
+
+--
 -- Name: index_paper_tags_on_paper_id_and_tag_id; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -1139,6 +1305,27 @@ CREATE INDEX index_pg_search_documents_on_searchable ON public.pg_search_documen
 
 
 --
+-- Name: index_recommendation_considerations_on_paper_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_recommendation_considerations_on_paper_id ON public.recommendation_considerations USING btree (paper_id);
+
+
+--
+-- Name: index_recommendation_considerations_on_user_and_paper; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE UNIQUE INDEX index_recommendation_considerations_on_user_and_paper ON public.recommendation_considerations USING btree (user_id, paper_id);
+
+
+--
+-- Name: index_recommendation_considerations_on_user_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_recommendation_considerations_on_user_id ON public.recommendation_considerations USING btree (user_id);
+
+
+--
 -- Name: index_recommendations_on_paper_id_and_user_id; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -1150,6 +1337,20 @@ CREATE UNIQUE INDEX index_recommendations_on_paper_id_and_user_id ON public.reco
 --
 
 CREATE INDEX index_recommendations_on_user_id ON public.recommendations USING btree (user_id);
+
+
+--
+-- Name: index_second_opinions_on_recommendation_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_second_opinions_on_recommendation_id ON public.second_opinions USING btree (recommendation_id);
+
+
+--
+-- Name: index_second_opinions_on_recommendation_id_and_provider; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE UNIQUE INDEX index_second_opinions_on_recommendation_id_and_provider ON public.second_opinions USING btree (recommendation_id, provider);
 
 
 --
@@ -1255,6 +1456,14 @@ ALTER TABLE ONLY public.categorisations
 
 
 --
+-- Name: recommendation_considerations fk_rails_2c85575c93; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.recommendation_considerations
+    ADD CONSTRAINT fk_rails_2c85575c93 FOREIGN KEY (paper_id) REFERENCES public.papers(id);
+
+
+--
 -- Name: paper_tags fk_rails_3997f01071; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -1276,6 +1485,14 @@ ALTER TABLE ONLY public.followships
 
 ALTER TABLE ONLY public.hidden_papers
     ADD CONSTRAINT fk_rails_58a0eb1987 FOREIGN KEY (user_id) REFERENCES public.users(id);
+
+
+--
+-- Name: recommendation_considerations fk_rails_5df15f2c5b; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.recommendation_considerations
+    ADD CONSTRAINT fk_rails_5df15f2c5b FOREIGN KEY (user_id) REFERENCES public.users(id);
 
 
 --
@@ -1311,6 +1528,14 @@ ALTER TABLE ONLY public.paper_tags
 
 
 --
+-- Name: llm_connections fk_rails_8d1ef5f2a9; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.llm_connections
+    ADD CONSTRAINT fk_rails_8d1ef5f2a9 FOREIGN KEY (user_id) REFERENCES public.users(id);
+
+
+--
 -- Name: authorships fk_rails_925f77f584; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -1332,6 +1557,14 @@ ALTER TABLE ONLY public.followships
 
 ALTER TABLE ONLY public.users
     ADD CONSTRAINT fk_rails_9ac60fc016 FOREIGN KEY (author_id) REFERENCES public.authors(id) ON DELETE SET NULL;
+
+
+--
+-- Name: second_opinions fk_rails_aa55efd7e8; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.second_opinions
+    ADD CONSTRAINT fk_rails_aa55efd7e8 FOREIGN KEY (recommendation_id) REFERENCES public.recommendations(id);
 
 
 --
@@ -1413,6 +1646,11 @@ ALTER TABLE ONLY public.recommendations
 SET search_path TO "$user", public;
 
 INSERT INTO "schema_migrations" (version) VALUES
+('20261001000001'),
+('20261001000000'),
+('20260930000002'),
+('20260930000001'),
+('20260930000000'),
 ('20251228090434'),
 ('20251228081739'),
 ('20251228075540'),
@@ -1452,4 +1690,3 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20230715211303'),
 ('20230715150048'),
 ('20230715145201');
-

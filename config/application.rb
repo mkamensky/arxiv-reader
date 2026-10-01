@@ -23,6 +23,12 @@ module ArxivReader
   class Application < Rails::Application
     # Initialize configuration defaults for originally generated Rails version.
     config.load_defaults 8.1
+    config.x.llm_recommendations.openai_api_key = ENV.fetch('OPENAI_API_KEY', nil)
+    config.x.llm_recommendations.model =
+      ENV.fetch('OPENAI_RECOMMENDATIONS_MODEL', 'gpt-4o-mini')
+    config.x.llm_recommendations.gemini_api_key = ENV.fetch('GEMINI_API_KEY', nil)
+    config.x.llm_recommendations.gemini_model =
+      ENV.fetch('GEMINI_RECOMMENDATIONS_MODEL', 'gemini-2.5-flash')
 
     # Please, add to the `ignore` list any other `lib` subdirectories that do
     # not contain `.rb` files, or that should not be reloaded or eager loaded.

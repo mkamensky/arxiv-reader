@@ -18,6 +18,20 @@
     <q-card-actions class="justify-around">
       <q-btn
         color="primary"
+        label="Profile & LLM"
+        push
+        size="sm"
+        :href="$show_path('users', current_user.id)"
+      />
+      <q-btn
+        color="primary"
+        label="Recommendations"
+        push
+        size="sm"
+        href="/recommendations"
+      />
+      <q-btn
+        color="primary"
         label="Logout"
         push
         size="sm"
@@ -221,4 +235,3 @@ export default {
   },
 }
 </script>
-

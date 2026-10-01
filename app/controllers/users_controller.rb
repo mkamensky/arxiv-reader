@@ -5,6 +5,15 @@ class UsersController < ApplicationController
     redir_back
   }
 
+  def show
+    render inertia: {
+      llmAvailable: {
+        openai: Rails.configuration.x.llm_recommendations.openai_api_key.present?,
+        gemini: Rails.configuration.x.llm_recommendations.gemini_api_key.present?,
+      },
+    }
+  end
+
   def create
     user = User.create(user_params)
     if user.persisted?
@@ -31,7 +40,7 @@ class UsersController < ApplicationController
   def user_params
     params.expect(
       user: [
-        :email, :password, :name,
+        :email, :password, :name, :llm_mode, :llm_provider, :llm_api_key, :clear_llm_api_key,
         {
           bpaper_ids: [],
           fauthor_ids: [],

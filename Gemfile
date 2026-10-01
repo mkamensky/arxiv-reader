@@ -97,6 +97,7 @@ gem 'vite_rails', '>=3.0'
 gem 'oj'
 
 gem 'friendly_id'
+gem 'ruby_llm', '~> 2.0'
 gem 'faraday', require: false
 gem 'faraday-retry', require: false
 gem 'faraday-follow_redirects', require: false

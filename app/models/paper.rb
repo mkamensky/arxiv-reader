@@ -30,6 +30,7 @@ class Paper < ApplicationRecord
   has_many_through :users, :bookmarks
 
   has_many_through :recommendees, :recommendations, source: :user
+  has_many :recommendation_considerations, dependent: :destroy
 
   has_many_through :haters, :hidden_papers, source: :user
 

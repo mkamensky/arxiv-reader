@@ -54,3 +54,6 @@ __pycache__
 /tmp
 /log
 /storage
+
+# Ignore key files for decrypting credentials and more.
+/config/*.key

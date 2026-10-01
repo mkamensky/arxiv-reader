@@ -20,7 +20,7 @@ module Authentication
   end
 
   def request_authentication
-    flash.alert 'Authentication required'
+    flash.alert = 'Authentication required'
     redir_back
     #session[:return_to_after_authenticating] = request.url
     #redirect_to new_session_path

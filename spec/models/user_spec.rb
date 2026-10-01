@@ -87,4 +87,34 @@ RSpec.describe User, type: :model do
     expect(user.fauthors).to contain_exactly(followed_author)
     expect(user.categories).to contain_exactly(category)
   end
+
+  it 'encrypts a personal LLM key and never includes it in Inertia data' do
+    user = create(:user, llm_mode: 'personal', llm_api_key: 'sk-test-secret')
+
+    expect(user.reload.llm_api_key).to eq('sk-test-secret')
+    expect(user.llm_connections.first.api_key_ciphertext).not_to include('sk-test-secret')
+    expect(user.inertia_json.to_s).not_to include('sk-test-secret')
+    expect(user.llm_key_configured?).to be(true)
+
+    user.update!(llm_mode: 'anonymous', clear_llm_api_key: true)
+    expect(user.reload.llm_api_key).to be_nil
+  end
+
+  it 'requires a key when personal LLM access is selected' do
+    user = build(:user, llm_mode: 'personal')
+
+    expect(user).not_to be_valid
+    expect(user.errors[:llm_api_key]).to be_present
+  end
+
+  it 'keeps personal keys separate when switching providers' do
+    user = create(:user, llm_mode: 'personal', llm_api_key: 'openai-secret')
+    user.update!(llm_provider: 'gemini', llm_api_key: 'gemini-secret')
+
+    expect(user.reload.llm_api_key).to eq('gemini-secret')
+    expect(user.llm_connected_providers).to contain_exactly('openai', 'gemini')
+
+    user.update!(llm_provider: 'openai')
+    expect(user.reload.llm_api_key).to eq('openai-secret')
+  end
 end

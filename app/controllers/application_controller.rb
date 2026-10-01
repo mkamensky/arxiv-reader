@@ -10,7 +10,7 @@ class ApplicationController < ActionController::Base
   before_action do
     Rails.error.set_context(
       request_url: request.original_url,
-      params:,
+      params: request.filtered_parameters,
       session: session.inspect,
     )
   end
@@ -90,7 +90,8 @@ class ApplicationController < ActionController::Base
 
   def user_inertia_params
     {
-      methods: %i[hidden_ids],
+      methods: %i[hidden_ids llm_key_configured llm_connected_providers],
+      only: %i[avatar llm_mode llm_provider],
       include: {
         bpapers: Paper.inertia_params(
           include: { authors: Author.inertia_params },
