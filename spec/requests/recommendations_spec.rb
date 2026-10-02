@@ -102,12 +102,13 @@ RSpec.describe 'Recommendations', type: :request do
   end
 
   it 'shows a useful error if recommendation generation fails' do
+    detail = 'Gemini reached the output limit. Finish reason: max_tokens. Token usage: input 12000, output 8192.'
     allow_any_instance_of(PaperRecommender).to receive(:refresh!).
-      and_raise(PaperRecommender::Error, 'No eligible papers are available yet.')
+      and_raise(PaperRecommender::Error, detail)
 
     post recommendations_path
 
     expect(response).to redirect_to(recommendations_path)
-    expect(flash[:alert]).to include('No eligible papers')
+    expect(flash[:alert]).to eq(detail)
   end
 end

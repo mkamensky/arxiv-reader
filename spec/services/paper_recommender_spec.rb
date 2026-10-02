@@ -47,7 +47,7 @@ RSpec.describe PaperRecommender do
     allow(LlmRecommendationClient).to receive(:new).and_return(client)
     allow(client).to receive(:rank).and_raise(LlmRecommendationClient::Error, 'offline')
 
-    expect { described_class.new(user).refresh! }.to raise_error(PaperRecommender::Error)
+    expect { described_class.new(user).refresh! }.to raise_error(PaperRecommender::Error, 'offline')
     expect(user.recommendations.pluck(:paper_id)).to eq([candidate.id])
     expect(user.recommendation_considerations.count).to eq(0)
   end

@@ -50,6 +50,9 @@
       <div class="text-caption q-mt-xs">
         {{ runRemainingCount }} papers still waiting to be reviewed.
       </div>
+      <q-banner v-if="runError" class="bg-negative text-white q-mt-md" role="alert">
+        {{ runError }}
+      </q-banner>
     </div>
     <p v-if="!recommendations.length">
       No recommendations yet.
@@ -105,6 +108,7 @@ export default {
       runStartCount: null,
       runRemainingCount: null,
       runStoppedWithError: false,
+      runError: null,
     }
   },
   computed: {
@@ -144,6 +148,7 @@ export default {
       this.runStartCount = this.pendingCount
       this.runRemainingCount = this.pendingCount
       this.runStoppedWithError = false
+      this.runError = null
       this.running = true
       this.processNext()
     },
@@ -157,6 +162,7 @@ export default {
           const remaining = page.props.pendingCount
           if (Number.isFinite(remaining)) this.runRemainingCount = remaining
           if (page.props.flash?.alert || !Number.isFinite(remaining)) {
+            this.runError = page.props.flash?.alert || 'The server did not report how many papers remain. Please try again.'
             this.runStoppedWithError = true
             this.running = false
           } else if (remaining === 0) {
@@ -165,7 +171,9 @@ export default {
             this.$nextTick(() => this.processNext())
           }
         },
-        onError: () => {
+        onError: (errors) => {
+          this.runError = Object.values(errors || {}).find(message => typeof message === 'string') ||
+            'The request failed. Please try again.'
           this.runStoppedWithError = true
           this.running = false
         },
