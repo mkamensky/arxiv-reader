@@ -71,8 +71,22 @@ jobs:
           : "${DEPLOY_SSH_KEY:?Set DEPLOY_SSH_KEY in the production environment}"
           : "${DEPLOY_KNOWN_HOSTS:?Set DEPLOY_KNOWN_HOSTS in the production environment}"
           install -m 700 -d "$HOME/.ssh"
-          printf '%s\n' "$DEPLOY_KNOWN_HOSTS" > "$HOME/.ssh/known_hosts"
-          chmod 600 "$HOME/.ssh/known_hosts"
+          export DEPLOY_KNOWN_HOSTS_FILE="$RUNNER_TEMP/arxiv-reader_known_hosts"
+          printf '%s\n' "$DEPLOY_KNOWN_HOSTS" > "$DEPLOY_KNOWN_HOSTS_FILE"
+          chmod 600 "$DEPLOY_KNOWN_HOSTS_FILE"
+          if ! ssh-keygen -lf "$DEPLOY_KNOWN_HOSTS_FILE"; then
+            echo '::error::DEPLOY_KNOWN_HOSTS must contain a complete known_hosts line, not just a fingerprint.'
+            exit 1
+          fi
+          bundle exec ruby -rnet/ssh -e '
+            keys = Net::SSH::KnownHosts.search_for(
+              "dibbler.verymad.net",
+              user_known_hosts_file: ENV.fetch("DEPLOY_KNOWN_HOSTS_FILE"),
+              global_known_hosts_file: []
+            )
+            abort "DEPLOY_KNOWN_HOSTS has no Net::SSH-readable key for dibbler.verymad.net" if keys.empty?
+            puts "Net::SSH found #{keys.count} host key(s) for dibbler.verymad.net"
+          '
           eval "$(ssh-agent -s)"
           trap 'ssh-agent -k >/dev/null' EXIT
           printf '%s\n' "$DEPLOY_SSH_KEY" | tr -d '\r' | ssh-add -

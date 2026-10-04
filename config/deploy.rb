@@ -64,11 +64,13 @@ set :migration_role, :app
 
 after :deploy, 'deploy:restart'
 
-set :ssh_options, {
+ssh_options = {
   forward_agent: true,
   auth_methods: %w[publickey],
   verify_host_key: :always,
 }
+ssh_options[:user_known_hosts_file] = ENV['DEPLOY_KNOWN_HOSTS_FILE'] if ENV['DEPLOY_KNOWN_HOSTS_FILE']
+set :ssh_options, ssh_options
 
 # puma
 set :puma_workers, 2 # check your CPU specs

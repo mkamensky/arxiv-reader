@@ -52,7 +52,8 @@ these secrets (repository secrets also work):
 - `DEPLOY_KNOWN_HOSTS`: the verified SSH host-key line(s) for
   `dibbler.verymad.net`. Obtain them with `ssh-keyscan`, but compare their
   fingerprints with the server's actual host keys through a trusted channel
-  before saving them. Do not disable host-key verification.
+  before saving them. The workflow prints the public fingerprint and checks
+  that Net::SSH can read the entry. Do not disable host-key verification.
 - `REPO_SSH_KEY` (optional): a separate read-only GitHub deploy key for this
   repository if the server cannot already fetch `git@github.com:mkamensky/arxiv-reader.git`.
   Capistrano forwards the runner's SSH agent to the server. If the server already
