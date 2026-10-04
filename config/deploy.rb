@@ -5,15 +5,15 @@ set :application, "arxiv-reader"
 set :repo_url, "git@github.com:mkamensky/arxiv-reader.git"
 
 set :rbenv_type, :user
-set :rbenv_ruby, `rbenv local`.chomp
+set :rbenv_ruby, File.read(File.expand_path('../.ruby-version', __dir__)).strip
 # https://github.com/capistrano-plugins/capistrano-rbenv-install/issues/12
 set :rbenv_path, '/home/deploy/.rbenv'
 #set :rbenv_prefix, "RBENV_ROOT=#{fetch(:rbenv_path)} RBENV_VERSION=#{fetch(:rbenv_ruby)} #{fetch(:rbenv_path)}/bin/rbenv exec"
 set :rbenv_map_bins, %w[rake gem bundle ruby rails puma pumactl]
 set :rbenv_roles, :all
 
-# Default branch is :master
-# ask :branch, `git rev-parse --abbrev-ref HEAD`.chomp
+# Pin CI deployments to the commit that passed verification. Manual deploys use master.
+set :branch, ENV.fetch('DEPLOY_REF', 'master')
 
 # Default deploy_to directory is /var/www/my_app_name
 # set :deploy_to, "/var/www/my_app_name"
@@ -64,11 +64,10 @@ set :migration_role, :app
 
 after :deploy, 'deploy:restart'
 
-# Uncomment the following to require manually verifying the host key before first deploy.
-# set :ssh_options, verify_host_key: :secure
 set :ssh_options, {
   forward_agent: true,
   auth_methods: %w[publickey],
+  verify_host_key: :always,
 }
 
 # puma

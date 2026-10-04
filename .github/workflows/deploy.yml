@@ -1,0 +1,82 @@
+name: Verify and deploy production
+
+on:
+  push:
+    branches: [master]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: production-deploy
+  cancel-in-progress: false
+
+jobs:
+  verify:
+    runs-on: ubuntu-24.04
+    services:
+      postgres:
+        image: postgres:17
+        env:
+          POSTGRES_USER: arxivreader
+          POSTGRES_PASSWORD: testpassword
+          POSTGRES_DB: ArxivTest
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U arxivreader -d ArxivTest"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+    env:
+      RAILS_ENV: test
+      PGHOST: localhost
+      PGPASSWORD: testpassword
+    steps:
+      - uses: actions/checkout@v7
+      - uses: ruby/setup-ruby@v1
+        with:
+          bundler-cache: true
+      - uses: actions/setup-node@v7
+        with:
+          node-version: '24'
+          cache: npm
+      - run: npm ci
+      - run: bin/vite build
+      - run: bin/rails db:prepare
+      - run: bundle exec rspec
+      - run: npm test -- --run
+      - run: npm run lint
+
+  deploy:
+    needs: verify
+    if: github.repository == 'mkamensky/arxiv-reader' && github.ref == 'refs/heads/master'
+    runs-on: ubuntu-24.04
+    environment: production
+    steps:
+      - uses: actions/checkout@v7
+      - uses: ruby/setup-ruby@v1
+        with:
+          bundler-cache: true
+      - name: Deploy verified commit with Capistrano
+        env:
+          DEPLOY_REF: ${{ github.sha }}
+          DEPLOY_SSH_KEY: ${{ secrets.DEPLOY_SSH_KEY }}
+          REPO_SSH_KEY: ${{ secrets.REPO_SSH_KEY }}
+          DEPLOY_KNOWN_HOSTS: ${{ secrets.DEPLOY_KNOWN_HOSTS }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          : "${DEPLOY_SSH_KEY:?Set DEPLOY_SSH_KEY in the production environment}"
+          : "${DEPLOY_KNOWN_HOSTS:?Set DEPLOY_KNOWN_HOSTS in the production environment}"
+          install -m 700 -d "$HOME/.ssh"
+          printf '%s\n' "$DEPLOY_KNOWN_HOSTS" > "$HOME/.ssh/known_hosts"
+          chmod 600 "$HOME/.ssh/known_hosts"
+          eval "$(ssh-agent -s)"
+          trap 'ssh-agent -k >/dev/null' EXIT
+          printf '%s\n' "$DEPLOY_SSH_KEY" | tr -d '\r' | ssh-add -
+          if [[ -n "${REPO_SSH_KEY:-}" ]]; then
+            printf '%s\n' "$REPO_SSH_KEY" | tr -d '\r' | ssh-add -
+          fi
+          bundle exec cap production deploy
