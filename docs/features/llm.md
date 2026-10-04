@@ -172,9 +172,23 @@ key ciphertext. A personal-mode user needs a personal key for each provider
 they want to use. There is no silent fallback to another provider or billing
 account. OAuth and local/no-key models are not implemented.
 
+For each saved personal key, the profile offers searchable model and thinking
+menus from RubyLLM's local registry. New choices are listed chat models with
+structured output; a previously saved model remains visible if it is no longer
+listed. Thinking choices follow the selected model's reasoning
+metadata (including budget-based low/medium/high choices for Gemini models).
+The provider-default option uses that provider's site model; the model-default
+thinking option sends no explicit thinking setting. These settings affect only
+personal-key requests, including second opinions, not
+anonymous requests through site keys. The model must be present in RubyLLM's
+local registry and support structured output. The chosen thinking level must
+be supported by that model; some models do not support configurable thinking.
+The saved model ID is recorded with each new recommendation or second opinion.
+
 Every published local paper whose primary category is followed by the user is
 eligible, including the existing archive on a user's first run. Bookmarked,
-hidden, and previously considered papers are excluded. The page processes all
+hidden, explicitly rated, and previously considered papers are excluded. The
+page processes all
 pending papers in batches of 80; progress and recommendations persist after
 each successful batch, so an interrupted run can resume. A failed model request
 leaves that batch pending. Bookmarks and followed authors guide ranking, but do
@@ -194,6 +208,30 @@ are rate limited and are not automatically requested for the entire archive.
 Scores from a single-paper assessment and a batch ranking are not calibrated
 against each other.
 
+The thumbs-up control on a paper card is a virtual Recommended tag, not an
+editable `Tag` row. An expandable Recommended entry appears with user tags in the sidebar.
+It is selected for a model recommendation or an explicit positive rating.
+Turning it on saves positive feedback; turning it off saves
+negative feedback. Negative feedback hides a model recommendation without
+deleting its score or reason, so turning it back on restores the original
+recommendation. A manually endorsed paper in a followed category appears on
+the recommended page after model-ranked papers, without an invented score.
+There is no second-opinion action for a manual-only entry. Bookmarked and
+hidden papers remain absent from the recommended list. Model scores, reasons,
+and second opinions are shown in a popup from a small provider-icon button in
+the paper card's bottom metadata row on every page; hovering shows the primary score and reason.
+The tag sidebar has an expandable Recommended row that loads eligible paper
+titles in pages, with a link to the complete recommendation page.
+
+Feedback is stored per user and paper, independent of provider, and survives
+sessions and model changes. Each new ranking request includes the 60 most
+recent explicit ratings (paper title and positive/negative sentiment), in
+addition to up to 12 recent bookmarks and 12 followed authors. Automatic model
+recommendations are not treated as explicit positive feedback. LLM chats are
+stateless: no provider-side conversation or fine-tuned model is retained, and
+older feedback beyond the 60-item prompt window is still stored but not sent.
+An incremental preference summary is not implemented.
+
 Large categories can require many API requests and the page must stay open for
-uninterrupted processing. Feedback and free-form research interests remain
-future extensions.
+uninterrupted processing. Free-form research interests remain a future
+extension.

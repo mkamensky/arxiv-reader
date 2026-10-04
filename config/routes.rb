@@ -7,6 +7,11 @@ Rails.application.routes.draw do
   constraints(id: %r{[a-zA-Z0-9._/-]+}) do
     resources :users, export: true, only: %i[create show update]
     resource :recommendations, export: true, only: %i[show create]
+    get 'recommendations/sidebar', to: 'recommendations#sidebar', as: :recommendations_sidebar
+    get 'papers/:paper_id/recommendation_assessment',
+        to: 'recommendations#assessment', as: :paper_recommendation_assessment
+    post 'papers/:paper_id/recommendation_feedback',
+         to: 'recommendation_feedbacks#create', as: :paper_recommendation_feedback
     post 'recommendations/:recommendation_id/second_opinions',
          to: 'second_opinions#create', as: :recommendation_second_opinions
     resources :tags, export: true, only: %i[show create update destroy]

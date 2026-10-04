@@ -7,6 +7,7 @@ class User < ApplicationRecord
   has_secure_password
   has_many :sessions, dependent: :destroy
   has_many :llm_connections, dependent: :destroy, autosave: true
+  has_many :recommendation_feedbacks, dependent: :destroy
   validates :llm_mode, inclusion: { in: %w[anonymous personal] }
   validates :llm_provider, inclusion: { in: LlmConnection::PROVIDERS }
   validate :personal_llm_key_present
@@ -55,6 +56,14 @@ class User < ApplicationRecord
     @clear_llm_api_key = ActiveModel::Type::Boolean.new.cast(value)
   end
 
+  def llm_model=(value)
+    @pending_llm_model = value.presence
+  end
+
+  def llm_thinking_level=(value)
+    @pending_llm_thinking_level = value.presence
+  end
+
   def llm_key_configured?
     llm_connection&.api_key_ciphertext.present? && !llm_connection.marked_for_destruction?
   end
@@ -62,6 +71,23 @@ class User < ApplicationRecord
 
   def llm_connected_providers
     llm_connections.reject(&:marked_for_destruction?).map(&:provider)
+  end
+
+  def llm_settings
+    llm_connections.reject(&:marked_for_destruction?).to_h do
+      [it.provider, { model: it.model, thinking_level: it.thinking_level }]
+    end
+  end
+
+  def recommended_ids
+    generated = recommendations.where.not(
+      paper_id: recommendation_feedbacks.where(sentiment: 'negative').select(:paper_id),
+    ).pluck(:paper_id)
+    (generated + recommendation_feedbacks.where(sentiment: 'positive').pluck(:paper_id)).uniq
+  end
+
+  def recommendation_providers
+    recommendations.pluck(:paper_id, :provider).to_h
   end
 
   protected
@@ -79,7 +105,13 @@ class User < ApplicationRecord
     elsif @clear_llm_api_key
       llm_connection&.mark_for_destruction
     end
+    if llm_mode == 'personal' && !@clear_llm_api_key && llm_connection
+      llm_connection.model = @pending_llm_model if instance_variable_defined?(:@pending_llm_model)
+      llm_connection.thinking_level = @pending_llm_thinking_level if instance_variable_defined?(:@pending_llm_thinking_level)
+    end
     @pending_llm_api_key = nil
+    remove_instance_variable(:@pending_llm_model) if instance_variable_defined?(:@pending_llm_model)
+    remove_instance_variable(:@pending_llm_thinking_level) if instance_variable_defined?(:@pending_llm_thinking_level)
     @clear_llm_api_key = false
   end
 

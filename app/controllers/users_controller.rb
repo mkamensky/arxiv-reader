@@ -11,6 +11,8 @@ class UsersController < ApplicationController
         openai: Rails.configuration.x.llm_recommendations.openai_api_key.present?,
         gemini: Rails.configuration.x.llm_recommendations.gemini_api_key.present?,
       },
+      llmSettings: current_user&.llm_settings || {},
+      llmModelOptions: -> { llm_model_options },
     }
   end
 
@@ -37,10 +39,18 @@ class UsersController < ApplicationController
 
   protected
 
+  def llm_model_options
+    LlmConnection::PROVIDERS.index_with { LlmConnection.model_options_for(it) }
+  rescue RubyLLM::ModelRegistryError => e
+    Rails.logger.warn("Could not load recommendation model options: #{e.class.name}")
+    {}
+  end
+
   def user_params
     params.expect(
       user: [
         :email, :password, :name, :llm_mode, :llm_provider, :llm_api_key, :clear_llm_api_key,
+        :llm_model, :llm_thinking_level,
         {
           bpaper_ids: [],
           fauthor_ids: [],

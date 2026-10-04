@@ -28,7 +28,8 @@
     <p v-else>
       {{ pendingCount }} unreviewed papers in your followed categories are eligible.
       This sends them to {{ providerName(current_user.llm_provider) }} in batches. The model selects up to 10 recommendations per batch, each with a relevance score and reason.
-      Your bookmarks and followed authors guide its choices; they are not automatically recommended. Completed batches are remembered, so you can pause and resume later.
+      Your bookmarks, followed authors, and explicit thumbs-up or thumbs-down feedback guide its choices; bookmarks are not automatically recommended. Completed batches are remembered, so you can pause and resume later.
+      Use the green thumbs-up control on any paper to recommend it yourself. Turning a recommendation off records negative feedback for future reviews.
     </p>
     <div
       v-if="runStartCount !== null"
@@ -59,22 +60,10 @@
     </p>
     <div class="row">
       <div v-for="item in recommendations" :key="item.id" class="q-pa-md col-12 col-lg-6">
-        <p v-if="item.reason" class="text-body1 q-mb-sm">
-          {{ providerName(item.provider) }}{{ item.model ? ` (${item.model})` : '' }} · {{ item.score }}/100: {{ item.reason }}
+        <p v-if="!item.provider" class="text-body1 q-mb-sm">
+          Recommended by you
         </p>
-        <div v-for="opinion in item.secondOpinions" :key="opinion.provider" class="text-body2 q-mb-sm">
-          Single-paper second opinion — {{ providerName(opinion.provider) }} ({{ opinion.model }}) · {{ opinion.score }}/100: {{ opinion.reason }}
-        </div>
-        <q-btn
-          v-for="provider in secondOpinionProviders(item)"
-          :key="provider"
-          flat
-          color="primary"
-          :label="`Get ${providerName(provider)} second opinion`"
-          :loading="opinionProcessing === `${item.id}:${provider}`"
-          @click="secondOpinion(item, provider)"
-        />
-        <ar-paper :object="item.paper" />
+        <ar-paper :object="item.paper" :recommendation="item.provider ? item : null" :available-providers="availableProviders" />
       </div>
     </div>
     <div v-if="total > 20" class="row items-center justify-center q-gutter-md q-my-lg">
@@ -104,7 +93,6 @@ export default {
     return {
       refreshing: false,
       running: false,
-      opinionProcessing: null,
       runStartCount: null,
       runRemainingCount: null,
       runStoppedWithError: false,
@@ -132,17 +120,6 @@ export default {
   methods: {
     providerName(provider) {
       return provider === 'gemini' ? 'Gemini' : 'OpenAI'
-    },
-    secondOpinionProviders(item) {
-      return this.availableProviders.filter(provider =>
-        provider !== item.provider && !item.secondOpinions.some(opinion => opinion.provider === provider))
-    },
-    secondOpinion(item, provider) {
-      this.opinionProcessing = `${item.id}:${provider}`
-      this.$inertia.post(`/recommendations/${item.id}/second_opinions`, { provider }, {
-        preserveScroll: true,
-        onFinish: () => { this.opinionProcessing = null },
-      })
     },
     start() {
       this.runStartCount = this.pendingCount

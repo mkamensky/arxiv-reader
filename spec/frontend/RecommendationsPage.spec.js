@@ -1,5 +1,8 @@
 import { expect, it, vi } from 'vitest'
+import { fireEvent, render } from '@testing-library/vue'
+import { Quasar } from 'quasar'
 import RecommendationsPage from '@/Pages/recommendations/show.vue'
+import paperFactory from './factories/paper'
 
 it('continues processing batches until no papers remain', () => {
   const pendingCounts = [2, 0]
@@ -111,27 +114,38 @@ it('reports partial progress when paused after a batch', () => {
   expect(RecommendationsPage.computed.runStatus.call(context)).toContain('Paused')
 })
 
-it('offers a second opinion only from another available provider', () => {
-  const context = { availableProviders: ['openai', 'gemini'] }
-  const item = { provider: 'openai', secondOpinions: [] }
-
-  expect(RecommendationsPage.methods.secondOpinionProviders.call(context, item)).toEqual(['gemini'])
-  item.secondOpinions.push({ provider: 'gemini' })
-  expect(RecommendationsPage.methods.secondOpinionProviders.call(context, item)).toEqual([])
-})
-
-it('requests an opinion for one selected recommendation', () => {
-  const context = {
-    opinionProcessing: null,
-    $inertia: { post: vi.fn() },
+it('shows a saved assessment icon in the recommendation card bottom row', async () => {
+  const user = {
+    id: 1, llm_provider: 'openai', bpapers: [], fauthors: [], tags: [], hidden_ids: [],
+    recommended_ids: [1], recommendation_providers: { 1: 'openai' },
   }
+  const item = {
+    id: 17, provider: 'openai', model: 'gpt-5-mini', score: 82,
+    reason: 'Matches your research interests',
+    secondOpinions: [{ provider: 'gemini', model: 'gemini-2.5-flash', score: 65, reason: 'Some overlap' }],
+    paper: { ...paperFactory.build(), id: 1 },
+  }
+  const { getByRole, findByText, queryByRole } = render(RecommendationsPage, {
+    props: {
+      recommendations: [item], availableProviders: ['openai', 'gemini'],
+      hasFollowedCategories: true, pendingCount: 0, page: 1, total: 1,
+    },
+    global: {
+      plugins: [Quasar],
+      stubs: { QPage: { template: '<div><slot /></div>' } },
+      mocks: {
+        $page: { props: { auth: { user } } },
+        $show_path: (resource, id) => `/${resource}/${id}`,
+        $mdi: text => text,
+        $md: text => text,
+      },
+    },
+  })
 
-  RecommendationsPage.methods.secondOpinion.call(context, { id: 17 }, 'gemini')
-
-  expect(context.opinionProcessing).toBe('17:gemini')
-  expect(context.$inertia.post).toHaveBeenCalledWith(
-    '/recommendations/17/second_opinions',
-    { provider: 'gemini' },
-    expect.objectContaining({ preserveScroll: true }),
-  )
+  expect(queryByRole('button', { name: 'LLM assessment' })).toBeNull()
+  const button = getByRole('button', { name: 'OpenAI assessment' })
+  expect(getByRole('heading').contains(button)).toBe(false)
+  expect(button.closest('.q-list')).toBeTruthy()
+  await fireEvent.mouseEnter(button)
+  expect(await findByText(/Matches your research interests/)).toBeTruthy()
 })

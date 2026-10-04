@@ -303,7 +303,9 @@ CREATE TABLE public.llm_connections (
     provider character varying NOT NULL,
     api_key_ciphertext text NOT NULL,
     created_at timestamp(6) without time zone NOT NULL,
-    updated_at timestamp(6) without time zone NOT NULL
+    updated_at timestamp(6) without time zone NOT NULL,
+    model character varying,
+    thinking_level character varying
 );
 
 
@@ -500,6 +502,39 @@ CREATE SEQUENCE public.recommendation_considerations_id_seq
 --
 
 ALTER SEQUENCE public.recommendation_considerations_id_seq OWNED BY public.recommendation_considerations.id;
+
+
+--
+-- Name: recommendation_feedbacks; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.recommendation_feedbacks (
+    id bigint NOT NULL,
+    user_id bigint NOT NULL,
+    paper_id bigint NOT NULL,
+    sentiment character varying NOT NULL,
+    created_at timestamp(6) without time zone NOT NULL,
+    updated_at timestamp(6) without time zone NOT NULL
+);
+
+
+--
+-- Name: recommendation_feedbacks_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE public.recommendation_feedbacks_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: recommendation_feedbacks_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE public.recommendation_feedbacks_id_seq OWNED BY public.recommendation_feedbacks.id;
 
 
 --
@@ -730,6 +765,7 @@ CREATE TABLE public.users (
     avatar character varying,
     github character varying,
     orcid character varying,
+    admin boolean DEFAULT false NOT NULL,
     llm_mode character varying DEFAULT 'anonymous'::character varying NOT NULL,
     llm_api_key_ciphertext text,
     recommendation_processing_started_at timestamp(6) without time zone,
@@ -852,6 +888,13 @@ ALTER TABLE ONLY public.pg_search_documents ALTER COLUMN id SET DEFAULT nextval(
 --
 
 ALTER TABLE ONLY public.recommendation_considerations ALTER COLUMN id SET DEFAULT nextval('public.recommendation_considerations_id_seq'::regclass);
+
+
+--
+-- Name: recommendation_feedbacks id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.recommendation_feedbacks ALTER COLUMN id SET DEFAULT nextval('public.recommendation_feedbacks_id_seq'::regclass);
 
 
 --
@@ -1021,6 +1064,14 @@ ALTER TABLE ONLY public.pg_search_documents
 
 ALTER TABLE ONLY public.recommendation_considerations
     ADD CONSTRAINT recommendation_considerations_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: recommendation_feedbacks recommendation_feedbacks_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.recommendation_feedbacks
+    ADD CONSTRAINT recommendation_feedbacks_pkey PRIMARY KEY (id);
 
 
 --
@@ -1326,6 +1377,27 @@ CREATE INDEX index_recommendation_considerations_on_user_id ON public.recommenda
 
 
 --
+-- Name: index_recommendation_feedbacks_on_paper_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_recommendation_feedbacks_on_paper_id ON public.recommendation_feedbacks USING btree (paper_id);
+
+
+--
+-- Name: index_recommendation_feedbacks_on_user_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_recommendation_feedbacks_on_user_id ON public.recommendation_feedbacks USING btree (user_id);
+
+
+--
+-- Name: index_recommendation_feedbacks_on_user_id_and_paper_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE UNIQUE INDEX index_recommendation_feedbacks_on_user_id_and_paper_id ON public.recommendation_feedbacks USING btree (user_id, paper_id);
+
+
+--
 -- Name: index_recommendations_on_paper_id_and_user_id; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -1437,6 +1509,14 @@ ALTER TABLE ONLY public.bookmarks
 
 ALTER TABLE ONLY public.usercats
     ADD CONSTRAINT fk_rails_1702be28f4 FOREIGN KEY (user_id) REFERENCES public.users(id);
+
+
+--
+-- Name: recommendation_feedbacks fk_rails_203a2eb0ea; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.recommendation_feedbacks
+    ADD CONSTRAINT fk_rails_203a2eb0ea FOREIGN KEY (user_id) REFERENCES public.users(id);
 
 
 --
@@ -1600,6 +1680,14 @@ ALTER TABLE ONLY public.paper_versions
 
 
 --
+-- Name: recommendation_feedbacks fk_rails_d60159c412; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.recommendation_feedbacks
+    ADD CONSTRAINT fk_rails_d60159c412 FOREIGN KEY (paper_id) REFERENCES public.papers(id);
+
+
+--
 -- Name: categories fk_rails_e056845821; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -1646,11 +1734,13 @@ ALTER TABLE ONLY public.recommendations
 SET search_path TO "$user", public;
 
 INSERT INTO "schema_migrations" (version) VALUES
+('20261002000000'),
 ('20261001000001'),
 ('20261001000000'),
 ('20260930000002'),
 ('20260930000001'),
 ('20260930000000'),
+('20260104205433'),
 ('20251228090434'),
 ('20251228081739'),
 ('20251228075540'),

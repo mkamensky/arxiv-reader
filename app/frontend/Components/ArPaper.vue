@@ -5,11 +5,7 @@
         :class="`bg-${bookmarked(object) ? 'teal-2' : 'secondary'} text-white justify-between items-start no-wrap`"
       >
         <div class="col-11" style="width: 85%">
-          <q-btn-group
-            push
-            class="q-mb-sm"
-            role="heading"
-          >
+          <q-btn-group push class="q-mb-sm" role="heading">
             <q-btn
               :href="$show_path('papers', object.value)"
               color="amber"
@@ -37,12 +33,12 @@
             -->
             <q-btn
               v-for="tag in tags"
-              :key="`K${tag.value}`"
+              :key="tag.recommendation ? 'system-recommended' : `K${tag.value}`"
               :icon="tag.icon"
               :style="{backgroundColor: tag.color}"
               text-color="black"
               :title="tag.tip"
-              @click="toggleBookmark(object, tag.value)"
+              @click="tag.recommendation ? toggleRecommendation(object) : toggleBookmark(object, tag.value)"
             />
           </q-btn-group>
           <div class="text-subtitle2 q-gutter-md">
@@ -140,6 +136,16 @@
               </q-item-section>
             </q-item>
           </template>
+          <q-item v-if="assessmentProvider">
+            <q-item-section avatar class="content-center q-pr-none">
+              <recommendation-assessment-button
+                :paper-id="object.id"
+                :provider="assessmentProvider"
+                :recommendation="recommendation"
+                :available-providers="availableProviders"
+              />
+            </q-item-section>
+          </q-item>
           <q-item v-if="extras || $q.screen.lt.md">
             <q-item-section avatar class="content-center q-pr-none">
               <q-btn
@@ -276,16 +282,20 @@
 import userMixin from '@/mixins/userMixin'
 import { mscDesc } from './mscDesc.js'
 import SharePaper from '@/Components/SharePaper.vue'
+import RecommendationAssessmentButton from '@/Components/RecommendationAssessmentButton.vue'
 
 export default {
   components: {
     SharePaper,
+    RecommendationAssessmentButton,
   },
   mixins: [userMixin],
   props: {
     object: {
       type: Object,
     },
+    recommendation: { type: Object, default: null },
+    availableProviders: { type: Array, default: null },
   },
   msc: mscDesc,
   data() {
@@ -296,6 +306,9 @@ export default {
     }
   },
   computed: {
+    assessmentProvider() {
+      return this.recommendation?.provider || this.current_user?.recommendation_providers?.[this.object.id]
+    },
     submitted() {
       return this.dateStr(this.object.submitted)
     },

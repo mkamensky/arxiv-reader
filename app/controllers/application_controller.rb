@@ -90,7 +90,7 @@ class ApplicationController < ActionController::Base
 
   def user_inertia_params
     {
-      methods: %i[hidden_ids llm_key_configured llm_connected_providers],
+      methods: %i[hidden_ids llm_key_configured llm_connected_providers recommended_ids recommendation_providers],
       only: %i[avatar llm_mode llm_provider],
       include: {
         bpapers: Paper.inertia_params(

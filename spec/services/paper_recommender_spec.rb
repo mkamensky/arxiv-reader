@@ -17,7 +17,7 @@ RSpec.describe PaperRecommender do
   it 'considers followed-category papers and persists only eligible model choices' do
     candidate
     other_category_paper = create(:paper)
-    client = instance_double(LlmRecommendationClient)
+    client = instance_double(LlmRecommendationClient, model: 'gpt-4o-mini')
     allow(LlmRecommendationClient).to receive(:new).with(user, 'openai').and_return(client)
     allow(client).to receive(:rank) do |favorites:, followed:, candidates:|
       expect(favorites).to include(favorite)
@@ -74,7 +74,7 @@ RSpec.describe PaperRecommender do
   it 'uses the selected provider when anonymous mode is selected' do
     user.update!(llm_mode: 'anonymous')
     candidate
-    client = instance_double(LlmRecommendationClient)
+    client = instance_double(LlmRecommendationClient, model: 'gpt-4o-mini')
     allow(LlmRecommendationClient).to receive(:new).with(user, 'openai').and_return(client)
     allow(client).to receive(:rank).
       and_return([{ 'arxiv_id' => candidate.arxiv, 'score' => 75, 'reason' => 'Related' }])
@@ -141,7 +141,7 @@ RSpec.describe PaperRecommender do
     user.update!(llm_provider: 'gemini', llm_api_key: 'gemini-key')
     user.update!(llm_provider: 'openai')
     recommendation = user.recommendations.create!(paper: candidate, provider: 'openai', score: 80)
-    client = instance_double(LlmRecommendationClient)
+    client = instance_double(LlmRecommendationClient, model: 'gemini-2.5-flash')
     allow(LlmRecommendationClient).to receive(:new).with(user, 'gemini').and_return(client)
     allow(client).to receive(:rank).
       and_return([{ 'arxiv_id' => candidate.arxiv, 'score' => 45, 'reason' => 'Less aligned' }])

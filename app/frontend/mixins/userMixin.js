@@ -23,6 +23,9 @@ export default {
     hidden_ids() {
       return new Set(this.user?.hidden_ids || [])
     },
+    recommended_ids() {
+      return new Set(this.current_user?.recommended_ids || [])
+    },
     // bookmarked papers not authored by any followed author
     other_papers() {
       return this.user.bpapers.
@@ -134,6 +137,12 @@ export default {
     toggleBookmark(paper, tag = null) {
       return tag ? this.toggleTaggedItem(tag, paper) : this.toggleListItem('bpapers', paper)
     },
+    toggleRecommendation(paper) {
+      const sentiment = this.recommended_ids.has(paper.id) ? 'negative' : 'positive'
+      this.$inertia.post(`/papers/${paper.id}/recommendation_feedback`, { sentiment }, {
+        preserveScroll: true,
+      })
+    },
     bookmarked(paper, tag = null) {
       return tag ? this.hasTagged(tag, paper) : this.hasItem('bpapers', paper)
     },
@@ -186,6 +195,15 @@ export default {
           tip: `${marked ? 'Unt' : 'T'}ag as ${it.value}`,
         }
       }).concat(
+        this.current_user ? [{
+          recommendation: true,
+          icon: this.recommended_ids.has(paper.id) ? 'mdi-thumb-up' : 'mdi-thumb-up-outline',
+          tip: this.recommended_ids.has(paper.id)
+            ? 'Remove recommendation and tell the model this paper is not a good match'
+            : 'Recommend this paper and teach the model your preference',
+          color: this.recommended_ids.has(paper.id) ? '#81c784' : '#c8e6c9',
+          value: '__recommended',
+        }] : [],
         [{icon: bkmkd ? '$bookmarkOn' : '$bookmark',
           tip: bkmkd ? 'Un-bookmark' : 'Bookmark',
           color: '#ffa726', // orange-5
@@ -195,4 +213,3 @@ export default {
     },
   },
 }
-

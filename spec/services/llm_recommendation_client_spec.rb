@@ -55,6 +55,23 @@ RSpec.describe LlmRecommendationClient do
     described_class.new(user, 'gemini').rank(favorites: [], followed: [], candidates: [paper])
   end
 
+  it 'uses the personal model and thinking level and includes durable feedback' do
+    user.update!(llm_mode: 'personal', llm_api_key: 'personal-key',
+                 llm_model: 'gpt-5-mini', llm_thinking_level: 'low')
+    user.recommendation_feedbacks.create!(paper:, sentiment: 'negative')
+    expect(config).to receive(:openai_api_key=).with('personal-key')
+    expect(context).to receive(:chat).with(model: 'gpt-5-mini', provider: :openai).and_return(chat)
+    expect(chat).to receive(:with_thinking).with(effort: :low).and_return(chat)
+
+    described_class.new(user.reload, 'openai').rank(favorites: [], followed: [], candidates: [paper])
+
+    expect(chat).to have_received(:ask) do |input|
+      expect(JSON.parse(input)['explicit_feedback']).to include(
+        'sentiment' => 'negative', 'title' => paper.title.to_s.truncate(160)
+      )
+    end
+  end
+
   it 'rejects an unavailable provider before contacting a model' do
     expect(RubyLLM).not_to receive(:context)
 

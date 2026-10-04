@@ -4,6 +4,7 @@
     <slot />
   </q-toolbar>
   <q-list style="max-height: 100%" dense class="scroll overflow-auto">
+    <slot name="before-items" />
     <q-expansion-item
       v-for="item in list || []"
       :key="item.value"
@@ -87,4 +88,3 @@ export default {
 
 <style lang="scss" scoped>
 </style>
-

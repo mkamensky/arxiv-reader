@@ -72,6 +72,9 @@ RSpec.describe "Users", type: :request do
       expect(inertia).to render_component 'users/show'
       expect(inertia.props.dig(:auth, :user, 'llm_key_configured')).to be(true)
       expect(response.body).not_to include('sk-request-secret')
+      expect(inertia.props.dig(:llmModelOptions, 'openai')).to include(
+        include('value' => 'gpt-4o-mini', 'thinkingLevels' => []),
+      )
     end
 
     it 'saves separate keys for OpenAI and Gemini' do
@@ -87,6 +90,76 @@ RSpec.describe "Users", type: :request do
       get user_path(user)
       expect(inertia.props.dig(:auth, :user, 'llm_provider')).to eq('gemini')
       expect(response.body).not_to include('openai-secret', 'gemini-secret')
+    end
+
+    it 'stores model and thinking settings only for the selected personal key' do
+      patch user_path(user), params: {
+        user: { llm_mode: 'personal', llm_api_key: 'secret', llm_model: 'gpt-5-mini',
+                llm_thinking_level: 'low' },
+      }
+
+      connection = user.reload.llm_connections.sole
+      expect(connection.attributes).to include('model' => 'gpt-5-mini', 'thinking_level' => 'low')
+      get user_path(user)
+      expect(inertia.props[:llmSettings].deep_symbolize_keys[:openai]).
+        to eq(model: 'gpt-5-mini', thinking_level: 'low')
+      expect(response.body).not_to include('secret')
+
+      patch user_path(user), params: { user: { llm_mode: 'anonymous', llm_model: 'gpt-4o-mini' } }
+      expect(connection.reload.model).to eq('gpt-5-mini')
+    end
+
+    it 'keeps the profile available if the local model registry cannot load' do
+      allow(LlmConnection).to receive(:model_options_for).and_raise(RubyLLM::ModelRegistryError)
+
+      get user_path(user)
+
+      expect(response).to have_http_status(:ok)
+      expect(inertia.props[:llmModelOptions]).to eq({})
+    end
+
+    it 'rejects an invalid thinking level' do
+      patch user_path(user), params: {
+        user: { llm_mode: 'personal', llm_api_key: 'secret', llm_thinking_level: 'unsupported' },
+      }
+
+      expect(user.reload.llm_connections).to be_empty
+      expect(response).to redirect_to(root_url)
+    end
+
+    it 'rejects thinking for a model without reasoning support' do
+      patch user_path(user), params: {
+        user: { llm_mode: 'personal', llm_api_key: 'secret', llm_model: 'gpt-4o-mini',
+                llm_thinking_level: 'high' },
+      }
+
+      expect(user.reload.llm_connections).to be_empty
+    end
+
+    it 'reports an unknown personal model as a validation error' do
+      patch user_path(user), params: {
+        user: { llm_mode: 'personal', llm_api_key: 'secret', llm_model: 'not-a-real-model' },
+      }
+
+      expect(response).to redirect_to(root_url)
+      expect(user.reload.llm_connections).to be_empty
+    end
+
+    it 'keeps model settings separate for each personal provider' do
+      patch user_path(user), params: {
+        user: { llm_mode: 'personal', llm_api_key: 'openai-secret', llm_model: 'gpt-5-mini',
+                llm_thinking_level: 'low' },
+      }
+      patch user_path(user), params: {
+        user: { llm_provider: 'gemini', llm_api_key: 'gemini-secret',
+                llm_model: 'gemini-2.5-flash', llm_thinking_level: 'medium' },
+      }
+
+      settings = user.reload.llm_settings
+      expect(settings).to include(
+        'openai' => { model: 'gpt-5-mini', thinking_level: 'low' },
+        'gemini' => { model: 'gemini-2.5-flash', thinking_level: 'medium' },
+      )
     end
 
     it 'rejects invalid personal mode and updates to another user' do

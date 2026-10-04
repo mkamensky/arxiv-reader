@@ -8,9 +8,9 @@ class SecondOpinionsController < ApplicationController
   def create
     recommendation = current_user.recommendations.find(params.expect(:recommendation_id))
     PaperRecommender.new(current_user).second_opinion!(recommendation, params.expect(:provider))
-    redirect_to recommendations_path, notice: 'Second opinion saved.'
+    redirect_back_or_to recommendations_path, notice: 'Second opinion saved.'
   rescue PaperRecommender::Error => e
-    redirect_to recommendations_path, alert: e.message
+    redirect_back_or_to recommendations_path, alert: e.message
   end
 
   protected

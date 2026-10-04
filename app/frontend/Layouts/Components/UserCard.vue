@@ -25,13 +25,6 @@
       />
       <q-btn
         color="primary"
-        label="Recommendations"
-        push
-        size="sm"
-        href="/recommendations"
-      />
-      <q-btn
-        color="primary"
         label="Logout"
         push
         size="sm"
@@ -68,6 +61,9 @@
           fab-mini
           @click="tagDialog = true"
         />
+        <template #before-items>
+          <recommended-sidebar />
+        </template>
       </sidebar-list>
     </template>
   </q-splitter>
@@ -159,10 +155,12 @@
 <script>
 import userMixin from '@/mixins/userMixin'
 import SidebarList from '@/Layouts/Components/SidebarList.vue'
+import RecommendedSidebar from '@/Layouts/Components/RecommendedSidebar.vue'
 
 export default {
   components: {
     SidebarList,
+    RecommendedSidebar,
   },
   mixins: [userMixin],
   data() {

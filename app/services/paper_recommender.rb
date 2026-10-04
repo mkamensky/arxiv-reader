@@ -49,7 +49,7 @@ class PaperRecommender
         recommendation.second_opinions.exists?(provider:)
 
       recommendation.second_opinions.create!(
-        provider:, model: LlmRecommendationClient.model_for(provider),
+        provider:, model: client.model,
         score: entry['score'], reason: entry['reason'].to_s.truncate(500)
       )
     end
@@ -82,6 +82,7 @@ class PaperRecommender
     papers = Paper.where(category_id: user.categories.select(:id), submitted: ..Date.current)
     papers = papers.where.not(id: user.bookmarks.select(:paper_id))
     papers = papers.where.not(id: user.hidden_papers.select(:paper_id))
+    papers = papers.where.not(id: user.recommendation_feedbacks.select(:paper_id))
     papers.where.not(id: user.recommendation_considerations.select(:paper_id))
   end
 
@@ -107,7 +108,7 @@ class PaperRecommender
         recommendation = user.recommendations.find_or_initialize_by(paper: by_arxiv[it['arxiv_id']])
         recommendation.update!(
           score: it['score'], reason: it['reason'].to_s.truncate(500),
-          provider: user.llm_provider, model: LlmRecommendationClient.model_for(user.llm_provider)
+          provider: user.llm_provider, model: client.model
         )
       end
       now = Time.current
