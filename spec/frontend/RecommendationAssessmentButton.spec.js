@@ -2,6 +2,7 @@ import { afterEach, expect, it, vi } from 'vitest'
 import { cleanup, fireEvent, render } from '@testing-library/vue'
 import { Quasar } from 'quasar'
 import RecommendationAssessmentButton from '@/Components/RecommendationAssessmentButton.vue'
+import geminiIcon from '@/assets/gemini.svg?no-inline'
 
 afterEach(() => {
   cleanup()
@@ -20,7 +21,8 @@ it('shows the provider icon, score, reason, and saved second opinions', async ()
   })
 
   const button = getByRole('button', { name: 'Gemini assessment' })
-  expect(button.querySelector('img[src="/gemini.svg"]')).toBeTruthy()
+  expect(button.querySelector('img')?.getAttribute('src')).toBe(geminiIcon)
+  expect(geminiIcon).not.toBe('/gemini.svg')
   expect(button.classList.contains('q-btn--round')).toBe(true)
   expect(button.classList.contains('bg-red-2')).toBe(true)
   await fireEvent.mouseEnter(button)

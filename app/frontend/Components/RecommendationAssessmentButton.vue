@@ -4,7 +4,7 @@
     flat
     round
     class="bg-red-2 text-black"
-    :icon="provider === 'gemini' ? 'img:/gemini.svg' : 'mdi-alpha-o-circle'"
+    :icon="assessmentIcon"
     :aria-label="`${providerName(provider)} assessment`"
     :title="`${providerName(provider)} assessment`"
     @mouseenter="loadAssessment"
@@ -68,6 +68,8 @@
 </template>
 
 <script>
+import geminiIcon from '@/assets/gemini.svg?no-inline'
+
 export default {
   props: {
     paperId: { type: Number, required: true },
@@ -79,6 +81,9 @@ export default {
     return { loadedAssessment: null, loadedProviders: [], loading: false, error: null, opinionProcessing: null }
   },
   computed: {
+    assessmentIcon() {
+      return this.provider === 'gemini' ? `img:${geminiIcon}` : 'mdi-alpha-o-circle'
+    },
     assessment() {
       return this.recommendation || this.loadedAssessment
     },

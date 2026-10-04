@@ -25,6 +25,7 @@
                 v-model="form.user.llm_provider"
                 :val="provider.value"
                 :label="provider.label"
+                :dark="false"
                 class="text-grey-10"
               />
               <q-chip
@@ -53,6 +54,7 @@
           <q-option-group
             v-model="form.user.llm_mode"
             type="radio"
+            :dark="false"
             class="text-grey-10"
             :options="[
               { label: 'Use anonymously through this site', value: 'anonymous' },
@@ -75,6 +77,7 @@
           <q-checkbox
             v-if="keyConfigured"
             v-model="form.user.clear_llm_api_key"
+            :dark="false"
             label="Remove my saved key"
           />
           <template v-if="form.user.llm_mode === 'personal' && (keyConfigured || form.user.llm_api_key)">

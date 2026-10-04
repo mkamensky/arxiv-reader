@@ -146,9 +146,9 @@ it('enables model-specific thinking choices after a model is selected', async ()
   expect(getByRole('combobox', { name: 'Thinking level' })).toBeTruthy()
 })
 
-it('keeps model and thinking menus readable in the global dark theme', async () => {
+it('keeps profile controls readable in the global dark theme', async () => {
   const user = { id: 1, llm_mode: 'personal', llm_provider: 'openai', llm_connected_providers: ['openai'] }
-  const { getByRole, findByRole } = render(LlmSettingsPage, {
+  const { getByRole, getAllByRole, findByRole } = render(LlmSettingsPage, {
     props: {
       llmAvailable: { openai: true, gemini: false },
       llmSettings: { openai: { model: 'gpt-5-mini', thinking_level: 'low' } },
@@ -168,6 +168,13 @@ it('keeps model and thinking menus readable in the global dark theme', async () 
 
   const model = getByRole('combobox', { name: 'Model' })
   const thinking = getByRole('combobox', { name: 'Thinking level' })
+  const radios = getAllByRole('radio')
+  expect(radios).toHaveLength(4)
+  radios.forEach(radio => {
+    expect(radio.closest('.q-radio').classList.contains('q-radio--dark')).toBe(false)
+  })
+  const clearKey = getByRole('checkbox', { name: 'Remove my saved key' })
+  expect(clearKey.closest('.q-checkbox').classList.contains('q-checkbox--dark')).toBe(false)
   expect(model.closest('.q-field--dark')).toBeNull()
   expect(thinking.closest('.q-field--dark')).toBeNull()
   await fireEvent.click(model)
