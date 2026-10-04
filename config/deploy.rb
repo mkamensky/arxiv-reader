@@ -51,8 +51,10 @@ append :linked_dirs, "tmp/pids", "tmp/cache", "tmp/sockets", "public", "vendor",
 
 append :assets_manifests, "public/vite/.vite/manifest*.*"
 
-# Default value for default_env is {}
-# set :default_env, { path: "/opt/ruby/bin:$PATH" }
+# Vite Ruby probes `yarn --version` during assets:precompile even though this app
+# uses npm. With Corepack's yarn shim and a deploy PTY, that probe can prompt
+# for a Yarn download and leave the deployment waiting for input.
+set :default_env, { 'COREPACK_ENABLE_DOWNLOAD_PROMPT' => '0' }
 
 # Default value for local_user is ENV['USER']
 # set :local_user, -> { `git config user.name`.chomp }
