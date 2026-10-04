@@ -69,7 +69,11 @@ ssh_options = {
   auth_methods: %w[publickey],
   verify_host_key: :always,
 }
-ssh_options[:user_known_hosts_file] = ENV['DEPLOY_KNOWN_HOSTS_FILE'] if ENV['DEPLOY_KNOWN_HOSTS_FILE']
+if ENV['DEPLOY_KNOWN_HOSTS_FILE']
+  ssh_options[:user_known_hosts_file] = ENV['DEPLOY_KNOWN_HOSTS_FILE']
+  # CI pins this verified key by hostname; DNS may choose a different IPv4/IPv6 address.
+  ssh_options[:host_key_alias] = 'dibbler.verymad.net'
+end
 set :ssh_options, ssh_options
 
 # puma
